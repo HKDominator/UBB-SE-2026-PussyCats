@@ -11,7 +11,7 @@ namespace PussyCatsApp.Utilities
                 return (string.Empty, string.Empty);
             }
 
-            var prefixes = new[]
+            var phonePrefixes = new[]
             {
                 "+40", "+44", "+49", "+33", "+39", "+34", "+31", "+48", "+43", "+32",
                 "+46", "+351", "+420", "+36", "+359", "+30", "+45", "+358", "+353", "+385",
@@ -21,11 +21,11 @@ namespace PussyCatsApp.Utilities
             };
 
             // Sort by length descending so longer prefixes match first (e.g. +351 before +3)
-            foreach (var orderedPrefix in prefixes.OrderByDescending(prefix => prefix.Length))
+            foreach (var orderedPhonePrefix in phonePrefixes.OrderByDescending(phonePrefix => phonePrefix.Length))
             {
-                if (phoneNumber.StartsWith(orderedPrefix))
+                if (phoneNumber.StartsWith(orderedPhonePrefix))
                 {
-                    return (orderedPrefix, phoneNumber.Substring(orderedPrefix.Length));
+                    return (orderedPhonePrefix, phoneNumber.Substring(orderedPhonePrefix.Length));
                 }
             }
             return (string.Empty, phoneNumber);
