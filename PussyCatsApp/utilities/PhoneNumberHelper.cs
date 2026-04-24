@@ -21,11 +21,11 @@ namespace PussyCatsApp.Utilities
             };
 
             // Sort by length descending so longer prefixes match first (e.g. +351 before +3)
-            foreach (var prefix in prefixes.OrderByDescending(p => p.Length))
+            foreach (var orderedPrefix in prefixes.OrderByDescending(prefix => prefix.Length))
             {
-                if (phoneNumber.StartsWith(prefix))
+                if (phoneNumber.StartsWith(orderedPrefix))
                 {
-                    return (prefix, phoneNumber.Substring(prefix.Length));
+                    return (orderedPrefix, phoneNumber.Substring(orderedPrefix.Length));
                 }
             }
             return (string.Empty, phoneNumber);
