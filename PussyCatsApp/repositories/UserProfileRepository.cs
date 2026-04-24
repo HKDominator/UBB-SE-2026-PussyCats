@@ -536,7 +536,7 @@ namespace PussyCatsApp.Repositories
             sqlCommand.ExecuteNonQuery();
         }
 
-        //private static void SaveSkills(SqlConnection connection, SqlTransaction transaction,
+        // private static void SaveSkills(SqlConnection connection, SqlTransaction transaction,
         //    int userId, List<string> skills)
         // {
         //    using (var del = connection.CreateCommand())
@@ -547,7 +547,7 @@ namespace PussyCatsApp.Repositories
         //        del.ExecuteNonQuery();
         //    }
 
-        //    foreach (var skill in skills ?? new List<string>())
+        // foreach (var skill in skills ?? new List<string>())
         //    {
         //        using var cmd = connection.CreateCommand();
         //        cmd.Transaction = transaction;
@@ -556,11 +556,11 @@ namespace PussyCatsApp.Repositories
         //        cmd.Parameters.AddWithValue("@name", skill);
         //        cmd.ExecuteNonQuery();
         //    }
-        //}
+        // }
 
-        //private static void SavePreferences(SqlConnection connection, SqlTransaction transaction,
+        // private static void SavePreferences(SqlConnection connection, SqlTransaction transaction,
         //    int userId, UserProfile profile)
-        //{
+        // {
         //    using (var del = connection.CreateCommand())
         //    {
         //        del.Transaction = transaction;
@@ -569,7 +569,7 @@ namespace PussyCatsApp.Repositories
         //        del.ExecuteNonQuery();
         //    }
 
-        //    void Insert(string type, string value)
+        // void Insert(string type, string value)
         //    {
         //        if (string.IsNullOrWhiteSpace(value))
         //        {
@@ -586,15 +586,14 @@ namespace PussyCatsApp.Repositories
         //        cmd.ExecuteNonQuery();
         //    }
 
-        //    foreach (var role in profile.PreferredJobRoles ?? new List<string>())
+        // foreach (var role in profile.PreferredJobRoles ?? new List<string>())
         //    {
         //        Insert("JobRole", role);
         //    }
 
-        //    Insert("WorkMode", profile.WorkModePreference);
-        //    Insert("Location", profile.LocationPreference);
-        //}
-
+        // Insert("WorkMode", profile.WorkModePreference);
+        // Insert("Location", profile.LocationPreference);
+        // }
         private static string GetString(SqlDataReader reader, string columnName)
         {
             int ordinalIndex = reader.GetOrdinal(columnName);

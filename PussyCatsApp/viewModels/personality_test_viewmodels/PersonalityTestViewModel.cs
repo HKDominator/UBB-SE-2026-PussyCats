@@ -129,8 +129,13 @@ namespace PussyCatsApp.ViewModels
 
                 // Convert role to a friendly display name using the existing jobRoleToDisplayNameConverter
                 var jobRoleToDisplayNameConverter = new JobRoleToDisplayNameConverter();
-                var displayNameObject = jobRoleToDisplayNameConverter.Convert(SelectedRole.Role, typeof(string), null, "en-US");
-                var displayName = displayNameObject as string ?? SelectedRole.Role.ToString();
+                string language = "en-US";
+                var displayNameObject = jobRoleToDisplayNameConverter.Convert(SelectedRole.Role, typeof(string), null, language);
+                var displayName = displayNameObject as string;
+                if (displayName == null)
+                {
+                    SelectedRole.Role.ToString();
+                }
 
                 // Notify the view that the result was saved so it can display feedback
                 SaveMessage = $"Your personality test result has been updated to {displayName}.";

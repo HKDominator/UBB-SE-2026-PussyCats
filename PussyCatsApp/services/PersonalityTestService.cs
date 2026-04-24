@@ -91,53 +91,53 @@ namespace PussyCatsApp.Services
 
             return traitScores;
         }
-        private double CalculateFrontend(Dictionary<TraitType, double> t)
+        private double CalculateFrontend(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.VISIBILITY] * 2) +
-                   (t[TraitType.CREATIVITY] * 2) +
-                   t[TraitType.PACE];
+            return (traitScores[TraitType.VISIBILITY] * 2) +
+                   (traitScores[TraitType.CREATIVITY] * 2) +
+                   traitScores[TraitType.PACE];
         }
-        private double CalculateBackend(Dictionary<TraitType, double> t)
+        private double CalculateBackend(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.DEPTH] * 2) +
-                   ((5 - t[TraitType.VISIBILITY]) * 2) +
-                   t[TraitType.PACE];
+            return (traitScores[TraitType.DEPTH] * 2) +
+                   ((5 - traitScores[TraitType.VISIBILITY]) * 2) +
+                   traitScores[TraitType.PACE];
         }
-        private double CalculateUIUX(Dictionary<TraitType, double> t)
+        private double CalculateUIUX(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.VISIBILITY] * 3) +
-                   (t[TraitType.CREATIVITY] * 2) +
-                   t[TraitType.INTERACTION];
+            return (traitScores[TraitType.VISIBILITY] * 3) +
+                   (traitScores[TraitType.CREATIVITY] * 2) +
+                   traitScores[TraitType.INTERACTION];
         }
-        private double CalculateDevOps(Dictionary<TraitType, double> t)
+        private double CalculateDevOps(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.DEPTH] * 2) +
-                   (t[TraitType.PACE] * 2) +
-                   (5 - t[TraitType.INTERACTION]);
+            return (traitScores[TraitType.DEPTH] * 2) +
+                   (traitScores[TraitType.PACE] * 2) +
+                   (5 - traitScores[TraitType.INTERACTION]);
         }
-        private double CalculateProjectManager(Dictionary<TraitType, double> t)
+        private double CalculateProjectManager(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.INTERACTION] * 3) +
-                   t[TraitType.CREATIVITY] +
-                   (5 - t[TraitType.DEPTH]);
+            return (traitScores[TraitType.INTERACTION] * 3) +
+                   traitScores[TraitType.CREATIVITY] +
+                   (5 - traitScores[TraitType.DEPTH]);
         }
-        private double CalculateDataAnalyst(Dictionary<TraitType, double> t)
+        private double CalculateDataAnalyst(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.DEPTH] * 2) +
-                   (t[TraitType.ABSTRACTION] * 2) +
-                   (5 - t[TraitType.INTERACTION]);
+            return (traitScores[TraitType.DEPTH] * 2) +
+                   (traitScores[TraitType.ABSTRACTION] * 2) +
+                   (5 - traitScores[TraitType.INTERACTION]);
         }
-        private double CalculateCyberSecurity(Dictionary<TraitType, double> t)
+        private double CalculateCyberSecurity(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.DEPTH] * 3) +
-                   (6 - t[TraitType.INTERACTION]) +
-                   (6 - t[TraitType.PACE]);
+            return (traitScores[TraitType.DEPTH] * 3) +
+                   (6 - traitScores[TraitType.INTERACTION]) +
+                   (6 - traitScores[TraitType.PACE]);
         }
-        private double CalculateAIEngineer(Dictionary<TraitType, double> t)
+        private double CalculateAIEngineer(Dictionary<TraitType, double> traitScores)
         {
-            return (t[TraitType.DEPTH] * 3) +
-                   t[TraitType.CREATIVITY] +
-                   (t[TraitType.ABSTRACTION] * 2);
+            return (traitScores[TraitType.DEPTH] * 3) +
+                   traitScores[TraitType.CREATIVITY] +
+                   (traitScores[TraitType.ABSTRACTION] * 2);
         }
         public Dictionary<JobRole, double> CalculateRoleScores(Dictionary<TraitType, double> traitScores)
         {
@@ -168,16 +168,16 @@ namespace PussyCatsApp.Services
 
             var result = new Dictionary<JobRole, double>();
 
-            int count = 0;
+            int addedRoles = 0;
             foreach (var roleScorePair in list)
             {
-                if (count >= length)
+                if (addedRoles >= length)
                 {
                     break;
                 }
 
                 result.Add(roleScorePair.Key, roleScorePair.Value);
-                count++;
+                addedRoles++;
             }
 
             return result;
@@ -186,6 +186,5 @@ namespace PussyCatsApp.Services
         {
             personalityTestRepository.Save(userId, personalityTestResult);
         }
-        
     }
 }

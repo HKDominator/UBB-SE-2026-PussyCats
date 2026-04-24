@@ -48,7 +48,6 @@ namespace PussyCatsApp.Services
         private const int MinAge = 16;
         private const int MaxAge = 60;
         private const int InvalidAge = 0;
-        private const int InvalidYear = 0;
         private const int MaxYearsAheadForGraduation = 10;
 
         private const string GenderMale = "Male";
@@ -95,8 +94,6 @@ namespace PussyCatsApp.Services
             {
                 throw new Exception(ParseErrorMessage + ex.Message, ex);
             }
-
-            // return new UserProfile();
         }
 
         /// <summary>
@@ -148,11 +145,11 @@ namespace PussyCatsApp.Services
 
             var addedSkills = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            int count = 0;
+            int addedSkillsCount = 0;
 
             foreach (var skill in skills)
             {
-                if (count >= MaxSkills)
+                if (addedSkillsCount >= MaxSkills)
                 {
                     break;
                 }
@@ -162,7 +159,7 @@ namespace PussyCatsApp.Services
                 if (!string.IsNullOrWhiteSpace(sanitized) && addedSkills.Add(sanitized))
                 {
                     result.Add(sanitized);
-                    count++;
+                    addedSkillsCount++;
                 }
             }
 
@@ -181,11 +178,11 @@ namespace PussyCatsApp.Services
                 return result;
             }
 
-            int count = 0;
+            int addedWorkExperiencesCount = 0;
 
             foreach (var workExperience in experiences)
             {
-                if (count >= MaxWorkExperiences)
+                if (addedWorkExperiencesCount >= MaxWorkExperiences)
                 {
                     break;
                 }
@@ -204,7 +201,7 @@ namespace PussyCatsApp.Services
                     !string.IsNullOrEmpty(processed.JobTitle))
                 {
                     result.Add(processed);
-                    count++;
+                    addedWorkExperiencesCount++;
                 }
             }
 
@@ -245,42 +242,42 @@ namespace PussyCatsApp.Services
                 return result;
             }
 
-            int count = 0;
+            int addedProjectsCount = 0;
 
-            foreach (var p in projects)
+            foreach (var project in projects)
             {
-                if (count >= MaxProjects)
+                if (addedProjectsCount >= MaxProjects)
                 {
                     break;
                 }
 
-                var proj = new Project
+                var newProject = new Project
                 {
-                    Name = SanitizeString(p.Name, MaxProjectNameLength),
-                    Description = SanitizeString(p.Description, MaxProjectDescriptionLength),
-                    Url = SanitizeString(p.Url, MaxProjectUrlLength),
+                    Name = SanitizeString(project.Name, MaxProjectNameLength),
+                    Description = SanitizeString(project.Description, MaxProjectDescriptionLength),
+                    Url = SanitizeString(project.Url, MaxProjectUrlLength),
                     Technologies = new List<string>()
                 };
 
-                if (p.Technologies != null)
+                if (project.Technologies != null)
                 {
-                    int techCount = 0;
-                    foreach (var t in p.Technologies)
+                    int technologyCount = 0;
+                    foreach (var technology in project.Technologies)
                     {
-                        if (techCount >= MaxTechnologiesPerProject)
+                        if (technologyCount >= MaxTechnologiesPerProject)
                         {
                             break;
                         }
 
-                        proj.Technologies.Add(SanitizeString(t, MaxSkillLength));
-                        techCount++;
+                        newProject.Technologies.Add(SanitizeString(technology, MaxSkillLength));
+                        technologyCount++;
                     }
                 }
 
-                if (!string.IsNullOrEmpty(proj.Name))
+                if (!string.IsNullOrEmpty(newProject.Name))
                 {
-                    result.Add(proj);
-                    count++;
+                    result.Add(newProject);
+                    addedProjectsCount++;
                 }
             }
 
@@ -295,28 +292,28 @@ namespace PussyCatsApp.Services
                 return result;
             }
 
-            int count = 0;
+            int addedActivitiesCount = 0;
 
-            foreach (var a in activities)
+            foreach (var activity in activities)
             {
-                if (count >= MaxActivities)
+                if (addedActivitiesCount >= MaxActivities)
                 {
                     break;
                 }
 
-                var activity = new ExtraCurricularActivity
+                var newActivity = new ExtraCurricularActivity
                 {
-                    ActivityName = SanitizeString(a.ActivityName, MaxActivityNameLength),
-                    Organization = SanitizeString(a.Organization, MaxOrganizationLength),
-                    Role = SanitizeString(a.Role, MaxRoleLength),
-                    Period = SanitizeString(a.Period, MaxPeriodLength),
-                    Description = SanitizeString(a.Description, MaxActivityDescriptionLength)
+                    ActivityName = SanitizeString(activity.ActivityName, MaxActivityNameLength),
+                    Organization = SanitizeString(activity.Organization, MaxOrganizationLength),
+                    Role = SanitizeString(activity.Role, MaxRoleLength),
+                    Period = SanitizeString(activity.Period, MaxPeriodLength),
+                    Description = SanitizeString(activity.Description, MaxActivityDescriptionLength)
                 };
 
-                if (!string.IsNullOrEmpty(activity.ActivityName))
+                if (!string.IsNullOrEmpty(newActivity.ActivityName))
                 {
-                    result.Add(activity);
-                    count++;
+                    result.Add(newActivity);
+                    addedActivitiesCount++;
                 }
             }
 

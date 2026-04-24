@@ -21,11 +21,22 @@ namespace PussyCatsApp.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string name = null) =>
+        private void OnPropertyChanged([CallerMemberName] string name = null)
+        {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        public SkillTest SkillTest => skillTest;
-        public Badge Badge => badge;
-        public bool IsRetakeEnabled => isRetakeEnabled;
+        }
+        public SkillTest SkillTest
+        {
+            get { return skillTest; }
+        }
+        public Badge Badge
+        {
+            get { return badge; }
+        }
+        public bool IsRetakeEnabled
+        {
+            get { return isRetakeEnabled; }
+        }
         public SkillTestCardViewModel(SkillTest skillTest, ISkillTestService skillTestService, UserProfileViewModel userProfileViewModel)
         {
             this.skillTest = skillTest;

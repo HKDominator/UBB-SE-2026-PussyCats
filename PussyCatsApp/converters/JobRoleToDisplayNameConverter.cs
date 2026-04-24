@@ -8,22 +8,27 @@ namespace PussyCatsApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is JobRole role)
+            if (value is not JobRole role)
             {
-                return role switch
+                if (value?.ToString() == null)
                 {
-                    JobRole.FrontendDeveloper => "Frontend Developer",
-                    JobRole.BackendDeveloper => "Backend Developer",
-                    JobRole.UIUXDesigner => "UI/UX Designer",
-                    JobRole.DevOpsEngineer => "DevOps Engineer",
-                    JobRole.ProjectManager => "Project Manager",
-                    JobRole.DataAnalyst => "Data Analyst",
-                    JobRole.CybersecuritySpecialist => "Cybersecurity Specialist",
-                    JobRole.AIMLEngineer => "AI/ML Engineer",
-                    _ => value.ToString()
-                };
+                    return string.Empty;
+                }
+                return value?.ToString();
             }
-            return value?.ToString() ?? string.Empty;
+
+            return role switch
+            {
+                JobRole.FrontendDeveloper => "Frontend Developer",
+                JobRole.BackendDeveloper => "Backend Developer",
+                JobRole.UIUXDesigner => "UI/UX Designer",
+                JobRole.DevOpsEngineer => "DevOps Engineer",
+                JobRole.ProjectManager => "Project Manager",
+                JobRole.DataAnalyst => "Data Analyst",
+                JobRole.CybersecuritySpecialist => "Cybersecurity Specialist",
+                JobRole.AIMLEngineer => "AI/ML Engineer",
+                var defaultRole => defaultRole.ToString()
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

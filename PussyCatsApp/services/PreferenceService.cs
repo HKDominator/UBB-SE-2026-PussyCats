@@ -207,11 +207,11 @@ namespace PussyCatsApp.Services
                 return result;
             }
 
-            foreach (var loc in predefinedLocations)
+            foreach (var location in predefinedLocations)
             {
-                if (loc.Contains(locationQuery, StringComparison.OrdinalIgnoreCase))
+                if (location.Contains(locationQuery, StringComparison.OrdinalIgnoreCase))
                 {
-                    result.Add(loc);
+                    result.Add(location);
                 }
             }
 

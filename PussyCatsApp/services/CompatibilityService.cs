@@ -108,36 +108,31 @@ namespace PussyCatsApp.Services
 
         private double ComputeGroupScore(SkillGroup group, List<UserSkill> userSkills)
         {
-            double maxCi = 0;
+            double maxSkillScore = 0;
 
             foreach (string skill in group.Skills)
             {
-                double ci = 0;
+                double skillScore = 0;
 
                 foreach (UserSkill userSkill in userSkills)
                 {
                     if (string.Equals(userSkill.SkillName, skill, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (userSkill.IsVerified)
-                        {
-                            ci = userSkill.Score / ScoreNormalizationFactor;
-                        }
-                        else
-                        {
-                            ci = UnverifiedSkillScore;
-                        }
+                        skillScore = userSkill.IsVerified
+                            ? userSkill.Score / ScoreNormalizationFactor
+                            : UnverifiedSkillScore;
 
                         break;
                     }
                 }
 
-                if (ci > maxCi)
+                if (skillScore > maxSkillScore)
                 {
-                    maxCi = ci;
+                    maxSkillScore = skillScore;
                 }
             }
 
-            return maxCi;
+            return maxSkillScore;
         }
 
         private double ComputeMatchScore(List<SkillGroup> groups, List<double> groupScores)
@@ -154,9 +149,9 @@ namespace PussyCatsApp.Services
             }
 
             double weightedSum = 0;
-            for (int i = 0; i < groups.Count; i++)
+            for (int groupIndex = 0; groupIndex < groups.Count; groupIndex++)
             {
-                weightedSum += groups[i].Weight * groupScores[i];
+                weightedSum += groups[groupIndex].Weight * groupScores[groupIndex];
             }
 
             return weightedSum * ScoreNormalizationFactor / totalWeight;
@@ -165,6 +160,10 @@ namespace PussyCatsApp.Services
         private double ComputeGain(SkillGroup group, double groupScore, int totalWeight)
         {
             return ScoreNormalizationFactor * group.Weight * (TargetGroupScore - groupScore) / totalWeight;
+        }
+        private int CompareGains(Suggestion a, Suggestion b)
+        {
+            return b.GainScore.CompareTo(a.GainScore);
         }
 
         private List<Suggestion> IdentifyGaps(List<SkillGroup> groups, List<UserSkill> userSkills, int totalWeight)
@@ -231,7 +230,7 @@ namespace PussyCatsApp.Services
                 }
             }
 
-            suggestions.Sort((a, b) => b.GainScore.CompareTo(a.GainScore));
+            suggestions.Sort(CompareGains);
 
             if (suggestions.Count > MaxSuggestions)
             {

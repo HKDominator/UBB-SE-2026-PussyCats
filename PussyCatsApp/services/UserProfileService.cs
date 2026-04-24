@@ -41,16 +41,10 @@ namespace PussyCatsApp.Services
 
         public void ToggleAccountStatus(int userId, string currentStatus)
         {
-            string newStatus;
+            string newStatus = currentStatus == AccountStatus.Active.ToString().ToUpper()
+                ? AccountStatus.Inactive.ToString().ToUpper()
+                : AccountStatus.Active.ToString().ToUpper();
 
-            if (currentStatus == AccountStatus.Active.ToString().ToUpper())
-            {
-                newStatus = AccountStatus.Inactive.ToString().ToUpper();
-            }
-            else
-            {
-                newStatus = AccountStatus.Active.ToString().ToUpper();
-            }
             userProfileRepository.UpdateAccountStatus(userId, newStatus);
             userProfileRepository.UpdateProfileLastModified(userId, DateTime.Now);
         }
@@ -74,11 +68,11 @@ namespace PussyCatsApp.Services
                 return string.Empty;
             }
 
-            var sb = new StringBuilder();
-            sb.AppendLine($"{profile.FirstName} {profile.LastName}".Trim());
-            sb.AppendLine(profile.University ?? string.Empty);
-            sb.AppendLine(string.Join(", ", profile.Skills ?? new List<string>()));
-            return sb.ToString().TrimEnd();
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"{profile.FirstName} {profile.LastName}".Trim());
+            stringBuilder.AppendLine(profile.University ?? string.Empty);
+            stringBuilder.AppendLine(string.Join(", ", profile.Skills ?? new List<string>()));
+            return stringBuilder.ToString().TrimEnd();
         }
         public void SaveProfile(int userId, UserProfile profile)
         {

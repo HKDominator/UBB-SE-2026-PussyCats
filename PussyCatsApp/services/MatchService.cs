@@ -21,17 +21,17 @@ namespace PussyCatsApp.Services
         private int CountMatchesInLastMonths(List<Match> matches, int months)
         {
             DateTime cutoffDate = DateTime.Now.AddMonths(-months);
-            int count = 0;
+            int matchesInPeriodCount = 0;
 
             foreach (var match in matches)
             {
                 if (match.MatchDate > cutoffDate)
                 {
-                    count++;
+                    matchesInPeriodCount++;
                 }
             }
 
-            return count;
+            return matchesInPeriodCount;
         }
 
         private Dictionary<string, int> GroupMatchesByPosition(List<Match> matches)
@@ -61,15 +61,15 @@ namespace PussyCatsApp.Services
         public MatchStatistics GetMatchStatistics(int userId)
         {
             var matches = matchRepository.GetMatchesByUserId(userId);
-            var stats = new MatchStatistics();
+            var matchStatistics = new MatchStatistics();
 
-            stats.TotalMatches = matches.Count;
-            stats.MatchesLastMonth = CountMatchesInLastMonths(matches, LastMonth);
-            stats.MatchesLastSixMonths = CountMatchesInLastMonths(matches, LastSixMonths);
-            stats.MatchesLastYear = CountMatchesInLastMonths(matches, LastYear);
-            stats.MatchesPerPosition = GroupMatchesByPosition(matches);
+            matchStatistics.TotalMatches = matches.Count;
+            matchStatistics.MatchesLastMonth = CountMatchesInLastMonths(matches, LastMonth);
+            matchStatistics.MatchesLastSixMonths = CountMatchesInLastMonths(matches, LastSixMonths);
+            matchStatistics.MatchesLastYear = CountMatchesInLastMonths(matches, LastYear);
+            matchStatistics.MatchesPerPosition = GroupMatchesByPosition(matches);
 
-            return stats;
+            return matchStatistics;
         }
     }
 }

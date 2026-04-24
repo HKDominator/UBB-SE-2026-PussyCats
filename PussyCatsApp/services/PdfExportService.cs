@@ -11,7 +11,6 @@ namespace PussyCatsApp.Services
     public class PdfExportService : IPdfExportService
     {
         private readonly WebView2 webView;
-        private readonly IUserProfileRepository profileRepository;
         private UserProfile currentProfile;
         private const int RenderDelayMilliseconds = 500;
         private const string TemplateUrl = "http://assets.local/CVHtmlTemplate.html";
@@ -73,14 +72,14 @@ namespace PussyCatsApp.Services
 
         private Task WaitForNavigationAsync()
         {
-            var tcs = new TaskCompletionSource<bool>();
-            void Handler(WebView2 s, CoreWebView2NavigationCompletedEventArgs e)
+            var navigationTaskCompletionSource = new TaskCompletionSource<bool>();
+            void Handler(WebView2 sender, CoreWebView2NavigationCompletedEventArgs eventArgs)
             {
                 webView.NavigationCompleted -= Handler;
-                tcs.SetResult(true);
+                navigationTaskCompletionSource.SetResult(true);
             }
             webView.NavigationCompleted += Handler;
-            return tcs.Task;
+            return navigationTaskCompletionSource.Task;
         }
 
         private string BuildFileName(UserProfile profile)

@@ -30,7 +30,7 @@ namespace PussyCatsApp.Views
     {
         private TestDashboardViewModel testDashboardViewModel;
 
-        public TestDashboardView()  
+        public TestDashboardView()
         {
             this.InitializeComponent();
         }
