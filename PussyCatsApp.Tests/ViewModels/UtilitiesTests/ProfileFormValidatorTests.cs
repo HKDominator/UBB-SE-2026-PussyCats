@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PussyCatsApp.Models;
+﻿using PussyCatsApp.Models;
 using PussyCatsApp.Utilities;
 
 namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
@@ -12,43 +7,42 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
     public class ProfileFormValidatorTests
     {
         [TestMethod]
-        public void IsValidEmailValidEmailReturnsTrue()
+        public void IsValidEmail_ValidEmail_ReturnsTrue()
         {
-            // Arrange
             string validEmail1 = "validemail@gmail.com";
             Assert.AreEqual(true, ProfileFormValidator.IsValidEmail(validEmail1));
         }
 
         [TestMethod]
-        public void TestInvalidEmailNoDotNoAt()
+        public void IsValidEmail_InvalidEmailNoDotNoAt_ReturnsFalse()
         {
             string invalidEmail = "invalidemail";
             Assert.AreEqual(false, ProfileFormValidator.IsValidEmail(invalidEmail));
         }
 
         [TestMethod]
-        public void TestInvalidEmailNoDot()
+        public void IsValidEmail_InvalidEmailNoDot_ReturnsFalse()
         {
             string invalidEmail = "invalidemail@";
             Assert.IsFalse(ProfileFormValidator.IsValidEmail(invalidEmail));
         }
 
         [TestMethod]
-        public void TestInvalidEmailNoAt()
+        public void IsValidEmail_InvalidEmailNoAt_ReturnsFalse()
         {
             string invalidEmail = "invalidemail.com";
             Assert.IsFalse(ProfileFormValidator.IsValidEmail(invalidEmail));
         }
 
         [TestMethod]
-        public void TestInvalidEmailEmptyBetweenDotAndAt()
+        public void IsValidEmail_InvalidEmailEmptyBetweenDotAndAt_ReturnsFalse()
         {
             string invalidEmail = "invalidemail@.com";
             Assert.IsFalse(ProfileFormValidator.IsValidEmail(invalidEmail));
         }
 
         [TestMethod]
-        public void ValidateFormReturnsEveryErrorExceptLastName()
+        public void ValidateForm_AllButLastNameAreInvalidEntries_ReturnsEveryErrorExceptLastName()
         {
             string firstName = string.Empty;
             string lastName = "Doe";
@@ -71,7 +65,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void ValidateFormReturnsEveryErrorExceptAge()
+        public void ValidateForm_AllButAgeAreInvalid_ReturnsEveryErrorExceptAge()
         {
             string firstName = string.Empty;
             string lastName = string.Empty;
@@ -95,7 +89,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void ValidateFormReturnsErrorLastName()
+        public void ValidateForm_InvalidLastName_ReturnsErrorLastName()
         {
             string firstName = "John";
             string gender = "Male";
@@ -119,7 +113,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void ValidateFormReturnsErrorWhenUnderageAge()
+        public void ValidateForm_UnderageAge_ReturnsError()
         {
             string firstName = "John";
             string gender = "Male";
@@ -144,7 +138,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void ValidateFormReturnsErrorWhenOverageAge()
+        public void ValidateForm_OverageAge_ReturnsError()
         {
             string firstName = "John";
             string gender = "Male";
@@ -169,7 +163,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
             [TestMethod]
-        public void ValidatorCatchesExperiencesWithStartDateAfterEndDate()
+        public void ValidateForm_StartDateAfterEndDateExperiences_ReturnsError()
         {
             // Arrange
             string firstName = "John";
@@ -206,7 +200,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void ValidatorReturnsZeroErrorsWhenCurrentlyWorking()
+        public void ValidateForm_CurrentlyWorking_ReturnsZeroErrors()
         {
             string firstName = "John";
             string lastName = "Doe";
@@ -238,7 +232,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void ValidatorReturnsZeroErrorsWhenEndDateAfterStartDate()
+        public void ValidateForm_EndDateAfterStartDate_ReturnsZeroErrors()
         {
             string firstName = "John";
             string lastName = "Doe";

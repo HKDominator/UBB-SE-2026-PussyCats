@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PussyCatsApp.Utilities;
+﻿using PussyCatsApp.Utilities;
 
 namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
 {
@@ -11,7 +6,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
     public class ProfileFormHelpersTests
     {
         [TestMethod]
-        public void TestUniversityMatchesAllWords_ReturnsTrue_WhenAllWordsMatch()
+        public void UniversityMatchesAllWords_AllWordsMatch_ReturnsTrue()
         {
             string university = "Massachusetts Institute of Technology";
             string[] words = new string[] { "massachusetts", "institute", "technology" };
@@ -20,7 +15,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void TestUniversityMatchesAllWords_ReturnsFalse_WhenAtLeastOneWordDoesNotMatch()
+        public void UniversityMatchesAllWords_AtLeastOneWordDoesNotMatch_ReturnsFalse()
         {
             string university = "Massachusetts Institute of Technology";
             string[] words = new string[] { "massachusetts", "institute", "harvard" };
@@ -29,7 +24,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void TestFilterUniversitiesHelperReturnsMatchingUniversity()
+        public void FilterUniversitiesHelper_MatchesExist_ReturnsMatchingUniversity()
         {
             string query = "Babes University";
             List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(query);
@@ -37,7 +32,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void TestFilterUniversitiesHelperReturnsEmptyListForEmptyQuery()
+        public void FilterUniversitiesHelper_EmptyQuery_ReturnsEmptyList()
         {
             string query = string.Empty;
             List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(query);
@@ -45,7 +40,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void TestFilterUniversitiesHelperReturnsEmptyListForNoMatches()
+        public void FilterUniversitiesHelper_NoMatches_ReturnsEmptyList()
         {
             string query = "Nonexistent University";
             List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(query);

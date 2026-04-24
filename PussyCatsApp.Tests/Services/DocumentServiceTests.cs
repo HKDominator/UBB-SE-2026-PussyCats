@@ -28,6 +28,24 @@ namespace PussyCatsApp.Tests.Services
             //Act
             service.UploadDocument(new Document(), "file.exe");
         }
+        [TestMethod]
+        public void UploadDocument_ValidPdfFile_CallsAddDocument()
+        {
+            string tempFile = Path.GetTempFileName();
+            string pdfPath = Path.ChangeExtension(tempFile, ".pdf");
+            File.Move(tempFile, pdfPath);
+
+           
+            mockFileStorage.Setup(s => s.SaveFile(It.IsAny<Stream>(), It.IsAny<string>())).Returns("iss/file.pdf");
+
+            var document = new Document();
+            service.UploadDocument(document, pdfPath);
+
+            mockDocRepo.Verify(r => r.AddDocument(document), Times.Once);
+            Assert.AreEqual("iss/file.pdf", document.FilePath);
+            
+            File.Delete(pdfPath);
+        }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]

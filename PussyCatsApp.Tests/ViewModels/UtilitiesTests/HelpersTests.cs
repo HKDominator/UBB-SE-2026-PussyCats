@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PussyCatsApp.Utilities;
+﻿using PussyCatsApp.Utilities;
 using PussyCatsApp.Models;
 
 namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
@@ -12,7 +7,7 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
     public class HelpersTests
     {
         [TestMethod]
-        public void TestGenerateRandomScore()
+        public void GenerateRandomScore_GivenBounds_ReturnsScoreInBetweenBounds()
         {
             int lowerBound = 1, upperBound = 10;
             int randomScore = Helpers.GenerateRandomScore(lowerBound, upperBound);
@@ -20,25 +15,25 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         }
 
         [TestMethod]
-        public void TestGetFormattedNameFromJobRoleUIUX()
+        public void GetFormattedNameFromJobRole_UIUX_ReturnsCorrectFormat()
         {
             Assert.AreEqual("UI/UX Designer", Helpers.GetFormattedNameFromJobRole(JobRole.UIUXDesigner));
         }
 
         [TestMethod]
-        public void TestGetFormattedNameFromJobRoleAI()
+        public void GetFormattedNameFromJobRole_AI_ReturnsCorrectFormat()
         {
             Assert.AreEqual("AI/ML Engineer", Helpers.GetFormattedNameFromJobRole(JobRole.AIMLEngineer));
         }
 
         [TestMethod]
-        public void TestGetFormattedNameFromJobRoleDataAnalyst()
+        public void GetFormattedNameFromJobRole_DataAnalyst_ReturnsCorrectFormat()
         {
             Assert.AreEqual("Data Analyst", Helpers.GetFormattedNameFromJobRole(JobRole.DataAnalyst));
         }
 
         [TestMethod]
-        public void TestGetFormattedNameFromJobRoleDevOps()
+        public void GetFormattedNameFromJobRole_DevOps_ReturnsCorrectFormat()
         {
             Assert.AreEqual("Dev Ops Engineer", Helpers.GetFormattedNameFromJobRole(JobRole.DevOpsEngineer));
         }
