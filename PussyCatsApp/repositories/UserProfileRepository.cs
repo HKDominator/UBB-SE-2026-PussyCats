@@ -358,15 +358,15 @@ namespace PussyCatsApp.Repositories
         private static List<string> LoadCertificates(SqlConnection connection, int userId)
         {
             var list = new List<string>();
-            using var command = connection.CreateCommand();
-            command.CommandText = @"
+            using var loadNameDocumentCommand = connection.CreateCommand();
+            loadNameDocumentCommand.CommandText = @"
                 SELECT nameDocument
                 FROM Documents
                 WHERE userID = @id
                 ORDER BY dID";
-            command.Parameters.AddWithValue("@id", userId);
+            loadNameDocumentCommand.Parameters.AddWithValue("@id", userId);
 
-            using var reader = command.ExecuteReader();
+            using var reader = loadNameDocumentCommand.ExecuteReader();
             while (reader.Read())
             {
                 var name = GetString(reader, "nameDocument");

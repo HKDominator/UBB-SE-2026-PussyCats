@@ -96,7 +96,7 @@ namespace PussyCatsApp.Repositories
 
         public List<SkillTest> GetSkillTestsByUserId(int userId)
         {
-            List<SkillTest> tests = new List<SkillTest>();
+            List<SkillTest> skillTests = new List<SkillTest>();
             const string selectAllSkillsByUserIdQuery = "SELECT * FROM SKILLS WHERE userID = @userId";
 
             try
@@ -128,7 +128,7 @@ namespace PussyCatsApp.Repositories
                                 }
 
                                 SkillTest test = new SkillTest(skillId, userIdToGet, name, score, dateResult);
-                                tests.Add(test);
+                                skillTests.Add(test);
                             }
                         }
                     }
@@ -143,7 +143,7 @@ namespace PussyCatsApp.Repositories
                 Console.Error.WriteLine("An error occurred retrieving skills for user " + userId + ": " + ex.Message);
             }
 
-            return tests;
+            return skillTests;
         }
 
         public void UpdateSkillTestScore(int skillId, int score)

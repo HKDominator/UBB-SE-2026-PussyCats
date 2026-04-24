@@ -47,7 +47,7 @@ public class PersonalityTestRepository : IPersonalityTestRepository
         return null;
     }
 
-    public void Save(int id, string personalityTestResult)
+    public void Save(int userId, string personalityTestResult)
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -57,7 +57,7 @@ public class PersonalityTestRepository : IPersonalityTestRepository
                 using (SqlCommand updatePersonalityTestResultByUserIdCommand = new SqlCommand("UPDATE Users SET personalityTestResult = @personalityTestResult WHERE userID = @userID", connection))
                 {
                     updatePersonalityTestResultByUserIdCommand.Parameters.AddWithValue("@personalityTestResult", personalityTestResult);
-                    updatePersonalityTestResultByUserIdCommand.Parameters.AddWithValue("@userID", id);
+                    updatePersonalityTestResultByUserIdCommand.Parameters.AddWithValue("@userID", userId);
                     updatePersonalityTestResultByUserIdCommand.ExecuteNonQuery();
                 }
             }
