@@ -26,10 +26,10 @@ public class PersonalityTestRepository : IPersonalityTestRepository
             try
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("SELECT personalityTestResult FROM Users WHERE userID = @userID", connection))
+                using (SqlCommand selectPersonalityTestResultCommand = new SqlCommand("SELECT personalityTestResult FROM Users WHERE userID = @userID", connection))
                 {
-                    command.Parameters.AddWithValue("@userID", id);
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    selectPersonalityTestResultCommand.Parameters.AddWithValue("@userID", id);
+                    using (SqlDataReader reader = selectPersonalityTestResultCommand.ExecuteReader())
                     {
                         if (reader.Read())
                         {
@@ -54,11 +54,11 @@ public class PersonalityTestRepository : IPersonalityTestRepository
             try
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("UPDATE Users SET personalityTestResult = @personalityTestResult WHERE userID = @userID", connection))
+                using (SqlCommand updatePersonalityTestResultByUserIdCommand = new SqlCommand("UPDATE Users SET personalityTestResult = @personalityTestResult WHERE userID = @userID", connection))
                 {
-                    command.Parameters.AddWithValue("@personalityTestResult", personalityTestResult);
-                    command.Parameters.AddWithValue("@userID", id);
-                    command.ExecuteNonQuery();
+                    updatePersonalityTestResultByUserIdCommand.Parameters.AddWithValue("@personalityTestResult", personalityTestResult);
+                    updatePersonalityTestResultByUserIdCommand.Parameters.AddWithValue("@userID", id);
+                    updatePersonalityTestResultByUserIdCommand.ExecuteNonQuery();
                 }
             }
             catch (SqlException ex)

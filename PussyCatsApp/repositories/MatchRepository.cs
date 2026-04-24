@@ -24,14 +24,14 @@ namespace PussyCatsApp.Repositories
         {
             var matches = new List<Match>();
 
-            const string query = "SELECT id, userID, companyName, jobRole, matchDate FROM MATCHES WHERE userID = @UserId ORDER BY matchDate DESC";
+            const string getMatchesByUserIdQuery = "SELECT id, userID, companyName, jobRole, matchDate FROM MATCHES WHERE userID = @UserId ORDER BY matchDate DESC";
 
             try
             {
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                using var command = new SqlCommand(query, connection);
+                using var command = new SqlCommand(getMatchesByUserIdQuery, connection);
                 command.Parameters.AddWithValue("@UserId", userId);
 
                 using var reader = command.ExecuteReader();
