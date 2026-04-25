@@ -9,36 +9,37 @@ namespace PussyCatsApp.Tests.Services
     [TestClass]
     public class PreferenceServiceTests
     {
-        private Mock<IPreferenceRepository> mockRepo;
-        private PreferenceService service;
+        private Mock<IPreferenceRepository> mockPreferenceRepository;
+        private PreferenceService preferenceService;
 
         [TestInitialize]
         public void Initialize()
         {
-            mockRepo = new Mock<IPreferenceRepository>();
-            service = new PreferenceService(mockRepo.Object);
+            mockPreferenceRepository = new Mock<IPreferenceRepository>();
+            preferenceService = new PreferenceService(mockPreferenceRepository.Object);
         }
         [TestMethod]
         public void SavePreferences_ValidRoles_CallsRepositoryCorrectly()
         {
             // Arrange
+            var userId = 1;
             var roles = new List<JobRole> { JobRole.BackendDeveloper };
             var workMode = WorkMode.Remote;
             var location = "London, UK";
 
             // Act
-            service.SavePreferences(1, roles, workMode, location);
+            preferenceService.SavePreferences(userId, roles, workMode, location);
 
             // Assert
-            mockRepo.Verify(preferencesDeletedForUser => preferencesDeletedForUser.DeleteAllByUserId(1), Times.Once);
-            mockRepo.Verify(addPreferenceForAUser => addPreferenceForAUser.AddPreference(It.IsAny<Preference>()), Times.Exactly(roles.Count + 2));
+            mockPreferenceRepository.Verify(preferencesDeletedForUser => preferencesDeletedForUser.DeleteAllByUserId(1), Times.Once);
+            mockPreferenceRepository.Verify(addPreferenceForAUser => addPreferenceForAUser.AddPreference(It.IsAny<Preference>()), Times.Exactly(roles.Count + 2));
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void SavePreferences_NullRoles_ThrowsException()
         {
             // Act
-            service.SavePreferences(1, null, WorkMode.Remote, "London, UK");
+            preferenceService.SavePreferences(1, null, WorkMode.Remote, "London, UK");
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -54,13 +55,13 @@ namespace PussyCatsApp.Tests.Services
             };
 
             // Act
-            service.SavePreferences(1, roles, WorkMode.Remote, "London, UK");
+            preferenceService.SavePreferences(1, roles, WorkMode.Remote, "London, UK");
         }
         [TestMethod]
         public void SearchLocations_ValidQuery_ReturnsResults()
         {
             // Act
-            var result = service.SearchLocations("London");
+            var result = preferenceService.SearchLocations("London");
 
             // Assert
             Assert.IsTrue(result.Any(userLocationsList => userLocationsList.Contains("London")));
@@ -69,7 +70,7 @@ namespace PussyCatsApp.Tests.Services
         public void SearchLocations_EmptyQuery_ReturnsEmptyList()
         {
             // Act
-            var result = service.SearchLocations("");
+            var result = preferenceService.SearchLocations("");
 
             // Assert
             Assert.AreEqual(0, result.Count);

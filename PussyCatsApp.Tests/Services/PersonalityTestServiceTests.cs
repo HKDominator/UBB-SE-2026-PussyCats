@@ -13,12 +13,12 @@ namespace PussyCatsApp.Tests.Services
     public class PersonalityTestServiceTests
     {
 
-        private PersonalityTestService service;
+        private PersonalityTestService personalityTestService;
 
         [TestInitialize]
         public void Initialize()
         {
-            service = new PersonalityTestService(null);
+            personalityTestService = new PersonalityTestService(null);
         }
 
         /// <summary>
@@ -28,21 +28,21 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateTraitScores_AllAnswerTypes_ShouldMapCorrectly()
         {
             //Arrange
-            var q1 = new Question(1, "Q1", TraitType.VISIBILITY, 1);
-            var q2 = new Question(2, "Q2", TraitType.VISIBILITY, 2);
-            var q3 = new Question(3, "Q3", TraitType.VISIBILITY, 3);
-            var q4 = new Question(4, "Q4", TraitType.VISIBILITY, 4);
-            var q5 = new Question(5, "Q5", TraitType.VISIBILITY, 5);
-            var answers = new Dictionary<Question, AnswerValue>
+            var firstQuestion = new Question(1, "Q1", TraitType.VISIBILITY, 1);
+            var secondQuestion = new Question(2, "Q2", TraitType.VISIBILITY, 2);
+            var thirdQuestion = new Question(3, "Q3", TraitType.VISIBILITY, 3);
+            var forthQuestion = new Question(4, "Q4", TraitType.VISIBILITY, 4);
+            var fifthQuestion = new Question(5, "Q5", TraitType.VISIBILITY, 5);
+            var questionAnswers = new Dictionary<Question, AnswerValue>
             {
-                { q1, AnswerValue.STRONGLY_DISAGREE },
-                { q2, AnswerValue.DISAGREE },
-                { q3, AnswerValue.NEUTRAL },
-                { q4, AnswerValue.AGREE },
-                { q5, AnswerValue.STRONGLY_AGREE }
+                { firstQuestion, AnswerValue.STRONGLY_DISAGREE },
+                { secondQuestion, AnswerValue.DISAGREE },
+                { thirdQuestion, AnswerValue.NEUTRAL },
+                { forthQuestion, AnswerValue.AGREE },
+                { fifthQuestion, AnswerValue.STRONGLY_AGREE }
             };
             //Act
-            var result = service.CalculateTraitScores(answers);
+            var result = personalityTestService.CalculateTraitScores(questionAnswers);
             //Assert
             Assert.IsTrue(result.ContainsKey(TraitType.VISIBILITY));
         }
@@ -58,10 +58,10 @@ namespace PussyCatsApp.Tests.Services
         [DataRow(JobRole.DataAnalyst, 17)]
         [DataRow(JobRole.CybersecuritySpecialist, 21)]
         [DataRow(JobRole.AIMLEngineer, 21)]
-        public void CalculateRoleScores_AllRoles_ReturnCorrectValues(JobRole role, double expected)
+        public void CalculateRoleScores_AllRoles_ReturnCorrectValues(JobRole role, double expectedScore)
         {
             // Arrange
-            Dictionary<TraitType, double> traits = new Dictionary<TraitType, double>
+            Dictionary<TraitType, double> traitScores = new Dictionary<TraitType, double>
             {
                 { TraitType.VISIBILITY, 2 },
                 { TraitType.CREATIVITY, 3 },
@@ -72,10 +72,10 @@ namespace PussyCatsApp.Tests.Services
             };
 
             // Act
-            var result = service.CalculateRoleScores(traits);
+            var result = personalityTestService.CalculateRoleScores(traitScores);
 
             // Assert
-            Assert.AreEqual(expected, result[role]);
+            Assert.AreEqual(expectedScore, result[role]);
         }
         /// <summary>
         /// Verifies that GetTopRoles returns the correct number of roles.
@@ -84,14 +84,14 @@ namespace PussyCatsApp.Tests.Services
         public void GetTopRoles_ReturnsCorrectCount()
         {
             //Arrange
-            var input = new Dictionary<JobRole, double> 
+            var roleScores = new Dictionary<JobRole, double> 
             {
                 { JobRole.FrontendDeveloper, 10 },
                 { JobRole.BackendDeveloper, 20 },
                 { JobRole.UIUXDesigner, 15 }
             };
             //Act
-            var result = service.GetTopRoles(input, 2);
+            var result = personalityTestService.GetTopRoles(roleScores, 2);
             //Assert
             Assert.AreEqual(2, result.Count);
         }
@@ -102,14 +102,14 @@ namespace PussyCatsApp.Tests.Services
         public void GetTopRoles_HighestScoreIsFirst()
         {
             //Arrange
-            var input = new Dictionary<JobRole, double>
+            var roleScores = new Dictionary<JobRole, double>
             {
                 { JobRole.FrontendDeveloper, 10 },
                 { JobRole.BackendDeveloper, 20 },
                 { JobRole.UIUXDesigner, 15 }
             };
             //Act
-            var result = service.GetTopRoles(input, 3).ToList();
+            var result = personalityTestService.GetTopRoles(roleScores, 3).ToList();
             //Assert
             Assert.AreEqual(JobRole.BackendDeveloper, result[0].Key);
         }
