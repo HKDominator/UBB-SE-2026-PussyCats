@@ -26,16 +26,20 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestInitializesWithQuestions()
+        public void ViewModel_Initializes_WithDefaultNumberOfQuestions()
         {
             int numberOfQuestions = 24; // Assuming the test has 24 questions
             Assert.IsTrue(viewModel.Questions.Count == numberOfQuestions);
         }
 
         [TestMethod]
-        public void TestCanSubmitWhenAllQuestionsAreAnswered()
+        public void CanSubmit_IsTrue_WhenAllQuestionsAreAnswered()
         {
-            var answeredQuestion = new QuestionViewModel(new Question(1, "Does this work?", TraitType.ABSTRACTION, 0))
+            // The specific trait type and sort order are not important for this test, so we can use any valid values.
+            const int unimportantSortOrder = 0;
+            const TraitType unimportantTraitType = TraitType.ABSTRACTION;
+
+            var answeredQuestion = new QuestionViewModel(new Question(1, "Does this work?", unimportantTraitType, unimportantSortOrder))
             {
                 SelectedAnswer = (int)AnswerValue.AGREE
             };
@@ -47,13 +51,18 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestCannotSubmitWhenAtLeastOneQuestionIsUnanswered()
+        public void CanSubmit_IsFalse_WhenAtLeastOneQuestionIsUnanswered()
         {
-            var answeredQuestion = new QuestionViewModel(new Question(1, "Does this work?", TraitType.ABSTRACTION, 0))
+            // The specific trait type and sort order are not important for this test, so we can use any valid values.
+            const int unimportantSortOrder = 0;
+            const TraitType unimportantTraitType = TraitType.ABSTRACTION;
+            int firstQuestionId = 1, secondQuestionId = 2;
+
+            var answeredQuestion = new QuestionViewModel(new Question(firstQuestionId, "Does this work?", unimportantTraitType, unimportantSortOrder))
             {
                 SelectedAnswer = (int)AnswerValue.AGREE
             };
-            var unansweredQuestion = new QuestionViewModel(new Question(2, "Is this unanswered?", TraitType.ABSTRACTION, 0));
+            var unansweredQuestion = new QuestionViewModel(new Question(secondQuestionId, "Is this unanswered?", unimportantTraitType, unimportantSortOrder));
             viewModel.Questions.Clear();
             viewModel.Questions.Add(answeredQuestion);
             viewModel.Questions.Add(unansweredQuestion);
@@ -61,16 +70,17 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestCannotSaveWhenNoRoleSelected()
+        public void CanSave_IsFalse_WhenNoRoleSelected()
         {
             viewModel.SelectedRole = null;
             Assert.IsFalse(viewModel.CanSave);
         }
 
         [TestMethod]
-        public void TestCanSaveWhenRoleSelected()
+        public void CanSave_IsTrue_WhenRoleSelected()
         {
-            viewModel.SelectedRole = new RoleResultViewModel(JobRole.DataAnalyst, 0.9);
+            double scoreValue = 0.9;
+            viewModel.SelectedRole = new RoleResultViewModel(JobRole.DataAnalyst, scoreValue);
             Assert.IsTrue(viewModel.CanSave);
         }
     }

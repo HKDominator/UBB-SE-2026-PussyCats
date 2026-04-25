@@ -41,8 +41,11 @@ namespace PussyCatsApp.Tests.ViewModels
                 preference
             });
             viewModel.LoadPreferences();
-            Assert.AreEqual(1, viewModel.GetSelectedJobRoles().Count);
-            Assert.IsTrue(viewModel.GetSelectedJobRoles().Contains(JobRole.BackendDeveloper));
+
+            int excectedJobRolesCount = 1;
+            JobRole expectedJobRole = JobRole.BackendDeveloper;
+            Assert.AreEqual(excectedJobRolesCount, viewModel.GetSelectedJobRoles().Count);
+            Assert.IsTrue(viewModel.GetSelectedJobRoles().Contains(expectedJobRole));
         }
 
         [TestMethod]

@@ -34,13 +34,13 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public async Task TestSetFreshnessTextWhenLoadingIfProfileIsNotNull()
+        public async Task LoadUserAsync_SetsCorrectFreshnessText()
         {
-
+            int numberOfDaysAgo = 5;
             var userProfile = new UserProfile
             {
                 UserId = testUserId,
-                LastUpdated = DateTime.Now.AddDays(-5) // Simulate last update was 5 days ago
+                LastUpdated = DateTime.Now.AddDays(-numberOfDaysAgo) // Simulate last update was some days ago
             };
             viewModel.UserProfile = userProfile;
 
@@ -55,13 +55,13 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public async Task TestSetCompletnessPercentageWhenLoadingIfProfileIsNotNull()
+        public async Task LoadUserAsync_SetsCorrectCompletenessPercentage_WhenProfileIsNotNull()
         {
-
+            int numberOfDaysAgo = 5;
             var userProfile = new UserProfile
             {
                 UserId = testUserId,
-                LastUpdated = DateTime.Now.AddDays(-5) // Simulate last update was 5 days ago
+                LastUpdated = DateTime.Now.AddDays(-numberOfDaysAgo) // Simulate last update was some days ago
             };
             viewModel.UserProfile = userProfile;
 
@@ -78,7 +78,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public async Task TestLoadAsyncDoesNothingWhenProfileIsNull()
+        public async Task LoadUserAsync_DoesNothing_WhenProfileIsNull()
         {
             UserProfile userProfile = null;
             viewModel.UserProfile = userProfile;
@@ -88,13 +88,15 @@ namespace PussyCatsApp.Tests.ViewModels
             );
 
             await viewModel.LoadUserAsync(testUserId);
+            
+            int expectedPercentage = 0;
             Assert.AreEqual(string.Empty, viewModel.FreshnessText);
-            Assert.AreEqual(0, viewModel.CompletenessPercentage);
+            Assert.AreEqual(expectedPercentage, viewModel.CompletenessPercentage);
             Assert.AreEqual(string.Empty, viewModel.NextEmptyFieldPrompt);
         }
 
         [TestMethod]
-        public void TestToggleAccountStatusCommandActivates()
+        public void ToggleAccountStatusCommand_ActivatesAccount()
         {
             var userProfile = new UserProfile
             {
@@ -108,7 +110,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestToggleAccountStatusCommandDeactivates()
+        public void ToggleAccountStatusCommand_DeactivatesAccount()
         {
             var userProfile = new UserProfile
             {
@@ -122,7 +124,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestRemoveAvatarCommand()
+        public void RemoveAvatarCommand_RemovesProfilePicture()
         {
             var userProfile = new UserProfile
             {
@@ -136,14 +138,14 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestGetPersonalityButtonTextWhenUserIsNull()
+        public void GetPersonalityButtonText_ReturnsRetakeText_WhenUserIsNull()
         {
             viewModel.UserProfile = null;
             Assert.AreEqual(retakePersonalityTestText, viewModel.GetPersonalityButtonText());
         }
 
         [TestMethod]
-        public void TestGetPersonalityButtonTextWhenResultIsEmpty()
+        public void GetPersonalityButtonText_ReturnsTakeText_WhenResultIsEmpty()
         {
             var userProfile = new UserProfile
             {
@@ -155,7 +157,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestGetPersonalityButtonTextWhenRetakeAvailable()
+        public void GetPersonalityButtonText_ReturnsRetakeText_WhenRetakeAvailable()
         {
             var userProfile = new UserProfile
             {
@@ -167,7 +169,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestRecalculateLevelCommandUserIsNull()
+        public void RecalculateLevelCommand_DoesNothing_WhenUserIsNull()
         {
             int oldExperiencePoints = viewModel.TotalExperiencePoints;
             viewModel.UserProfile = null;
@@ -176,7 +178,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestRecalculateLevelCommandSetsCorrect()
+        public void RecalculateLevelCommand_SetsCorrectExperiencePoints()
         {
             int oldExperiencePoints = 1500, newExperiencePoints = 2000;
             var userProfile = new UserProfile
