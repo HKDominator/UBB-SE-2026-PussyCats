@@ -8,16 +8,16 @@ namespace PussyCatsApp.Tests.Services
     [TestClass]
     public class DocumentServiceTest
     {
-        private Mock<IDocumentRepository> mockDocRepo;
+        private Mock<IDocumentRepository> mockDocumentRepo;
         private Mock<ILocalFileStorageService> mockFileStorage;
         private DocumentService service;
 
         [TestInitialize]
         public void Setup()
         {
-            mockDocRepo = new Mock<IDocumentRepository>();
+            mockDocumentRepo = new Mock<IDocumentRepository>();
             mockFileStorage = new Mock<ILocalFileStorageService>();
-            service = new DocumentService(mockDocRepo.Object, mockFileStorage.Object);
+            service = new DocumentService(mockDocumentRepo.Object, mockFileStorage.Object);
         }
 
 
@@ -31,9 +31,9 @@ namespace PussyCatsApp.Tests.Services
         [TestMethod]
         public void UploadDocument_ValidPdfFile_CallsAddDocument()
         {
-            string tempFile = Path.GetTempFileName();
-            string pdfPath = Path.ChangeExtension(tempFile, ".pdf");
-            File.Move(tempFile, pdfPath);
+            string temporaryFile = Path.GetTempFileName();
+            string pdfPath = Path.ChangeExtension(temporaryFile, ".pdf");
+            File.Move(temporaryFile, pdfPath);
 
            
             mockFileStorage.Setup(issFilePdfPath => issFilePdfPath.SaveFile(It.IsAny<Stream>(), It.IsAny<string>())).Returns("iss/file.pdf");
@@ -41,7 +41,7 @@ namespace PussyCatsApp.Tests.Services
             var document = new Document();
             service.UploadDocument(document, pdfPath);
 
-            mockDocRepo.Verify(issFilePdfAdd => issFilePdfAdd.AddDocument(document), Times.Once);
+            mockDocumentRepo.Verify(issFilePdfAdd => issFilePdfAdd.AddDocument(document), Times.Once);
             Assert.AreEqual("iss/file.pdf", document.FilePath);
             
             File.Delete(pdfPath);
@@ -52,7 +52,7 @@ namespace PussyCatsApp.Tests.Services
         public void DeleteDocument_DocumentNotFound_ThrowsException()
         {
             //Arrange
-            mockDocRepo.Setup(nullDocument => nullDocument.GetDocumentById(1)).Returns((Document)null);
+            mockDocumentRepo.Setup(doesNotFindDocument => doesNotFindDocument.GetDocumentById(1)).Returns((Document)null);
             //Act
             service.DeleteDocument(1);
         }
@@ -61,24 +61,24 @@ namespace PussyCatsApp.Tests.Services
         public void DeleteDocument_DocumentWithEmptyFilePath_DoesNotCallDeleteFile()
         {
             //Arrange
-            mockDocRepo.Setup(emptyFilePathDocument => emptyFilePathDocument.GetDocumentById(1)).Returns(new Document { FilePath = "" });
+            mockDocumentRepo.Setup(doesNotHaveFilePath => doesNotHaveFilePath.GetDocumentById(1)).Returns(new Document { FilePath = "" });
             //Act
             service.DeleteDocument(1);
             //Assert
-            mockFileStorage.Verify(deleteFile => deleteFile.DeleteFile(It.IsAny<string>()), Times.Never);
-            mockDocRepo.Verify(deleteDocument => deleteDocument.DeleteDocument(1), Times.Once);
+            mockFileStorage.Verify(doesNotDeleteDocumentWithNoFilePath => doesNotDeleteDocumentWithNoFilePath.DeleteFile(It.IsAny<string>()), Times.Never);
+            mockDocumentRepo.Verify(deletesDocumentEntry => deletesDocumentEntry.DeleteDocument(1), Times.Once);
         }
 
         [TestMethod]
         public void DeleteDocument_DocumentWithFilePath_CallsDeleteFile()
         {
             //Arrange
-            mockDocRepo.Setup(issFilePathDocument => issFilePathDocument.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
+            mockDocumentRepo.Setup(findsDocumentWithIssFilePathPdf => findsDocumentWithIssFilePathPdf.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
             //Act
             service.DeleteDocument(1);
             //Assert
-            mockFileStorage.Verify(issFilePdfDelete => issFilePdfDelete.DeleteFile("iss/file.pdf"), Times.Once);
-            mockDocRepo.Verify(issFilePdfDelete => issFilePdfDelete.DeleteDocument(1), Times.Once);
+            mockFileStorage.Verify(fileStorageDeletesExistingFile => fileStorageDeletesExistingFile.DeleteFile("iss/file.pdf"), Times.Once);
+            mockDocumentRepo.Verify(documentRepositoryDeletesEntry => documentRepositoryDeletesEntry.DeleteDocument(1), Times.Once);
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace PussyCatsApp.Tests.Services
         public void GetDocumentAbsolutePath_DocumentNotFound_ThrowsException()
         {
             //Arrange
-            mockDocRepo.Setup(nullDocument => nullDocument.GetDocumentById(1)).Returns((Document)null);
+            mockDocumentRepo.Setup(doesNotFindDocument => doesNotFindDocument.GetDocumentById(1)).Returns((Document)null);
             //Act
             service.GetDocumentAbsolutePath(1);
         }
@@ -95,8 +95,8 @@ namespace PussyCatsApp.Tests.Services
         public void GetDocumentAbsolutePath_ValidDocument_ReturnsPath()
         {
             //Arrange
-            mockDocRepo.Setup(issFilePathDocument => issFilePathDocument.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
-            mockFileStorage.Setup(issFilePdfPath => issFilePdfPath.GetFilePath("iss/file.pdf")).Returns("C:/Downloads/iss/file.pdf");
+            mockDocumentRepo.Setup(findsIssFilePathPdf => findsIssFilePathPdf.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
+            mockFileStorage.Setup(resolvesIssFilePathToAbsolutePath => resolvesIssFilePathToAbsolutePath.GetFilePath("iss/file.pdf")).Returns("C:/Downloads/iss/file.pdf");
             //Act
             var result = service.GetDocumentAbsolutePath(1);
             //Assert
