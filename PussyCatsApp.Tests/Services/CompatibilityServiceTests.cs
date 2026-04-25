@@ -13,7 +13,7 @@ namespace PussyCatsApp.Tests.Services
         private Mock<IUserSkillRepository> mockUserSkillRepo;
         private Mock<ISkillGroupRepository> mockSkillGroupRepo;
         private CompatibilityService compatibilityService;
-        private const int userId = 1;
+        
 
         const double MinimumHighMatchScore = 50;
         [TestInitialize]
@@ -28,6 +28,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_NoSkills_ReturnsZeroScore()
         {
             //Arrange
+            int userId = 1;
             mockUserSkillRepo.Setup(doesNotHaveVerifiedSkills => doesNotHaveVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>());
             mockUserSkillRepo.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(userId)).Returns(string.Empty);
             mockSkillGroupRepo.Setup(frontendRoleHasSkills => frontendRoleHasSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
@@ -45,6 +46,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_NoGroups_ReturnsInvalidScore()
         {
             //Arrange
+            int userId = 1;
             mockUserSkillRepo.Setup(doesNotFindVerifiedSkills => doesNotFindVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>());
             mockUserSkillRepo.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(userId)).Returns(string.Empty);
             mockSkillGroupRepo.Setup(frontendRoleHasNoSkills => frontendRoleHasNoSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper))
@@ -60,6 +62,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_WithCvSkills_ReturnsNonZeroScore()
         {
             //Arrange
+            int userId = 1;
             mockUserSkillRepo.Setup(doesNotFindVerifiedSkills => doesNotFindVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>());
             mockUserSkillRepo.Setup(hasCVWithReactSkill => hasCVWithReactSkill.GetParsedCvByUserId(userId)).Returns("line1\nline2\nReact");
             mockSkillGroupRepo.Setup(frontendRoleHasSkills => frontendRoleHasSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
@@ -76,6 +79,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_AllSkillsVerified_ReturnsHighScore()
         {
             //Arrange
+            int userId = 1;
             mockUserSkillRepo.Setup(findsVerifiedSkills => findsVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>
             {
                 new UserSkill { SkillName = "React", IsVerified = true, Score = 95 }
@@ -99,6 +103,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_CvLessThan3Lines_ReturnsZeroScore()
         {
             //Arrange
+            int userId = 1;
             mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>());
             mockUserSkillRepo.Setup(hasShortCV => hasShortCV.GetParsedCvByUserId(userId)).Returns("line1\nline2");
             mockSkillGroupRepo.Setup(frontendRoleHasSkills => frontendRoleHasSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
@@ -117,7 +122,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_CvThirdLineEmpty_ReturnsZeroScore()
         {
             //Arrange
-
+            int userId = 1;
             mockUserSkillRepo.Setup(doesNotHaveVerifiedSkills => doesNotHaveVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>());
             mockUserSkillRepo.Setup(hasInvalidCVLine => hasInvalidCVLine.GetParsedCvByUserId(userId)).Returns("line1\nline2\n   ");
             mockSkillGroupRepo.Setup(frontendRoleHasSkills => frontendRoleHasSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
@@ -137,7 +142,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_HighGroupScore_ReturnsEmptySuggestions()
         {
             //Arrange
-
+            int userId = 1;
             mockUserSkillRepo.Setup(findsVerifiedSkills => findsVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>
             {
                 new UserSkill { SkillName = "React", IsVerified = true, Score = 90 }
@@ -159,6 +164,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_MoreThan3Gaps_Returns3Suggestions()
         {
             //Arrange
+            int userId = 1;
             mockUserSkillRepo.Setup(doesNotFindVerifiedSkills => doesNotFindVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>());
             mockUserSkillRepo.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(userId)).Returns(string.Empty);
             mockSkillGroupRepo.Setup(frontendRoleHasSkills => frontendRoleHasSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
@@ -180,6 +186,7 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateAll_ReturnsResultForEachRole()
         {
             //Arrange
+            int userId = 1;
             mockUserSkillRepo.Setup(doesNotFindVerifiedSkills => doesNotFindVerifiedSkills.GetVerifiedSkillsByUserId(userId)).Returns(new List<UserSkill>());
             mockUserSkillRepo.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(userId)).Returns(string.Empty);
             mockSkillGroupRepo.Setup(findsSkills => findsSkills.GetSkillsGroupByRole(It.IsAny<JobRole>())).Returns(new List<SkillGroup>());
