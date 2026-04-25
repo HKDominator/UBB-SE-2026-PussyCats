@@ -31,9 +31,9 @@ namespace PussyCatsApp.ViewModels
 
         public List<Document> GetDocuments() => documents;
 
-        public void DeleteDocument(int id)
+        public void DeleteDocument(int documentId)
         {
-            documentService.DeleteDocument(id);
+            documentService.DeleteDocument(documentId);
             LoadDocuments();
         }
 

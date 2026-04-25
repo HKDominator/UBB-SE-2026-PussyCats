@@ -16,14 +16,14 @@ namespace PussyCatsApp.Utilities
             return true;
         }
 
-        public static List<string> FilterUniversitiesHelper(string query)
+        public static List<string> FilterUniversitiesHelper(string universityQuery)
         {
-            if (string.IsNullOrWhiteSpace(query))
+            if (string.IsNullOrWhiteSpace(universityQuery))
             {
                 return new List<string>();
             }
 
-            var queryWordsList = query.ToLower().Split(' ');
+            var queryWordsList = universityQuery.ToLower().Split(' ');
             var results = new List<string>();
             foreach (string university in ProfileFormData.UniversityList)
             {

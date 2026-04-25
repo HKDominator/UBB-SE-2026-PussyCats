@@ -9,6 +9,7 @@ namespace PussyCatsApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            // Mark as visible if the list is not empty
             if (value is IList list && list.Count > 0)
             {
                 return Visibility.Visible;

@@ -38,7 +38,8 @@ namespace PussyCatsApp.Converters
         private bool IsEnabledOpacityValueGiven(string[] opacities)
         {
             // If only one opacity value is given, it is used only for the disabled state, and the enabled state will use the default opacity value.
-            return opacities.Length > 1;
+            int opacitiesLengthWithoutEnabledOpacityGiven = 1;
+            return opacities.Length > opacitiesLengthWithoutEnabledOpacityGiven;
         }
     }
 }
