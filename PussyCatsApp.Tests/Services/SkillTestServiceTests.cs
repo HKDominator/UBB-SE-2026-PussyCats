@@ -24,7 +24,8 @@ namespace PussyCatsApp.Tests.Services
         {
             //Arrange
             var skillTest = new SkillTest(1, 10, "Test1");
-            skillTest.AchievedDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
+            DateOnly fourMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
+            skillTest.AchievedDate = fourMonthsAgo;
             mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(1)).Returns(skillTest);
             //Act
             var canUserRetakeSkillTest = skillTestService.CanRetakeTest(1);
@@ -48,7 +49,8 @@ namespace PussyCatsApp.Tests.Services
         {
             //Arrange
             var skillTest = new SkillTest(1, 10, "Test1");
-            skillTest.AchievedDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
+            DateOnly fourMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
+            skillTest.AchievedDate = fourMonthsAgo;
 
             mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(1)).Returns(skillTest);
             //Act
