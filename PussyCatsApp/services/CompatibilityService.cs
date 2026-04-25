@@ -12,7 +12,7 @@ namespace PussyCatsApp.Services
         private const char SkillDelimiter = ',';
         private const double UnverifiedSkillScore = 0.5;
         private const double ScoreNormalizationFactor = 100.0;
-        private const double GapThreshold = 0.5;
+        private const double HighSkillCoverageThreshold = 0.5;
         private const double TargetGroupScore = 0.8;
         private const int MaxSuggestions = 3;
         private const int InvalidScore = -1;
@@ -178,34 +178,34 @@ namespace PussyCatsApp.Services
 
             return false;
         }
-        private List<Suggestion> IdentifyGaps(List<SkillGroup> groups, List<UserSkill> userSkills, int totalWeight)
+        private List<Suggestion> IdentifyGaps(List<SkillGroup> skillGroups, List<UserSkill> userSkills, int totalWeight)
         {
-            List<Suggestion> suggestions = new List<Suggestion>();
+            List<Suggestion> missingSkillsSuggestions = new List<Suggestion>();
 
-            foreach (SkillGroup group in groups)
+            foreach (SkillGroup skillGroup in skillGroups)
             {
-                double groupScore = ComputeGroupScore(group, userSkills);
+                double groupScore = ComputeGroupScore(skillGroup, userSkills);
 
-                if (groupScore > GapThreshold)
+                if (groupScore > HighSkillCoverageThreshold)
                 {
                     continue;
                 }
 
                 Suggestion bestSuggestion = null;
 
-                foreach (string skill in group.Skills)
+                foreach (string skill in skillGroup.Skills)
                 {
                     if (UserHasSkill(userSkills, skill))
                     {
                         continue;
                     }
 
-                    double gain = ComputeGain(group, groupScore, totalWeight);
+                    double gain = ComputeGain(skillGroup, groupScore, totalWeight);
 
                     Suggestion suggestion = new Suggestion
                     {
                         SkillName = skill,
-                        GroupName = group.GroupName,
+                        GroupName = skillGroup.GroupName,
                         GainScore = gain
                     };
 
@@ -215,18 +215,18 @@ namespace PussyCatsApp.Services
 
                 if (bestSuggestion != null)
                 {
-                    suggestions.Add(bestSuggestion);
+                    missingSkillsSuggestions.Add(bestSuggestion);
                 }
             }
 
-            suggestions.Sort(CompareGains);
+            missingSkillsSuggestions.Sort(CompareGains);
 
-            if (suggestions.Count > MaxSuggestions)
+            if (missingSkillsSuggestions.Count > MaxSuggestions)
             {
-                suggestions = suggestions.GetRange(0, MaxSuggestions);
+                missingSkillsSuggestions = missingSkillsSuggestions.GetRange(0, MaxSuggestions);
             }
 
-            return suggestions;
+            return missingSkillsSuggestions;
         }
 
         public RoleResult CalculateForRole(int userId, JobRole role)
