@@ -16,14 +16,14 @@ namespace PussyCatsApp.Repositories
 
         public SkillTest Load(int skillId)
         {
-            const string query = "SELECT * FROM SKILLS WHERE skillID = @id";
+            const string selectSkillByIdQuery = "SELECT * FROM SKILLS WHERE skillID = @id";
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(selectSkillByIdQuery, connection))
                     {
                         command.Parameters.AddWithValue("@id", skillId);
 
@@ -67,14 +67,14 @@ namespace PussyCatsApp.Repositories
 
         public void Save(int skillId, SkillTest data)
         {
-            const string query = "UPDATE SKILLS SET score = @score, achievedDate = @date WHERE skillID = @id";
+            const string updateSkillByIdQuery = "UPDATE SKILLS SET score = @score, achievedDate = @date WHERE skillID = @id";
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(updateSkillByIdQuery, connection))
                     {
                         command.Parameters.AddWithValue("@score", data.Score);
                         command.Parameters.AddWithValue("@date", data.AchievedDate);
@@ -96,15 +96,15 @@ namespace PussyCatsApp.Repositories
 
         public List<SkillTest> GetSkillTestsByUserId(int userId)
         {
-            List<SkillTest> tests = new List<SkillTest>();
-            const string query = "SELECT * FROM SKILLS WHERE userID = @userId";
+            List<SkillTest> skillTests = new List<SkillTest>();
+            const string selectAllSkillsByUserIdQuery = "SELECT * FROM SKILLS WHERE userID = @userId";
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(selectAllSkillsByUserIdQuery, connection))
                     {
                         command.Parameters.AddWithValue("@userId", userId);
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -128,7 +128,7 @@ namespace PussyCatsApp.Repositories
                                 }
 
                                 SkillTest test = new SkillTest(skillId, userIdToGet, name, score, dateResult);
-                                tests.Add(test);
+                                skillTests.Add(test);
                             }
                         }
                     }
@@ -143,19 +143,19 @@ namespace PussyCatsApp.Repositories
                 Console.Error.WriteLine("An error occurred retrieving skills for user " + userId + ": " + ex.Message);
             }
 
-            return tests;
+            return skillTests;
         }
 
         public void UpdateSkillTestScore(int skillId, int score)
         {
-            const string query = "UPDATE SKILLS SET score = @score WHERE skillID = @id";
+            const string updateSkillScoreByIdQuery = "UPDATE SKILLS SET score = @score WHERE skillID = @id";
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(updateSkillScoreByIdQuery, connection))
                     {
                         command.Parameters.AddWithValue("@score", score);
                         command.Parameters.AddWithValue("@id", skillId);
@@ -176,14 +176,14 @@ namespace PussyCatsApp.Repositories
 
         public void UpdateAchievedDate(int skillId, DateOnly date)
         {
-            const string query = "UPDATE SKILLS SET achievedDate = @date WHERE skillID = @id";
+            const string updateSkillAchivedDateByIdQuery = "UPDATE SKILLS SET achievedDate = @date WHERE skillID = @id";
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(updateSkillAchivedDateByIdQuery, connection))
                     {
                         command.Parameters.AddWithValue("@date", date);
                         command.Parameters.AddWithValue("@id", skillId);
