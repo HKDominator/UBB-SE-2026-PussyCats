@@ -124,11 +124,11 @@ const CVGenerator = (() => {
 
     function renderSkills(skills = []) {
         const buckets = {};
-        skills.map(s => s.trim()).forEach(skill => {
+        skills.map(UnTrimmedSkill => UnTrimmedSkill.trim()).forEach(skill => {
             let placed = false;
             for (const [group, keywords] of Object.entries(SKILL_GROUPS)) {
                 if (group === 'Other') continue;
-                if (keywords.some(k => k.toLowerCase() === skill.toLowerCase())) {
+                if (keywords.some(SkillToBeMatched => SkillToBeMatched.toLowerCase() === skill.toLowerCase())) {
                     buckets[group] = buckets[group] || [];
                     buckets[group].push(skill);
                     placed = true;

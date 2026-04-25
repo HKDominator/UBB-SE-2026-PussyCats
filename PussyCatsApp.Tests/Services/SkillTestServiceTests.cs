@@ -25,7 +25,7 @@ namespace PussyCatsApp.Tests.Services
             //Arrange
             var skill = new SkillTest(1, 10, "Test1");
             skill.AchievedDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
-            mockRepo.Setup(r => r.Load(1)).Returns(skill);
+            mockRepo.Setup(skillForGivenUser => skillForGivenUser.Load(1)).Returns(skill);
             //Act
             var result = service.CanRetakeTest(1);
             //Assert
@@ -37,7 +37,7 @@ namespace PussyCatsApp.Tests.Services
         public void CanRetakeTest_InvalidSkillId_ThrowsException()
         {
             //Arrange
-            mockRepo.Setup(r => r.Load(1)).Returns((SkillTest)null);
+            mockRepo.Setup(nullSkillForGivenUser => nullSkillForGivenUser.Load(1)).Returns((SkillTest)null);
             //Act
             service.CanRetakeTest(1);
         }
@@ -50,12 +50,12 @@ namespace PussyCatsApp.Tests.Services
             var skill = new SkillTest(1, 10, "Test1");
             skill.AchievedDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
 
-            mockRepo.Setup(r => r.Load(1)).Returns(skill);
+            mockRepo.Setup(skillForUser => skillForUser.Load(1)).Returns(skill);
             //Act
             var result = service.SubmitRetake(1, 95);
             //Assert
-            mockRepo.Verify(r => r.UpdateSkillTestScore(1, 95), Times.Once);
-            mockRepo.Verify(r => r.UpdateAchievedDate(1, It.IsAny<DateOnly>()), Times.Once);
+            mockRepo.Verify(updateSkillTestScore => updateSkillTestScore.UpdateSkillTestScore(1, 95), Times.Once);
+            mockRepo.Verify(updateAchievedDate => updateAchievedDate.UpdateAchievedDate(1, It.IsAny<DateOnly>()), Times.Once);
 
             Assert.IsNotNull(result);
         }
@@ -67,7 +67,7 @@ namespace PussyCatsApp.Tests.Services
             //Arrange
             var skill = new SkillTest(1, 10, "Test1");
             skill.AchievedDate = DateOnly.FromDateTime(DateTime.Now);
-            mockRepo.Setup(r => r.Load(1)).Returns(skill);
+            mockRepo.Setup(skillForUser => skillForUser.Load(1)).Returns(skill);
             //Act
             service.SubmitRetake(1, 50);
         }
