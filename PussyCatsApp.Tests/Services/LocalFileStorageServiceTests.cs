@@ -28,9 +28,9 @@ namespace PussyCatsApp.Tests.Services
         [DataRow("cv.pdf")]
         public void SaveFile_ValidFile_CreatesFileOnDisk(string fileName)
         {
-            using var stream = new MemoryStream(new byte[256]);
+            using var validPdfUploadStream = new MemoryStream(new byte[256]);
 
-            string savedPath = service.SaveFile(stream, fileName);
+            string savedPath = service.SaveFile(validPdfUploadStream, fileName);
 
             Assert.IsTrue(File.Exists(savedPath));
         }
@@ -38,23 +38,23 @@ namespace PussyCatsApp.Tests.Services
         [TestMethod]
         public void SaveFile_ValidFile_CreatedFileContentsMatch()
         {
-            byte[] expected = { 1, 2, 3, 4, 5, 123, 0, 12 };
-            using var stream = new MemoryStream(expected);
+            byte[] expectedFileContent = { 1, 2, 3, 4, 5, 123, 0, 12 };
+            using var fileUploadStream = new MemoryStream(expectedFileContent);
 
-            string savedPath = service.SaveFile(stream, "file.pdf");
+            string savedPath = service.SaveFile(fileUploadStream, "file.pdf");
 
             Assert.IsTrue(File.Exists(savedPath));
-            Assert.IsTrue(File.ReadAllBytes(savedPath).SequenceEqual(expected));
+            Assert.IsTrue(File.ReadAllBytes(savedPath).SequenceEqual(expectedFileContent));
         }
 
         [TestMethod]
         public void SaveFile_TwoFilesWithSameName_HaveUniqueFilePaths()
         {
-            using var s1 = new MemoryStream(new byte[64]);
-            using var s2 = new MemoryStream(new byte[64]);
+            using var firstFileUploadStream = new MemoryStream(new byte[64]);
+            using var secondFileUploadStream = new MemoryStream(new byte[64]);
 
-            string path1 = service.SaveFile(s1, "file.pdf");
-            string path2 = service.SaveFile(s2, "file.pdf");
+            string path1 = service.SaveFile(firstFileUploadStream, "file.pdf");
+            string path2 = service.SaveFile(secondFileUploadStream, "file.pdf");
 
             Assert.AreNotEqual(path1, path2);
         }
@@ -63,13 +63,13 @@ namespace PussyCatsApp.Tests.Services
         [TestMethod]
         public void DeleteFile_ExistingFile_RemovesFileFromDisk()
         {
-            using var stream = new MemoryStream(new byte[64]);
-            string savedPath = service.SaveFile(stream, "file.pdf");
-            Assert.IsTrue(File.Exists(savedPath));
+            using var fileUploadStream = new MemoryStream(new byte[64]);
+            string savedFilePath = service.SaveFile(fileUploadStream, "file.pdf");
+            Assert.IsTrue(File.Exists(savedFilePath));
 
-            service.DeleteFile(savedPath);
+            service.DeleteFile(savedFilePath);
 
-            Assert.IsFalse(File.Exists(savedPath));
+            Assert.IsFalse(File.Exists(savedFilePath));
         }
 
         [TestMethod]

@@ -41,7 +41,9 @@ namespace PussyCatsApp.Tests.Services
             var document = new Document();
             service.UploadDocument(document, pdfPath);
 
+
             mockDocumentRepo.Verify(issFilePdfAdd => issFilePdfAdd.AddDocument(document), Times.Once);
+
             Assert.AreEqual("iss/file.pdf", document.FilePath);
             
             File.Delete(pdfPath);
@@ -87,6 +89,7 @@ namespace PussyCatsApp.Tests.Services
         {
             //Arrange
             mockDocumentRepo.Setup(doesNotFindDocument => doesNotFindDocument.GetDocumentById(1)).Returns((Document)null);
+
             //Act
             service.GetDocumentAbsolutePath(1);
         }
@@ -97,6 +100,7 @@ namespace PussyCatsApp.Tests.Services
             //Arrange
             mockDocumentRepo.Setup(findsIssFilePathPdf => findsIssFilePathPdf.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
             mockFileStorage.Setup(resolvesIssFilePathToAbsolutePath => resolvesIssFilePathToAbsolutePath.GetFilePath("iss/file.pdf")).Returns("C:/Downloads/iss/file.pdf");
+
             //Act
             var result = service.GetDocumentAbsolutePath(1);
             //Assert
