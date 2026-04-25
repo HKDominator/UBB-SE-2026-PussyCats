@@ -44,7 +44,7 @@ namespace PussyCatsApp.Tests.ViewModels
             };
             viewModel.UserProfile = userProfile;
 
-            mockUserProfileService.Setup(service => service.GetProfile(testUserId)).Returns(
+            mockUserProfileService.Setup(serviceForUserProfile => serviceForUserProfile.GetProfile(testUserId)).Returns(
                 userProfile
             );
 
@@ -65,12 +65,12 @@ namespace PussyCatsApp.Tests.ViewModels
             };
             viewModel.UserProfile = userProfile;
 
-            mockUserProfileService.Setup(service => service.GetProfile(testUserId)).Returns(
+            mockUserProfileService.Setup(serviceForUserProfile => serviceForUserProfile.GetProfile(testUserId)).Returns(
                 userProfile
             );
 
             int expectedPercentage = 50;
-            mockCompletenessService.Setup(service => service.CalculateCompleteness(userProfile)).Returns(expectedPercentage);
+            mockCompletenessService.Setup(serviceForCompleteness => serviceForCompleteness.CalculateCompleteness(userProfile)).Returns(expectedPercentage);
 
             await viewModel.LoadUserAsync(testUserId);
 
@@ -83,7 +83,7 @@ namespace PussyCatsApp.Tests.ViewModels
             UserProfile userProfile = null;
             viewModel.UserProfile = userProfile;
 
-            mockUserProfileService.Setup(service => service.GetProfile(testUserId)).Returns(
+            mockUserProfileService.Setup(serviceForUserProfile => serviceForUserProfile.GetProfile(testUserId)).Returns(
                 userProfile
             );
 
@@ -188,7 +188,7 @@ namespace PussyCatsApp.Tests.ViewModels
             };
             viewModel.UserProfile = userProfile;
 
-            mockUserProfileService.Setup(service => service.RecalculateLevel(userProfile)).Returns(newExperiencePoints);
+            mockUserProfileService.Setup(serviceForUserProfile => serviceForUserProfile.RecalculateLevel(userProfile)).Returns(newExperiencePoints);
 
             viewModel.RecalculateLevelCommand();
             Assert.AreEqual(newExperiencePoints, viewModel.TotalExperiencePoints);
