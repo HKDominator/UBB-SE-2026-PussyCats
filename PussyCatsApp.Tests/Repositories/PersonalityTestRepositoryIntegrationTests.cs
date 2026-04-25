@@ -64,9 +64,9 @@ namespace PussyCatsApp.Tests.Repositories
             {
                 Repository.Save(userId, result);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Assert.Fail($"Expected no exception, but got: {ex.Message}");
+                Assert.Fail($"Expected no exception, but got: {exception.Message}");
             }
         }
 
@@ -79,9 +79,9 @@ namespace PussyCatsApp.Tests.Repositories
             {
                 Repository.Save(nonExistentId, result);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Assert.Fail($"Expected no exception, but got: {ex.Message}");
+                Assert.Fail($"Expected no exception, but got: {exception.Message}");
             }
         }
 

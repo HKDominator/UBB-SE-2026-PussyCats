@@ -31,9 +31,9 @@ namespace PussyCatsApp.ViewModels
             {
                 matches = matchService.GetMatchesForUser(currentUserId);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                errorMessage = ex.Message;
+                errorMessage = exception.Message;
             }
         }
 

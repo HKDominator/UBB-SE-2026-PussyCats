@@ -141,9 +141,9 @@ namespace PussyCatsApp.Tests.Repositories
             {
                 badRepository.Load(DummyId);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Assert.IsTrue(ex.Message.Contains(ErrorFragment));
+                Assert.IsTrue(exception.Message.Contains(ErrorFragment));
             }
         }
 
@@ -194,9 +194,9 @@ namespace PussyCatsApp.Tests.Repositories
                 repositoryWithSqlError.Load(DummyId);
                 Assert.Fail("The method should have thrown an Exception after catching the SqlException.");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Assert.AreEqual(ExpectedMessage, ex.Message);
+                Assert.AreEqual(ExpectedMessage, exception.Message);
             }
         }
 

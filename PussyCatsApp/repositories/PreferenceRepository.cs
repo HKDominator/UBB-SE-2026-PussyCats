@@ -29,13 +29,13 @@ namespace PussyCatsApp.Repositories
                     {
                         while (reader.Read())
                         {
-                            var pref = new Preference();
-                            pref.PreferenceId = Convert.ToInt32(reader["pID"]);
-                            pref.UserId = Convert.ToInt32(reader["userID"]);
-                            pref.PreferenceType = reader["preferanceType"].ToString();
-                            pref.Value = reader["value"].ToString();
+                            var preference = new Preference();
+                            preference.PreferenceId = Convert.ToInt32(reader["pID"]);
+                            preference.UserId = Convert.ToInt32(reader["userID"]);
+                            preference.PreferenceType = reader["preferanceType"].ToString();
+                            preference.Value = reader["value"].ToString();
 
-                            preferences.Add(pref);
+                            preferences.Add(preference);
                         }
                     }
                 }

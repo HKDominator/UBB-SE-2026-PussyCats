@@ -36,7 +36,8 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         {
             string universityQuery = string.Empty;
             List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(universityQuery);
-            Assert.AreEqual(0, results.Count);
+            const int expectedResultsCount = 0;
+            Assert.AreEqual(expectedResultsCount, results.Count);
         }
 
         [TestMethod]
@@ -44,7 +45,8 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         {
             string universityQuery = "Nonexistent University";
             List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(universityQuery);
-            Assert.AreEqual(0, results.Count);
+            const int expectedResultsCount = 0;
+            Assert.AreEqual(expectedResultsCount, results.Count);
         }
     }
 }
