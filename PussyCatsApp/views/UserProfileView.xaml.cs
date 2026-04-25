@@ -165,7 +165,7 @@ namespace PussyCatsApp.Views
 
             ExperienceProgressBar.Value = UserLevelService.GetLevelProgressPercent(UserProfileViewModel.TotalExperiencePoints, UserProfileViewModel.UserProfile.UserLevel);
 
-            int experienceTillNext = UserLevelService.GetXpToNextLevel(UserProfileViewModel.TotalExperiencePoints, UserProfileViewModel.UserProfile.UserLevel);
+            int experienceTillNext = UserLevelService.GetExperiencePointsToNextLevel(UserProfileViewModel.TotalExperiencePoints, UserProfileViewModel.UserProfile.UserLevel);
             ExperienceCountText.Text = experienceTillNext > 0
                 ? $"{UserProfileViewModel.TotalExperiencePoints} XP — {experienceTillNext} XP needed for next level"
                 : $"{UserProfileViewModel.TotalExperiencePoints} XP — Max level reached!";

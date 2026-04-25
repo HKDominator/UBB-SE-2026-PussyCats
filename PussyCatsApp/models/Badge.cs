@@ -11,13 +11,13 @@ namespace PussyCatsApp.Models
     {
         public BadgeTier Tier { get; private set; }
         public string IconPath { get; private set; }
-        public int XpValue { get; private set; }
+        public int ExperiencePointsValue { get; private set; }
 
-        public Badge(BadgeTier tier, string iconPath, int xpValue)
+        public Badge(BadgeTier tier, string iconPath, int experiencePointsValue)
         {
             Tier = tier;
             IconPath = iconPath;
-            XpValue = xpValue;
+            ExperiencePointsValue = experiencePointsValue;
         }
     }
 }
