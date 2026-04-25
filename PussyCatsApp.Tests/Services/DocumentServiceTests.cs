@@ -36,12 +36,12 @@ namespace PussyCatsApp.Tests.Services
             File.Move(tempFile, pdfPath);
 
            
-            mockFileStorage.Setup(s => s.SaveFile(It.IsAny<Stream>(), It.IsAny<string>())).Returns("iss/file.pdf");
+            mockFileStorage.Setup(issFilePdfPath => issFilePdfPath.SaveFile(It.IsAny<Stream>(), It.IsAny<string>())).Returns("iss/file.pdf");
 
             var document = new Document();
             service.UploadDocument(document, pdfPath);
 
-            mockDocRepo.Verify(r => r.AddDocument(document), Times.Once);
+            mockDocRepo.Verify(issFilePdfAdd => issFilePdfAdd.AddDocument(document), Times.Once);
             Assert.AreEqual("iss/file.pdf", document.FilePath);
             
             File.Delete(pdfPath);
@@ -52,7 +52,7 @@ namespace PussyCatsApp.Tests.Services
         public void DeleteDocument_DocumentNotFound_ThrowsException()
         {
             //Arrange
-            mockDocRepo.Setup(r => r.GetDocumentById(1)).Returns((Document)null);
+            mockDocRepo.Setup(nullDocument => nullDocument.GetDocumentById(1)).Returns((Document)null);
             //Act
             service.DeleteDocument(1);
         }
@@ -61,24 +61,24 @@ namespace PussyCatsApp.Tests.Services
         public void DeleteDocument_DocumentWithEmptyFilePath_DoesNotCallDeleteFile()
         {
             //Arrange
-            mockDocRepo.Setup(r => r.GetDocumentById(1)).Returns(new Document { FilePath = "" });
+            mockDocRepo.Setup(emptyFilePathDocument => emptyFilePathDocument.GetDocumentById(1)).Returns(new Document { FilePath = "" });
             //Act
             service.DeleteDocument(1);
             //Assert
-            mockFileStorage.Verify(s => s.DeleteFile(It.IsAny<string>()), Times.Never);
-            mockDocRepo.Verify(r => r.DeleteDocument(1), Times.Once);
+            mockFileStorage.Verify(deleteFile => deleteFile.DeleteFile(It.IsAny<string>()), Times.Never);
+            mockDocRepo.Verify(deleteDocument => deleteDocument.DeleteDocument(1), Times.Once);
         }
 
         [TestMethod]
         public void DeleteDocument_DocumentWithFilePath_CallsDeleteFile()
         {
             //Arrange
-            mockDocRepo.Setup(r => r.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
+            mockDocRepo.Setup(issFilePathDocument => issFilePathDocument.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
             //Act
             service.DeleteDocument(1);
             //Assert
-            mockFileStorage.Verify(s => s.DeleteFile("iss/file.pdf"), Times.Once);
-            mockDocRepo.Verify(r => r.DeleteDocument(1), Times.Once);
+            mockFileStorage.Verify(issFilePdfDelete => issFilePdfDelete.DeleteFile("iss/file.pdf"), Times.Once);
+            mockDocRepo.Verify(issFilePdfDelete => issFilePdfDelete.DeleteDocument(1), Times.Once);
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace PussyCatsApp.Tests.Services
         public void GetDocumentAbsolutePath_DocumentNotFound_ThrowsException()
         {
             //Arrange
-            mockDocRepo.Setup(r => r.GetDocumentById(1)).Returns((Document)null);
+            mockDocRepo.Setup(nullDocument => nullDocument.GetDocumentById(1)).Returns((Document)null);
             //Act
             service.GetDocumentAbsolutePath(1);
         }
@@ -95,8 +95,8 @@ namespace PussyCatsApp.Tests.Services
         public void GetDocumentAbsolutePath_ValidDocument_ReturnsPath()
         {
             //Arrange
-            mockDocRepo.Setup(r => r.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
-            mockFileStorage.Setup(s => s.GetFilePath("iss/file.pdf")).Returns("C:/Downloads/iss/file.pdf");
+            mockDocRepo.Setup(issFilePathDocument => issFilePathDocument.GetDocumentById(1)).Returns(new Document { FilePath = "iss/file.pdf" });
+            mockFileStorage.Setup(issFilePdfPath => issFilePdfPath.GetFilePath("iss/file.pdf")).Returns("C:/Downloads/iss/file.pdf");
             //Act
             var result = service.GetDocumentAbsolutePath(1);
             //Assert
