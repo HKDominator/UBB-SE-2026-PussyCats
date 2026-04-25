@@ -44,6 +44,8 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void GetSkillsGroupByRole_DevOpsRole_ExpectsWeightedSumTo100()
         {
+            int expectedTotalWeight = 100;
+
             var DevOopsGroup=Repository.GetSkillsGroupByRole(JobRole.DevOpsEngineer);
 
             int totalWeight = 0;
@@ -52,7 +54,7 @@ namespace PussyCatsApp.Tests.Repositories
             {
                 totalWeight += group.Weight;
             }
-            Assert.AreEqual(100,totalWeight, "The sum of the weights should be 100");
+            Assert.AreEqual(expectedTotalWeight,totalWeight, "The sum of the weights should be 100");
 
         }
     }

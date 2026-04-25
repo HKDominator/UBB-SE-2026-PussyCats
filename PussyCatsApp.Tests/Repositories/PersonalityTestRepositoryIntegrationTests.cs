@@ -35,7 +35,8 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void Load_UserDoesNotExist_ExpectsNullResult()
         {
-            var resultFromDb = Repository.Load(10867);
+            int nonExistentId = 10876;
+            var resultFromDb = Repository.Load(nonExistentId);
             Assert.IsNull(resultFromDb);
         }
 
@@ -73,9 +74,10 @@ namespace PussyCatsApp.Tests.Repositories
         public void Save_UpdateResultForNonExistingUser_ExpectsNoException()
         {
             string result = "Result";
+            int nonExistentId = 10867;
             try
             {
-                Repository.Save(10867, result);
+                Repository.Save(nonExistentId, result);
             }
             catch (Exception ex)
             {
@@ -86,11 +88,11 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void Load_SqlException_ExpectsExceptionBeingCaught()
         {
-
+            int idToLoad = 1;
             string deadConnectionString = "Server=NonExistentServer;Database=FakeDb;Trusted_Connection=True;Connect Timeout=1;TrustServerCertificate=True;";
-            var repo = new PersonalityTestRepository(deadConnectionString);
+            var repository = new PersonalityTestRepository(deadConnectionString);
 
-            var result = repo.Load(1);
+            var result = repository.Load(idToLoad);
 
             Assert.IsNull(result);
         }
@@ -98,10 +100,11 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void Save_SqlException_ExceptionBeingHandledInDebugLine()
         {
+            int idToSave = 1;
             string deadConnectionString = "Server=NonExistentServer;Database=FakeDb;Trusted_Connection=True;Connect Timeout=1;TrustServerCertificate=True;";
-            var repo = new PersonalityTestRepository(deadConnectionString);
+            var repository = new PersonalityTestRepository(deadConnectionString);
 
-            repo.Save(1, "Some Result");
+            repository.Save(idToSave, "Some Result");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using PussyCatsApp.Repositories;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PussyCatsApp.Repositories;
 using PussyCatsApp.Tests.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -21,35 +22,45 @@ namespace PussyCatsApp.Tests.Repositories
             Repository = new DocumentRepository(TestDatabaseHelper.ConnectionString);
         }
 
-
         [TestMethod]
         public void GetDocumentsByUserId_UserHasTwoDocuments_ExpectsDocumentsBeingReturnedInOrder()
         {
+            string FirstDocumentName = "Test Document 1";
+            string SecondDocumentName = "Test Document 2";
+            int SecondDocumentIndex = 1;
+
             int userId = TestDatabaseHelper.InsertUser();
-            TestDatabaseHelper.InsertDocument(userId, "Test Document 1");
-            TestDatabaseHelper.InsertDocument(userId, "Test Document 2");
+            TestDatabaseHelper.InsertDocument(userId, FirstDocumentName);
+            TestDatabaseHelper.InsertDocument(userId, SecondDocumentName);
 
             List<Document> documents = Repository.GetDocumentsByUserId(userId);
 
-            Assert.AreEqual("Test Document 2", documents[1].DocumentName);
+            Assert.AreEqual(SecondDocumentName, documents[SecondDocumentIndex].DocumentName);
         }
 
         [TestMethod]
         public void GetDocumentsByUserId_InvalidServer_ExpectsNoDocument()
         {
-            var repo = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
+            int DummyUserId = 1;
+            int ExpectedZeroCount = 0;
+            string InvalidConnectionString = "Server=InvalidServerName;Database=Fake;Connect Timeout=1;";
 
-            var result = repo.GetDocumentsByUserId(1);
+            var repository = new DocumentRepository(InvalidConnectionString);
 
-            Assert.AreEqual(0, result.Count);
+            List<Document> result = repository.GetDocumentsByUserId(DummyUserId);
+
+            Assert.AreEqual(ExpectedZeroCount, result.Count);
         }
 
         [TestMethod]
         public void GetDocumentById_InvalidServer_ExpectsNoDocument()
         {
-            var repo = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
+            int DummyDocumentId = 1;
+            string InvalidConnectionString = "Server=InvalidServerName;Database=Fake;Connect Timeout=1;";
 
-            var result = repo.GetDocumentById(1);
+            var repository = new DocumentRepository(InvalidConnectionString);
+
+            Document result = repository.GetDocumentById(DummyDocumentId);
 
             Assert.IsNull(result);
         }
@@ -57,48 +68,65 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void AddDocument_InvalidServer_ExpectsNotCrashing()
         {
-            var repo = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
+            int DummyUserId = 1;
+            string InvalidConnectionString = "Server=InvalidServerName;Database=Fake;Connect Timeout=1;";
 
-            repo.AddDocument(new Document { UserId = 1 });
+            var repository = new DocumentRepository(InvalidConnectionString);
+
+            repository.AddDocument(new Document { UserId = DummyUserId });
         }
 
         [TestMethod]
         public void DeleteDocument_InvalidServer_ExpectsNoCrashing()
         {
-            var repo = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
+            int DummyDocumentId = 1;
+            string InvalidConnectionString = "Server=InvalidServerName;Database=Fake;Connect Timeout=1;";
 
-            repo.DeleteDocument(1);
+            var repository = new DocumentRepository(InvalidConnectionString);
+
+            repository.DeleteDocument(DummyDocumentId);
         }
-
 
         [TestMethod]
         public void AddDocument_ValidDocument_ExpectsDocumentBeingSaved()
         {
+            string TargetDocumentName = "Test Document";
+            int FirstDocumentIndex = 0;
+
             int userId = TestDatabaseHelper.InsertUser();
-            Document document = new Document { UserId = userId, DocumentName = "Test Document", UploadDate= DateTime.Now };
+            Document document = new Document
+            {
+                UserId = userId,
+                DocumentName = TargetDocumentName,
+                UploadDate = DateTime.Now
+            };
             Repository.AddDocument(document);
 
             List<Document> documents = Repository.GetDocumentsByUserId(userId);
 
-            Assert.AreEqual("Test Document", documents[0].DocumentName);
+            Assert.AreEqual(TargetDocumentName, documents[FirstDocumentIndex].DocumentName);
         }
 
         [TestMethod]
         public void GetDocumentById_UserHasOneDocument_ExpectsDocumentBeingReturned()
         {
+            string TargetDocumentName = "Test Document";
+
             int userId = TestDatabaseHelper.InsertUser();
-            int documentId = TestDatabaseHelper.InsertDocument(userId, "Test Document");
+            int documentId = TestDatabaseHelper.InsertDocument(userId, TargetDocumentName);
 
             Document document = Repository.GetDocumentById(documentId);
 
-            Assert.AreEqual("Test Document", document.DocumentName);
+            Assert.AreEqual(TargetDocumentName, document.DocumentName);
         }
 
         [TestMethod]
         public void DeleteDocument_UserHasOneDocument_ExpectsDocumentBeingDeleted()
         {
+            string TargetDocumentName = "Test Document";
+
             int userId = TestDatabaseHelper.InsertUser();
-            int documentId = TestDatabaseHelper.InsertDocument(userId, "Test Document");
+            int documentId = TestDatabaseHelper.InsertDocument(userId, TargetDocumentName);
 
             Repository.DeleteDocument(documentId);
             Document document = Repository.GetDocumentById(documentId);
@@ -109,10 +137,13 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void MapRowToDocument_NullFilePath_ExpectsNull()
         {
-            int userId = TestDatabaseHelper.InsertUser();
-            int docId = TestDatabaseHelper.InsertDocument(userId, "NoPath.pdf", null);
+            string DocumentName = "NoPath.pdf";
+            string NullFilePath = null;
 
-            var result = Repository.GetDocumentById(docId);
+            int userId = TestDatabaseHelper.InsertUser();
+            int documentId = TestDatabaseHelper.InsertDocument(userId, DocumentName, NullFilePath);
+
+            Document result = Repository.GetDocumentById(documentId);
 
             Assert.IsNull(result.FilePath);
         }
@@ -120,65 +151,79 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void MapRowToDocument_NullUploadDate_ExpectsMinValue()
         {
-            int userId = TestDatabaseHelper.InsertUser();
-            int docId = TestDatabaseHelper.InsertDocument(userId, "NoDate.pdf", null);
+            string DocumentName = "NoDate.pdf";
+            string NullFilePath = null;
 
-            var result = Repository.GetDocumentById(docId);
+            int userId = TestDatabaseHelper.InsertUser();
+            int documentId = TestDatabaseHelper.InsertDocument(userId, DocumentName, NullFilePath);
+
+            Document result = Repository.GetDocumentById(documentId);
 
             Assert.AreEqual(DateTime.MinValue, result.UploadDate);
         }
 
-
         [TestMethod]
         public void GetDocumentsByUserId_MalformedConnectionString_ExpectsEmptyList()
         {
+            int DummyUserId = 1;
+            int ExpectedZeroCount = 0;
+            string EmptyConnectionString = "";
 
-            var repoWithGeneralError = new DocumentRepository("");
+            var repositoryWithGeneralError = new DocumentRepository(EmptyConnectionString);
 
-            var result = repoWithGeneralError.GetDocumentsByUserId(1);
+            List<Document> result = repositoryWithGeneralError.GetDocumentsByUserId(DummyUserId);
 
-            Assert.AreEqual(0, result.Count, "Should return an empty list after catching a general exception.");
+            Assert.AreEqual(ExpectedZeroCount, result.Count, "Should return an empty list after catching a general exception.");
         }
 
         [TestMethod]
         public void GetDocumentById_MalformedConnectionString_ExpectsNullResult()
         {
+            int DummyDocumentId = 1;
+            string EmptyConnectionString = "";
 
-            var repoWithGeneralError = new DocumentRepository("");
+            var repositoryWithGeneralError = new DocumentRepository(EmptyConnectionString);
 
-            var result = repoWithGeneralError.GetDocumentById(1);
+            Document result = repositoryWithGeneralError.GetDocumentById(DummyDocumentId);
 
             Assert.IsNull(result, "Should return null after catching a general exception.");
         }
+
         [TestMethod]
         public void AddDocument_MalformedConnectionString_ExpectsErrorBeingHandled()
         {
+            int DummyUserId = 1;
+            string EmptyConnectionString = "";
+            string DocumentName = "Test";
 
-            var repoWithGeneralError = new DocumentRepository("");
-            Document dummyDoc = new Document { UserId = 1, DocumentName = "Test" };
+            var repositoryWithGeneralError = new DocumentRepository(EmptyConnectionString);
+            Document dummyDocument = new Document { UserId = DummyUserId, DocumentName = DocumentName };
 
-            repoWithGeneralError.AddDocument(dummyDoc);
-
+            repositoryWithGeneralError.AddDocument(dummyDocument);
         }
 
         [TestMethod]
         public void DeleteDocument_MalformedConnectionString_CatchesGeneralException()
         {
-            var repoWithGeneralError = new DocumentRepository("");
-            repoWithGeneralError.DeleteDocument(1);
-        }
+            int DummyDocumentId = 1;
+            string EmptyConnectionString = "";
 
+            var repositoryWithGeneralError = new DocumentRepository(EmptyConnectionString);
+            repositoryWithGeneralError.DeleteDocument(DummyDocumentId);
+        }
 
         [TestMethod]
         public void MapRowToDocument_ValidFilePath_ExpectsSetPathString()
         {
+            string ExpectedPath = "C:\\Documents\\test.pdf";
+            string DocumentName = "TestDocument";
+
             int userId = TestDatabaseHelper.InsertUser();
-            string expectedPath = "C:\\Documents\\test.pdf";
-            int docId = TestDatabaseHelper.InsertDocument(userId, "TestDoc", expectedPath);
+            int documentId = TestDatabaseHelper.InsertDocument(userId, DocumentName, ExpectedPath);
 
-            Document result = Repository.GetDocumentById(docId);
+            Document result = Repository.GetDocumentById(documentId);
 
-            Assert.AreEqual(expectedPath, result.FilePath);
+            Assert.AreEqual(ExpectedPath, result.FilePath);
         }
     }
 }

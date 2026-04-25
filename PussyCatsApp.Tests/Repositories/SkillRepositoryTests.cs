@@ -22,8 +22,10 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void Load_SkillExists_ExpectsSkillReturned()
         {
+            int TaRgetSkillId = 10;
+
             Skill skill = new Skill();
-            skill.SkillId = 10;
+            skill.SkillId = TaRgetSkillId;
             Repository.AddSkill(skill);
                 
             Skill result = Repository.Load(10);
@@ -34,7 +36,8 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void Load_SkillDoesNotExist_ExpectsNull()
         {
-            Skill result = Repository.Load(999);
+            int NonIxistingId = 999;
+            Skill result = Repository.Load(NonIxistingId);
 
             Assert.IsNull(result);
         }
@@ -43,109 +46,133 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void Save_SkillExists_ExpectsUpdatedExistingData()
         {
+            int ExistingId = 1;
+            double NewScore = 85.0;
+
             Skill initial = new Skill();
-            initial.SkillId = 1;
+            initial.SkillId = ExistingId;
             initial.Name = "Old Name";
             Repository.AddSkill(initial);
 
             Skill newData = new Skill();
             newData.Name = "New Name";
-            newData.Score = 85.0;
+            newData.Score = NewScore;
 
-            Repository.Save(1, newData);
+            Repository.Save(ExistingId, newData);
 
-            Skill updated = Repository.Load(1);
+            Skill updated = Repository.Load(ExistingId);
             Assert.AreEqual("New Name", updated.Name);
         }
 
         [TestMethod]
         public void Save_SkillDoesNotExist_ExcpectsNewSkillAdded()
         {
+            int NewIdToAssign = 50;
             Skill newData = new Skill();
             newData.Name = "Brand New";
 
-            Repository.Save(50, newData);
+            Repository.Save(NewIdToAssign, newData);
 
-            Skill result = Repository.Load(50);
+            Skill result = Repository.Load(NewIdToAssign);
             Assert.AreEqual("Brand New", result.Name);
         }
 
         [TestMethod]
         public void AddSkill_FirstSkill_ExpectsIdOne()
         {
+            int PlaceholderId = 0;
+            int ExpectedFirstId = 1;
+
             Skill skill = new Skill();
-            skill.SkillId = 0; 
+            skill.SkillId = PlaceholderId; 
 
             Repository.AddSkill(skill);
 
-            Assert.AreEqual(1, skill.SkillId);
+            Assert.AreEqual(ExpectedFirstId, skill.SkillId);
         }
 
         [TestMethod]
         public void AddSkill_ExistingSkills_ExpectsMaximumIdPlusOne()
         {
+            int InitialId = 10;
+            int NewSkillPlaceholderId = 0;
+            int ExpectedNextId = 11;
+
             Skill first = new Skill();
-            first.SkillId = 10;
+            first.SkillId = InitialId;
             Repository.AddSkill(first);
 
             Skill second = new Skill();
-            second.SkillId = 0; 
+            second.SkillId = NewSkillPlaceholderId; 
 
             Repository.AddSkill(second);
 
-            Assert.AreEqual(11, second.SkillId);
+            Assert.AreEqual(ExpectedNextId, second.SkillId);
         }
 
 
         [TestMethod]
         public void GetSkillsByUserId_UserHasSkills_ReturnsCorrectList()
         {
-            Skill s1 = new Skill(); s1.UserId = 1; Repository.AddSkill(s1);
-            Skill s2 = new Skill(); s2.UserId = 1; Repository.AddSkill(s2);
-            Skill s3 = new Skill(); s3.UserId = 2; Repository.AddSkill(s3);
+            int TargetUserId = 1;
+            int OtherUserId = 2;
+            int ExpectedCount = 2;
+            Skill s1 = new Skill(); s1.UserId = TargetUserId; Repository.AddSkill(s1);
+            Skill s2 = new Skill(); s2.UserId = TargetUserId; Repository.AddSkill(s2);
+            Skill s3 = new Skill(); s3.UserId = OtherUserId; Repository.AddSkill(s3);
 
             List<Skill> results = Repository.GetSkillsByUserId(1);
 
-            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual(ExpectedCount, results.Count);
         }
 
 
         [TestMethod]
         public void RemoveSkill_SkillExists_RemovesFromList()
         {
+            int SkillToRemove = 5;
+
             Skill skill = new Skill();
-            skill.SkillId = 5;
+            skill.SkillId = SkillToRemove;
             Repository.AddSkill(skill);
 
-            Repository.RemoveSkill(5);
+            Repository.RemoveSkill(SkillToRemove);
 
-            Assert.IsNull(Repository.Load(5));
+            Assert.IsNull(Repository.Load(SkillToRemove));
         }
 
         [TestMethod]
         public void RemoveSkill_DoesNotExist_ExpectsExceptionHandled()
         {
-            Repository.RemoveSkill(999);
+            int NonExistentId = 999;
+            Repository.RemoveSkill(NonExistentId);
         }
 
 
         [TestMethod]
         public void UpdateSkillScore_SkillExists_ExpectsNewScore()
         {
+            int TargetSkillId = 1;
+            double OriginalScore = 10.0;
+            double NewTestScore = 95.5;
+
             Skill skill = new Skill();
-            skill.SkillId = 1;
-            skill.Score = 10.0;
+            skill.SkillId = TargetSkillId;
+            skill.Score = OriginalScore;
             Repository.AddSkill(skill);
 
-            Repository.UpdateSkillScore(1, 95.5);
+            Repository.UpdateSkillScore(TargetSkillId, NewTestScore);
 
-            Assert.AreEqual(95.5, Repository.Load(1).Score);
+            Assert.AreEqual(95.5, Repository.Load(TargetSkillId).Score);
         }
 
         [TestMethod]
         public void UpdateSkillScore_DoesNotExist_ExcpectsExceptionHandled()
         {
-            Repository.UpdateSkillScore(999, 100.0);
+            int MissingSkillId = 999;
+            double TargetScore = 100.9;
+
+            Repository.UpdateSkillScore(MissingSkillId, TargetScore);
         }
     }
 }
