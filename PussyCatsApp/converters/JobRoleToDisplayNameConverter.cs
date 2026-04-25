@@ -9,7 +9,7 @@ namespace PussyCatsApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is not JobRole role)
+            if (value is not JobRole jobRole)
             {
                 if (value?.ToString() == null)
                 {
@@ -18,7 +18,7 @@ namespace PussyCatsApp.Converters
                 return value?.ToString();
             }
 
-            return role switch
+            return jobRole switch
             {
                 JobRole.FrontendDeveloper => "Frontend Developer",
                 JobRole.BackendDeveloper => "Backend Developer",
