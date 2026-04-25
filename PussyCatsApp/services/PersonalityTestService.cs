@@ -214,7 +214,7 @@ namespace PussyCatsApp.Services
             return roleScores
                 .OrderByDescending(roleWithScore => roleWithScore.Value)
                 .Take(numberOfTopRolesToReturn)
-                .ToDictionary(roleWithScore => roleWithScore.Key, roleScorePair => roleScorePair.Value);
+                .ToDictionary(roleWithScore => roleWithScore.Key, roleWithScore => roleWithScore.Value);
         }
 
         public void SaveResult(int userId, string personalityTestResult)
