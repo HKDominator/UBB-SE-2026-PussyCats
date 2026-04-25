@@ -36,7 +36,7 @@ namespace PussyCatsApp.Tests.Services
         {
             var returnedBadge = SimpleModelOperations.AssignTier(score);
 
-            Assert.AreEqual(expectedXp, returnedBadge.XpValue);
+            Assert.AreEqual(expectedXp, returnedBadge.ExperiencePointsValue);
 
         }
     }

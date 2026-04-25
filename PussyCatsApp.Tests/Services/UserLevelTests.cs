@@ -28,8 +28,8 @@ namespace PussyCatsApp.Tests.Services
 
             Assert.AreEqual(expectedLevel, level.LevelNumber);
             Assert.AreEqual(expectedTitle, level.Title);
-            Assert.AreEqual(expectedMinXp, level.XpRequired);
-            Assert.AreEqual(expectedMaxXp, level.NextLevelXp);
+            Assert.AreEqual(expectedMinXp, level.ExperiencePointsRequired);
+            Assert.AreEqual(expectedMaxXp, level.NextLevelExperiencePoints);
         }
 
         [TestMethod]
@@ -79,7 +79,7 @@ namespace PussyCatsApp.Tests.Services
         public void GetXpToNextLevel_GivenTotalXpIn0To799Range_ReturnsCorrectXpToNextLevel(int givenXp, int expectedNrXpToNextLevel)
         {
             var level = UserLevelService.CalculateLevel(175);
-            int xpToNextLevel = UserLevelService.GetXpToNextLevel(175,level);
+            int xpToNextLevel = UserLevelService.GetExperiencePointsToNextLevel(175,level);
             Assert.AreEqual(75, xpToNextLevel);
         }
 
@@ -89,7 +89,7 @@ namespace PussyCatsApp.Tests.Services
         public void GetXpToNextLevel_GivenTotalXpAbove800_ReturnsCorrectXpToNextLevel(int givenXp, int expectedNrXpToNextLevel)
         {
             var level = UserLevelService.CalculateLevel(175);
-            int xpToNextLevel = UserLevelService.GetXpToNextLevel(175,level);
+            int xpToNextLevel = UserLevelService.GetExperiencePointsToNextLevel(175,level);
             Assert.AreEqual(75, xpToNextLevel);
         }
 

@@ -4,22 +4,22 @@
     {
         public int LevelNumber { get; set; }
         public UserTitle Title { get; set; }
-        public int XpRequired { get; set; }
-        public int NextLevelXp { get; set; }
+        public int ExperiencePointsRequired { get; set; }
+        public int NextLevelExperiencePoints { get; set; }
 
-        public UserLevel(int levelNumber, UserLevel.UserTitle title, int xpRequired, int nextLevelXp)
+        public UserLevel(int levelNumber, UserLevel.UserTitle title, int experiencePointsRequired, int nextLevelExperiencePoints)
         {
             LevelNumber = levelNumber;
             Title = title;
-            XpRequired = xpRequired;
-            NextLevelXp = nextLevelXp;
+            ExperiencePointsRequired = experiencePointsRequired;
+            NextLevelExperiencePoints = nextLevelExperiencePoints;
         }
         public UserLevel()
         {
             LevelNumber = 1;
             Title = UserLevel.UserTitle.Newcomer;
-            XpRequired = LEVEL_1_XP;
-            NextLevelXp = LEVEL_2_XP;
+            ExperiencePointsRequired = LEVEL_1_ExperiencePoints;
+            NextLevelExperiencePoints = LEVEL_2_ExperiencePoints;
         }
 
         public enum UserTitle
@@ -31,10 +31,10 @@
             Expert
         }
 
-        public const int LEVEL_1_XP = 0;
-        public const int LEVEL_2_XP = 100;
-        public const int LEVEL_3_XP = 250;
-        public const int LEVEL_4_XP = 500;
-        public const int LEVEL_5_XP = 800;
+        public const int LEVEL_1_ExperiencePoints = 0;
+        public const int LEVEL_2_ExperiencePoints = 100;
+        public const int LEVEL_3_ExperiencePoints = 250;
+        public const int LEVEL_4_ExperiencePoints = 500;
+        public const int LEVEL_5_ExperiencePoints = 800;
     }
 }
