@@ -11,6 +11,7 @@ public class UserProfileServiceTest
     private Mock<ISkillTestRepository> mockSkillTestRepository;
     private Mock<IUserProfileRepository> mockUserProfileRepository;
     private UserProfileService userProfileService;
+    private const int userId = 1;
     
     [TestInitialize]
     public void Initialize()
@@ -75,13 +76,13 @@ public class UserProfileServiceTest
 
         var profile = new UserProfile
         {
-            UserId = 1,
+            UserId = userId,
             ActiveAccount = true
         };
 
-        mockUserProfileRepository.Setup(findsUserProfile => findsUserProfile.GetProfileById(1)).Returns(profile);
+        mockUserProfileRepository.Setup(findsUserProfile => findsUserProfile.GetProfileById(userId)).Returns(profile);
 
-        var result = userProfileService.IsProfileAvailable(1);
+        var result = userProfileService.IsProfileAvailable(userId);
 
         Assert.IsTrue(result);
     }
@@ -92,13 +93,13 @@ public class UserProfileServiceTest
 
         var profile = new UserProfile
         {
-            UserId = 1,
+            UserId = userId,
             ActiveAccount = false
         };
 
-        mockUserProfileRepository.Setup(findsUserProfile => findsUserProfile.GetProfileById(1)).Returns(profile);
+        mockUserProfileRepository.Setup(findsUserProfile => findsUserProfile.GetProfileById(userId)).Returns(profile);
 
-        var result = userProfileService.IsProfileAvailable(1);
+        var result = userProfileService.IsProfileAvailable(userId);
 
         Assert.IsFalse(result);
     }
@@ -108,20 +109,19 @@ public class UserProfileServiceTest
     public void IsProfileAvailable_ProfileNotFound_ThrowsException()
     {
 
-        mockUserProfileRepository.Setup(doesNotFindUserProfile => doesNotFindUserProfile.GetProfileById(1)).Returns((UserProfile)null);
+        mockUserProfileRepository.Setup(doesNotFindUserProfile => doesNotFindUserProfile.GetProfileById(userId)).Returns((UserProfile)null);
 
-        userProfileService.IsProfileAvailable(1);
+        userProfileService.IsProfileAvailable(userId);
     }
 
     [TestMethod]
     public void ToggleAccountStatus_FromActive_UpdatesToInactive()
     {
-        var userId = 1;
         var accountStatus = "ACTIVE";
         userProfileService.ToggleAccountStatus(userId, accountStatus);
 
-        mockUserProfileRepository.Verify(updatesAccountStatusToInactive => updatesAccountStatusToInactive.UpdateAccountStatus(1, "INACTIVE"), Times.Once);
-        mockUserProfileRepository.Verify(updatesProfileLastModified => updatesProfileLastModified.UpdateProfileLastModified(1, It.IsAny<DateTime>()), Times.Once);
+        mockUserProfileRepository.Verify(updatesAccountStatusToInactive => updatesAccountStatusToInactive.UpdateAccountStatus(userId, "INACTIVE"), Times.Once);
+        mockUserProfileRepository.Verify(updatesProfileLastModified => updatesProfileLastModified.UpdateProfileLastModified(userId, It.IsAny<DateTime>()), Times.Once);
     }
 
     [TestMethod]
@@ -131,8 +131,8 @@ public class UserProfileServiceTest
         var accountStatus = "INACTIVE";
         userProfileService.ToggleAccountStatus(userId, accountStatus);
 
-        mockUserProfileRepository.Verify(updatesAccountStatusToActive => updatesAccountStatusToActive.UpdateAccountStatus(1, "ACTIVE"), Times.Once);
-        mockUserProfileRepository.Verify(updatesProfileLastModified => updatesProfileLastModified.UpdateProfileLastModified(1, It.IsAny<DateTime>()), Times.Once);
+        mockUserProfileRepository.Verify(updatesAccountStatusToActive => updatesAccountStatusToActive.UpdateAccountStatus(userId, "ACTIVE"), Times.Once);
+        mockUserProfileRepository.Verify(updatesProfileLastModified => updatesProfileLastModified.UpdateProfileLastModified(userId, It.IsAny<DateTime>()), Times.Once);
     }
     [TestMethod]
     public void SaveProfile_ValidProfile_SetsParsedCvAndSaves()
@@ -153,7 +153,7 @@ public class UserProfileServiceTest
         Assert.IsTrue(profile.ParsedCV.Contains("C#, SQL"));
 
         mockUserProfileRepository.Verify(savesProfile => savesProfile.Save(userId, profile), Times.Once);
-        mockUserProfileRepository.Verify(updatesProfileLastModified => updatesProfileLastModified.UpdateProfileLastModified(1, It.IsAny<DateTime>()), Times.Once);
+        mockUserProfileRepository.Verify(updatesProfileLastModified => updatesProfileLastModified.UpdateProfileLastModified(userId, It.IsAny<DateTime>()), Times.Once);
     }
    
     [TestMethod]
@@ -164,19 +164,19 @@ public class UserProfileServiceTest
         Assert.AreEqual(0, resultForInexistingUserProfile);
     }
     [TestMethod]
-    public void RecalculateLevel_WithSkillTests_ReturnsTotalXp()
+    public void RecalculateLevel_WithSkillTests_ReturnsTotalExperiencePoints()
     {
 
         var tests = new List<SkillTest>
     {
-        new SkillTest(1, 1, "Test1", 95), 
-        new SkillTest(2, 1, "Test2", 75)  
+        new SkillTest(1, userId, "Test1", 95), 
+        new SkillTest(2, userId, "Test2", 75)  
     };
 
-        mockSkillTestRepository.Setup(findsSkillTests => findsSkillTests.GetSkillTestsByUserId(1))
+        mockSkillTestRepository.Setup(findsSkillTests => findsSkillTests.GetSkillTestsByUserId(userId))
                      .Returns(tests);
 
-        var profile = new UserProfile { UserId = 1 };
+        var profile = new UserProfile { UserId = userId };
 
         var result = userProfileService.RecalculateLevel(profile);
 
