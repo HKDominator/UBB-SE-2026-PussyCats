@@ -95,28 +95,28 @@ namespace PussyCatsApp.Services
         }
         public Dictionary<TraitType, double> CalculateTraitScores(Dictionary<Question, AnswerValue> answers)
         {
-            var traitScores = new Dictionary<TraitType, double>();
-            var traitQuestionCounts = new Dictionary<TraitType, int>();
+            var totalScorePerTrait = new Dictionary<TraitType, double>();
+            var questionCountPerTrait = new Dictionary<TraitType, int>();
             foreach (var answer in answers)
             {
                 var trait = answer.Key.Trait;
 
-                if (!traitScores.ContainsKey(trait))
+                if (!totalScorePerTrait.ContainsKey(trait))
                 {
-                    traitScores[trait] = 0;
-                    traitQuestionCounts[trait] = 0;
+                    totalScorePerTrait[trait] = 0;
+                    questionCountPerTrait[trait] = 0;
                 }
 
-                traitScores[trait] += (int)answer.Value;
-                traitQuestionCounts[trait]++;
+                totalScorePerTrait[trait] += (int)answer.Value;
+                questionCountPerTrait[trait]++;
             }
 
-            foreach (var trait in traitScores.Keys)
+            foreach (var trait in totalScorePerTrait.Keys)
             {
-                traitScores[trait] /= traitQuestionCounts[trait];
+                totalScorePerTrait[trait] /= questionCountPerTrait[trait];
             }
 
-            return traitScores;
+            return totalScorePerTrait;
         }
         private double CalculateFrontend(Dictionary<TraitType, double> traitScores)
         {
