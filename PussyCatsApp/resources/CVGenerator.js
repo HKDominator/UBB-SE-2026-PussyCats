@@ -55,21 +55,21 @@ const CVGenerator = (() => {
 
     // ── Helpers ───────────────────────────────────────────────────
 
-    function escapeSpecialCharactersInString(str) {
-        if (!str) return '';
-        return String(str)
+    function escapeSpecialCharactersInString(stringToBeChecked) {
+        if (!stringToBeChecked) return '';
+        return String(stringToBeChecked)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
     }
 
-    function hasValue(value) {
-        if (value === null || value === undefined) return false;
-        if (Array.isArray(value)) return value.length > 0;
-        if (typeof value === 'string') return value.trim() !== '';
-        if (typeof value === 'number') return value !== 0;
-        return Boolean(value);
+    function hasValue(valueToBeChecked) {
+        if (valueToBeChecked === null || valueToBeChecked === undefined) return false;
+        if (Array.isArray(valueToBeChecked)) return valueToBeChecked.length > 0;
+        if (typeof valueToBeChecked === 'string') return valueToBeChecked.trim() !== '';
+        if (typeof valueToBeChecked === 'number') return valueToBeChecked !== 0;
+        return Boolean(valueToBeChecked);
     }
 
     function formatDate(dateValue) {
@@ -160,9 +160,9 @@ const CVGenerator = (() => {
     }
 
     /** Show or hide a section based on whether data has a value */
-    function toggleSection(sectionId, show) {
+    function toggleSection(sectionId, showOrHideOption) {
         const element = document.getElementById(sectionId);
-        if (element) element.style.display = show ? '' : 'none';
+        if (element) element.style.display = showOrHideOption ? '' : 'none';
     }
 
     /** Set inner HTML of an element */
@@ -172,13 +172,13 @@ const CVGenerator = (() => {
     }
 
     /** Set href and text of a link element */
-    function setLink(selector, value) {
+    function setLink(selector, linkValue) {
         const element = document.querySelector(selector);
         let defaultHref = '#'; 
         let defaultTextContent = '';
         if (element) {
-            element.href = value || defaultHref;
-            element.textContent = value || defaultTextContent;
+            element.href = linkValue || defaultHref;
+            element.textContent = linkValue || defaultTextContent;
         }
     }
 
