@@ -171,7 +171,7 @@ namespace PussyCatsApp.Services
                     CurrentlyWorking = rawWorkExperience.CurrentlyWorking,
                     Description = SanitizeString(rawWorkExperience.Description, MaxWorkDescriptionLength)
                 })
-                .Where(validateWorkExperience => !string.IsNullOrEmpty(validateWorkExperience.Company) && !string.IsNullOrEmpty(validateWorkExperience.JobTitle))
+                .Where(validatedWorkExperience => !string.IsNullOrEmpty(validatedWorkExperience.Company) && !string.IsNullOrEmpty(validatedWorkExperience.JobTitle))
                 .ToList();
         }
 
@@ -199,7 +199,7 @@ namespace PussyCatsApp.Services
                     Technologies = project.Technologies?.Take(maximumNumberOfTechnologiesPerProject).Select(technology => SanitizeString(technology, maximumTechnologyNameLength)).ToList() ?? new List<string>(),
                     Url = SanitizeString(project.Url, maximumProjectUrlLength)
                 })
-                .Where(project => !string.IsNullOrEmpty(project.Name))
+                .Where(validProject => !string.IsNullOrEmpty(validProject.Name))
                 .ToList();
         }
         private List<ExtraCurricularActivity> ProcessActivities(List<ExtraCurricularActivity> activities)
@@ -225,28 +225,28 @@ namespace PussyCatsApp.Services
                     Period = SanitizeString(activity.Period, maximumPeriodLength),
                     Description = SanitizeString(activity.Description, maximumActivityDescriptionLength)
                 })
-                .Where(activity => !string.IsNullOrEmpty(activity.ActivityName))
+                .Where(validActivity => !string.IsNullOrEmpty(validActivity.ActivityName))
                 .ToList();
         }
 
         /// <summary>
         /// Sanitizes and validates a string field
         /// </summary>
-        private string SanitizeString(string input, int maxLength)
+        private string SanitizeString(string inputToSanitize, int maximumAllowedLength)
         {
-            if (string.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrWhiteSpace(inputToSanitize))
             {
                 return string.Empty;
             }
 
-            input = input.Trim();
+            inputToSanitize = inputToSanitize.Trim();
 
-            if (input.Length > maxLength)
+            if (inputToSanitize.Length > maximumAllowedLength)
             {
-                input = input.Substring(0, maxLength);
+                inputToSanitize = inputToSanitize.Substring(0, maximumAllowedLength);
             }
 
-            return input;
+            return inputToSanitize;
         }
 
         /// <summary>
