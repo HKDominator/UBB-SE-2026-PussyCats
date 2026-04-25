@@ -20,7 +20,8 @@ namespace PussyCatsApp.Views
     /// </summary>
     public sealed partial class PreferencesView : Page
     {
-        private PreferencesViewModel viewModel;
+        private PreferencesViewModel preferencesViewModel;
+        private static readonly int DefaultUserId = 1;
 
         private readonly Dictionary<JobRole, string> roleDisplayNames = new ()
         {
@@ -40,12 +41,12 @@ namespace PussyCatsApp.Views
             RolesListView.ItemsSource = roleDisplayNames.Values.ToList();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
-            int userId = e.Parameter is int id ? id : 1;
-            viewModel = new PreferencesViewModel(new PreferenceService(new PreferenceRepository(DatabaseConfiguration.GetConnectionString())), userId);
-            viewModel.LoadPreferences();
+            base.OnNavigatedTo(navigationEventArguments);
+            int userIdentity = navigationEventArguments.Parameter is int id ? id : DefaultUserId;
+            preferencesViewModel = new PreferencesViewModel(new PreferenceService(new PreferenceRepository(DatabaseConfiguration.GetConnectionString())), userIdentity);
+            preferencesViewModel.LoadPreferences();
             PopulateUIFromViewModel();
         }
 
@@ -59,7 +60,7 @@ namespace PussyCatsApp.Views
 
             RolesListView.SelectedItems.Clear();
 
-            foreach (var role in viewModel.GetSelectedJobRoles())
+            foreach (var role in preferencesViewModel.GetSelectedJobRoles())
             {
                 if (roleDisplayNames.TryGetValue(role, out var displayName))
                 {
@@ -78,7 +79,7 @@ namespace PussyCatsApp.Views
             RolesListView.SelectionChanged += RolesListView_SelectionChanged;
 
             // --- Work mode ---
-            var savedWorkMode = viewModel.GetSelectedWorkMode();
+            var savedWorkMode = preferencesViewModel.GetSelectedWorkMode();
             var workModeDisplay = savedWorkMode.ToString();
 
             foreach (var item in WorkModeComboBox.Items)
@@ -92,33 +93,33 @@ namespace PussyCatsApp.Views
             }
 
             // --- Location ---
-            LocationAutoSuggestBox.Text = viewModel.GetPreferredLocation();
+            LocationAutoSuggestBox.Text = preferencesViewModel.GetPreferredLocation();
         }
 
-        private void RolesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void RolesListView_SelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArguments)
         {
-            foreach (var item in e.AddedItems.Cast<string>())
+            foreach (var item in selectionChangedEventArguments.AddedItems.Cast<string>())
             {
-                var role = roleDisplayNames.First(kv => kv.Value == item).Key;
-                viewModel.ToggleJobRole(role);
+                var role = roleDisplayNames.First(keyValue => keyValue.Value == item).Key;
+                preferencesViewModel.ToggleJobRole(role);
             }
 
-            foreach (var item in e.RemovedItems.Cast<string>())
+            foreach (var item in selectionChangedEventArguments.RemovedItems.Cast<string>())
             {
-                var role = roleDisplayNames.First(kv => kv.Value == item).Key;
-                viewModel.ToggleJobRole(role);
+                var role = roleDisplayNames.First(keyValue => keyValue.Value == item).Key;
+                preferencesViewModel.ToggleJobRole(role);
             }
 
-            string error = viewModel.GetErrorMessage();
+            string error = preferencesViewModel.GetErrorMessage();
             if (!string.IsNullOrEmpty(error))
             {
                 RoleWarningText.Visibility = Visibility.Visible;
 
                 RolesListView.SelectionChanged -= RolesListView_SelectionChanged;
-                foreach (var item in e.AddedItems.Cast<string>())
+                foreach (var item in selectionChangedEventArguments.AddedItems.Cast<string>())
                 {
-                    var role = roleDisplayNames.First(kv => kv.Value == item).Key;
-                    if (!viewModel.GetSelectedJobRoles().Contains(role))
+                    var role = roleDisplayNames.First(keyValue => keyValue.Value == item).Key;
+                    if (!preferencesViewModel.GetSelectedJobRoles().Contains(role))
                     {
                         RolesListView.SelectedItems.Remove(item);
                     }
@@ -131,33 +132,33 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void LocationAutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void LocationAutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs autoSuggestBoxTextChangedEventArguments)
         {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            if (autoSuggestBoxTextChangedEventArguments.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                viewModel.SearchLocation(sender.Text);
-                sender.ItemsSource = viewModel.GetLocationSuggestions();
+                preferencesViewModel.SearchLocation(sender.Text);
+                sender.ItemsSource = preferencesViewModel.GetLocationSuggestions();
             }
         }
 
-        private void LocationAutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        private void LocationAutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs autoSuggestBoxSuggestionChosenEventArguments)
         {
-            string chosen = args.SelectedItem.ToString();
+            string chosen = autoSuggestBoxSuggestionChosenEventArguments.SelectedItem.ToString();
             sender.Text = chosen;
-            viewModel.SetLocation(chosen);
+            preferencesViewModel.SetLocation(chosen);
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs routedEventArgument)
         {
             var workMode = (WorkModeComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString();
             if (!string.IsNullOrEmpty(workMode) && Enum.TryParse<WorkMode>(workMode, out var parsedMode))
             {
-                viewModel.SetWorkMode(parsedMode);
+                preferencesViewModel.SetWorkMode(parsedMode);
             }
 
-            viewModel.SetLocation(LocationAutoSuggestBox.Text);
+            preferencesViewModel.SetLocation(LocationAutoSuggestBox.Text);
 
-            if (viewModel.GetSelectedJobRoles().Count == 0 ||
+            if (preferencesViewModel.GetSelectedJobRoles().Count == 0 ||
                 WorkModeComboBox.SelectedItem == null ||
                 string.IsNullOrEmpty(LocationAutoSuggestBox.Text))
             {
@@ -165,9 +166,9 @@ namespace PussyCatsApp.Views
                 return;
             }
 
-            viewModel.SavePreferences();
+            preferencesViewModel.SavePreferences();
 
-            string error = viewModel.GetErrorMessage();
+            string error = preferencesViewModel.GetErrorMessage();
             if (!string.IsNullOrEmpty(error))
             {
                 ShowMessage(error, isError: true);
@@ -186,7 +187,7 @@ namespace PussyCatsApp.Views
             SuccessMessage.Visibility = Visibility.Visible;
         }
 
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        private void BtnBack_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame.CanGoBack)
             {

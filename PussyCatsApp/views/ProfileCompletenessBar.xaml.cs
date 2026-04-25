@@ -13,8 +13,8 @@ namespace PussyCatsApp.Views
         public void Update(int percentage, string promptText)
         {
             barProgress.Value = percentage;
-            lblPercentage.Text = $"{percentage}%";
-            lblPrompt.Text = promptText;
+            percentageLabel.Text = $"{percentage}%";
+            promptLabel.Text = promptText;
         }
     }
 }

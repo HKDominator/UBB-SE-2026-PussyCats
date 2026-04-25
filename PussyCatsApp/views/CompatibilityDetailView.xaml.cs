@@ -1,20 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PussyCatsApp.Models;
 using PussyCatsApp.ViewModels;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,38 +16,41 @@ namespace PussyCatsApp.Views
     /// </summary>
     public sealed partial class CompatibilityDetailView : Page
     {
-        private CompatibilityDetailViewModel viewModel;
+        private static readonly double InsufficientDataScore = -1;
+        private static readonly int ScoreRoundingDecimals = 1;
+
+        private CompatibilityDetailViewModel compatibilityDetailViewModel;
 
         public CompatibilityDetailView()
         {
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationArguments)
         {
-            base.OnNavigatedTo(e);
-            RoleResult result = e.Parameter as RoleResult;
-            viewModel = new CompatibilityDetailViewModel();
-            viewModel.LoadResult(result);
+            base.OnNavigatedTo(navigationArguments);
+            RoleResult result = navigationArguments.Parameter as RoleResult;
+            compatibilityDetailViewModel = new CompatibilityDetailViewModel();
+            compatibilityDetailViewModel.LoadResult(result);
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs loadArguments)
         {
             LoadDetail();
         }
 
         private void LoadDetail()
         {
-            lblRoleName.Text = viewModel.GetRoleName();
+            roleNameLabel.Text = compatibilityDetailViewModel.GetRoleName();
 
-            double score = viewModel.GetMatchScore();
-            if (score == -1)
+            double score = compatibilityDetailViewModel.GetMatchScore();
+            if (score == InsufficientDataScore)
             {
-                lblMatchScore.Text = "Score: Insufficient Data";
+                matchScoreLabel.Text = "Score: Insufficient Data";
             }
             else
             {
-                lblMatchScore.Text = "Match Score: " + Math.Round(score, 1) + "%";
+                matchScoreLabel.Text = "Match Score: " + Math.Round(score, ScoreRoundingDecimals) + "%";
             }
 
             ShowSuggestions();
@@ -64,32 +58,32 @@ namespace PussyCatsApp.Views
 
         private void ShowSuggestions()
         {
-            List<Suggestion> suggestions = viewModel.GetSuggestions();
+            List<Suggestion> suggestions = compatibilityDetailViewModel.GetSuggestions();
 
             if (suggestions == null || suggestions.Count == 0)
             {
-                lstSuggestions.Visibility = Visibility.Collapsed;
-                lblNoSuggestions.Visibility = Visibility.Visible;
+                suggestionsList.Visibility = Visibility.Collapsed;
+                noSuggestionsLabel.Visibility = Visibility.Visible;
                 return;
             }
 
             List<object> displayItems = new List<object>();
-            foreach (Suggestion s in suggestions)
+            foreach (Suggestion suggestion in suggestions)
             {
                 displayItems.Add(new
                 {
-                    s.SkillName,
-                    s.GroupName,
-                    GainDisplay = "Potential gain: +" + Math.Round(s.GainScore, 1) + "%"
+                    suggestion.SkillName,
+                    suggestion.GroupName,
+                    GainDisplay = "Potential gain: +" + Math.Round(suggestion.GainScore, ScoreRoundingDecimals) + "%"
                 });
             }
 
-            lstSuggestions.ItemsSource = displayItems;
-            lstSuggestions.Visibility = Visibility.Visible;
-            lblNoSuggestions.Visibility = Visibility.Collapsed;
+            suggestionsList.ItemsSource = displayItems;
+            suggestionsList.Visibility = Visibility.Visible;
+            noSuggestionsLabel.Visibility = Visibility.Collapsed;
         }
 
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        private void ButtonBack_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame.CanGoBack)
             {

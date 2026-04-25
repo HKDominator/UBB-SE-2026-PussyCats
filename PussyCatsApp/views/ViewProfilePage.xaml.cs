@@ -17,10 +17,10 @@ namespace PussyCatsApp.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
-            if (e.Parameter is UserProfile profile)
+            base.OnNavigatedTo(navigationEventArguments);
+            if (navigationEventArguments.Parameter is UserProfile profile)
             {
                 userProfile = profile;
             }
@@ -58,7 +58,7 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void EditProfileButton_Click(object sender, RoutedEventArgs e)
+        private void EditProfileButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             Frame.Navigate(typeof(ProfileFormView), userProfile);
         }

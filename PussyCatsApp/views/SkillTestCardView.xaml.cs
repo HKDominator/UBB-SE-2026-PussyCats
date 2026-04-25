@@ -26,6 +26,10 @@ namespace PussyCatsApp.Views
     public sealed partial class SkillTestCardView : UserControl
     {
         private SkillTestCardViewModel skillTestCardViewModel;
+        private static readonly int BadgeIconRasterizePixelSize = 100;
+        private static readonly double RetakeButtonEnabledOpacity = 1.0;
+        private static readonly double RetakeButtonDisabledOpacity = 0.4;
+
         public SkillTestCardView(SkillTestCardViewModel viewModel)
         {
             this.InitializeComponent();
@@ -58,8 +62,8 @@ namespace PussyCatsApp.Views
                 System.Diagnostics.Debug.WriteLine($"FIXED URI: {uri}");
 
                 var svgSource = new SvgImageSource(uri);
-                svgSource.RasterizePixelWidth = 100;
-                svgSource.RasterizePixelHeight = 100;
+                svgSource.RasterizePixelWidth = BadgeIconRasterizePixelSize;
+                svgSource.RasterizePixelHeight = BadgeIconRasterizePixelSize;
 
                 BadgeIcon.Source = svgSource;
             }
@@ -69,10 +73,10 @@ namespace PussyCatsApp.Views
         private void UpdateRetakeButton()
         {
             RetakeButton.IsEnabled = skillTestCardViewModel.IsRetakeEnabled;
-            RetakeButton.Opacity = skillTestCardViewModel.IsRetakeEnabled ? 1.0 : 0.4;
+            RetakeButton.Opacity = skillTestCardViewModel.IsRetakeEnabled ? RetakeButtonEnabledOpacity : RetakeButtonDisabledOpacity;
         }
 
-        private void RetakeButton_Click(object sender, RoutedEventArgs e)
+        private void RetakeButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             skillTestCardViewModel.RetakeCommand();
             LoadCard();

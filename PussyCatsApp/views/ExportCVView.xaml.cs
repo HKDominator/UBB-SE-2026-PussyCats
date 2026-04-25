@@ -17,8 +17,8 @@ namespace PussyCatsApp.Views
     /// </summary>
     public sealed partial class ExportCVView : Page
     {
-        public ExportCVViewModel ViewModel { get; private set; }
-        private int userId;
+        public ExportCVViewModel ExportCVViewModel { get; private set; }
+        private int userIdentity;
 
         public ExportCVView()
         {
@@ -26,16 +26,16 @@ namespace PussyCatsApp.Views
             this.Loaded += OnPageLoaded;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
-            if (e.Parameter is int passedUserId)
+            base.OnNavigatedTo(navigationEventArguments);
+            if (navigationEventArguments.Parameter is int passedUserId)
             {
-                userId = passedUserId;
+                userIdentity = passedUserId;
             }
         }
 
-        private void OnBackClick(object sender, RoutedEventArgs e)
+        private void OnBackClick(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame.CanGoBack)
             {
@@ -43,7 +43,7 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private async void OnPageLoaded(object sender, RoutedEventArgs e)
+        private async void OnPageLoaded(object sender, RoutedEventArgs routedEventArguments)
         {
             this.Loaded -= OnPageLoaded;
 
@@ -61,21 +61,21 @@ namespace PussyCatsApp.Views
             IUserProfileRepository userProfileRepository = new UserProfileRepository(DatabaseConfiguration.GetConnectionString());
             IUserProfileService userProfileService = new UserProfileService(skillTestRepository, userProfileRepository);
 
-            ViewModel = new ExportCVViewModel(pdfExportService, userProfileService);
-            ViewModel.UserId = userId;
+            ExportCVViewModel = new ExportCVViewModel(pdfExportService, userProfileService);
+            ExportCVViewModel.UserId = userIdentity;
 
-            this.DataContext = ViewModel;
+            this.DataContext = ExportCVViewModel;
 
-            await ViewModel.LoadAndRenderCVAsync();
+            await ExportCVViewModel.LoadAndRenderCVAsync();
         }
 
-        private async void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        private async void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs coreWebView2NavigationStartingEventArguments)
         {
-            if (e.Uri.StartsWith("http") && !e.Uri.Contains("assets.local"))
+            if (coreWebView2NavigationStartingEventArguments.Uri.StartsWith("http") && !coreWebView2NavigationStartingEventArguments.Uri.Contains("assets.local"))
             {
-                e.Cancel = true;
+                coreWebView2NavigationStartingEventArguments.Cancel = true;
 
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(e.Uri));
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(coreWebView2NavigationStartingEventArguments.Uri));
             }
         }
     }

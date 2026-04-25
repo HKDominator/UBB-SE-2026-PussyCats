@@ -23,12 +23,13 @@ namespace PussyCatsApp.Views
     {
         private readonly DocumentListViewModel listViewModel;
         private readonly UploadDocumentViewModel uploadViewModel;
+        private static readonly int DefaultUserId = 1; // replace with real session user id
 
         public DocumentsListView()
         {
             this.InitializeComponent();
 
-            int currentUserId = 1; // replace with real session user id
+            int currentUserId = DefaultUserId;
 
             var documentRepository = new DocumentRepository(DatabaseConfiguration.GetConnectionString());
             var localStorageService = new LocalFileStorageService();
@@ -38,9 +39,9 @@ namespace PussyCatsApp.Views
             uploadViewModel = new UploadDocumentViewModel(documentService, currentUserId);
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
+            base.OnNavigatedTo(navigationEventArguments);
             LoadGrid();
         }
 
@@ -49,32 +50,32 @@ namespace PussyCatsApp.Views
             listViewModel.LoadDocuments();
             var documents = listViewModel.GetDocuments();
 
-            lvDocuments.ItemsSource = null;
-            lvDocuments.ItemsSource = documents;
+            listViewDocuments.ItemsSource = null;
+            listViewDocuments.ItemsSource = documents;
 
-            lblNoDocuments.Visibility = documents.Count == 0
+            noDocumentsLabel.Visibility = documents.Count == 0
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
 
         private void ShowUploadError(string message)
         {
-            lblUploadError.Text = message;
-            lblUploadError.Visibility = Visibility.Visible;
+            uploadErrorLabel.Text = message;
+            uploadErrorLabel.Visibility = Visibility.Visible;
         }
 
         private void ShowStatus(string message)
         {
-            lblStatus.Text = message;
-            lblStatus.Visibility = Visibility.Visible;
+            statusLabel.Text = message;
+            statusLabel.Visibility = Visibility.Visible;
         }
 
-        private void OnDocumentNameChanged(object sender, TextChangedEventArgs e)
+        private void OnDocumentNameChanged(object sender, TextChangedEventArgs textChangedEventArguments)
         {
             uploadViewModel.SetDocumentName(txtDocumentName.Text);
         }
 
-        private async void OnBrowseClick(object sender, RoutedEventArgs e)
+        private async void OnBrowseClick(object sender, RoutedEventArgs routedEventArguments)
         {
             var picker = new FileOpenPicker();
             var mainWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(App.MainAppWindow);
@@ -90,13 +91,13 @@ namespace PussyCatsApp.Views
             if (file != null)
             {
                 uploadViewModel.SetSelectedFilePath(file.Path);
-                lblSelectedFile.Text = file.Name;
+                selectedFileLabel.Text = file.Name;
             }
         }
 
-        private void OnUploadClick(object sender, RoutedEventArgs e)
+        private void OnUploadClick(object sender, RoutedEventArgs routedEventArguments)
         {
-            lblUploadError.Visibility = Visibility.Collapsed;
+            uploadErrorLabel.Visibility = Visibility.Collapsed;
 
             try
             {
@@ -110,7 +111,7 @@ namespace PussyCatsApp.Views
                 }
 
                 txtDocumentName.Text = string.Empty;
-                lblSelectedFile.Text = "No file selected";
+                selectedFileLabel.Text = "No file selected";
                 uploadViewModel.SetDocumentName(string.Empty);
                 uploadViewModel.SetSelectedFilePath(null);
 
@@ -123,9 +124,9 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private async void OnDeleteClick(object sender, RoutedEventArgs e)
+        private async void OnDeleteClick(object sender, RoutedEventArgs routedEventArguments)
         {
-            if (sender is not Button btn || btn.Tag is not Document doc)
+            if (sender is not Button button || button.Tag is not Document document)
             {
                 return;
             }
@@ -133,7 +134,7 @@ namespace PussyCatsApp.Views
             var dialog = new ContentDialog
             {
                 Title = "Delete Document",
-                Content = $"Are you sure you want to delete \"{doc.DocumentName}\"?",
+                Content = $"Are you sure you want to delete \"{document.DocumentName}\"?",
                 PrimaryButtonText = "Delete",
                 CloseButtonText = "Cancel",
                 XamlRoot = this.XamlRoot
@@ -147,7 +148,7 @@ namespace PussyCatsApp.Views
 
             try
             {
-                listViewModel.DeleteDocument(doc.Id);
+                listViewModel.DeleteDocument(document.Id);
                 LoadGrid();
             }
             catch (Exception ex)
@@ -156,16 +157,16 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void OnViewClick(object sender, RoutedEventArgs e)
+        private void OnViewClick(object sender, RoutedEventArgs routedEventArguments)
         {
-            if (sender is not Button btn || btn.Tag is not Document doc)
+            if (sender is not Button button || button.Tag is not Document document)
             {
                 return;
             }
 
-            lblStatus.Visibility = Visibility.Collapsed;
+            statusLabel.Visibility = Visibility.Collapsed;
 
-            string fullPath = listViewModel.GetResolvedFilePath(doc.Id);
+            string fullPath = listViewModel.GetResolvedFilePath(document.Id);
 
             string status = listViewModel.GetStatusMessage();
             if (!string.IsNullOrEmpty(status))
@@ -180,11 +181,11 @@ namespace PussyCatsApp.Views
             }
             else
             {
-                ShowStatus($"The file \"{doc.DocumentName}\" could not be found on disk.");
+                ShowStatus($"The file \"{document.DocumentName}\" could not be found on disk.");
             }
         }
 
-        private void OnBackClick(object sender, RoutedEventArgs e)
+        private void OnBackClick(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame.CanGoBack)
             {

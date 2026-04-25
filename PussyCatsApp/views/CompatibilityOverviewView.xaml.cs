@@ -19,44 +19,47 @@ namespace PussyCatsApp.Views
     /// </summary>
     public sealed partial class CompatibilityOverviewView : Page
     {
-        private CompatibilityOverviewViewModel viewModel;
+        private static readonly double InsufficientDataScore = -1;
+        private static readonly int ScoreRoundingDecimals = 1;
+
+        private CompatibilityOverviewViewModel compatibilityOverviewViewModel;
 
         public CompatibilityOverviewView()
         {
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
-            int userId = (int)e.Parameter;
+            base.OnNavigatedTo(navigationEventArguments);
+            int userIdentity = (int)navigationEventArguments.Parameter;
 
-            IUserSkillRepository userSkillRepo = new UserSkillRepository(DatabaseConfiguration.GetConnectionString());
+            IUserSkillRepository userSkillRepository = new UserSkillRepository(DatabaseConfiguration.GetConnectionString());
             ISkillGroupRepository skillGroupRepository = new SkillGroupRepository();
-            ICompatibilityService compatibilityService = new CompatibilityService(userSkillRepo, skillGroupRepository);
-            viewModel = new CompatibilityOverviewViewModel(userId, compatibilityService);
+            ICompatibilityService compatibilityService = new CompatibilityService(userSkillRepository, skillGroupRepository);
+            compatibilityOverviewViewModel = new CompatibilityOverviewViewModel(userIdentity, compatibilityService);
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs routedEventArguments)
         {
-            if (viewModel == null)
+            if (compatibilityOverviewViewModel == null)
             {
                 await ShowError("CompatibilityOverviewViewModel was not provided.");
                 return;
             }
 
-            viewModel.LoadAllRoles();
+            compatibilityOverviewViewModel.LoadAllRoles();
 
-            if (!string.IsNullOrEmpty(viewModel.GetErrorMessage()))
+            if (!string.IsNullOrEmpty(compatibilityOverviewViewModel.GetErrorMessage()))
             {
-                await ShowError(viewModel.GetErrorMessage());
+                await ShowError(compatibilityOverviewViewModel.GetErrorMessage());
                 return;
             }
 
-            List<RoleResult> results = viewModel.GetRoleResults();
+            List<RoleResult> roleResults = compatibilityOverviewViewModel.GetRoleResults();
             List<object> displayItems = new List<object>();
 
-            foreach (RoleResult result in results)
+            foreach (RoleResult result in roleResults)
             {
                 string formattedName = string.Empty;
                 if (result.JobRole == JobRole.UIUXDesigner)
@@ -76,45 +79,45 @@ namespace PussyCatsApp.Views
                 {
                     Result = result,
                     DisplayName = FormatRoleName(formattedName),
-                    DisplayScore = result.MatchScore == -1 ? 0 : result.MatchScore,
-                    DisplayPercentage = result.MatchScore == -1
+                    DisplayScore = result.MatchScore == InsufficientDataScore ? 0 : result.MatchScore,
+                    DisplayPercentage = result.MatchScore == InsufficientDataScore
                         ? "Insufficient Data"
-                        : Math.Round(result.MatchScore, 1) + "%"
+                        : Math.Round(result.MatchScore, ScoreRoundingDecimals) + "%"
                 });
             }
 
-            lstRoles.ItemsSource = displayItems;
+            rolesList.ItemsSource = displayItems;
         }
 
         private string FormatRoleName(string raw)
         {
             var newString = new System.Text.StringBuilder();
 
-            foreach (char c in raw)
+            foreach (char character in raw)
             {
-                if (char.IsUpper(c) && newString.Length > 0)
+                if (char.IsUpper(character) && newString.Length > 0)
                 {
                     newString.Append(' ');
                 }
 
-                newString.Append(c);
+                newString.Append(character);
             }
 
             return newString.ToString();
         }
 
-        private void LstRoles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void RolesList_SelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArguments)
         {
-            if (lstRoles.SelectedItem == null || viewModel == null)
+            if (rolesList.SelectedItem == null || compatibilityOverviewViewModel == null)
             {
                 return;
             }
 
-            dynamic selected = lstRoles.SelectedItem;
+            dynamic selected = rolesList.SelectedItem;
             RoleResult result = selected.Result;
 
-            viewModel.OnRoleSelected(result.JobRole);
-            NavigateToDetail(viewModel.GetSelectedResult());
+            compatibilityOverviewViewModel.OnRoleSelected(result.JobRole);
+            NavigateToDetail(compatibilityOverviewViewModel.GetSelectedResult());
         }
 
         private void NavigateToDetail(RoleResult result)
@@ -127,7 +130,7 @@ namespace PussyCatsApp.Views
             Frame.Navigate(typeof(CompatibilityDetailView), result);
         }
 
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        private void ButtonClose_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame != null && Frame.CanGoBack)
             {
@@ -135,7 +138,7 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        private void ButtonBack_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame != null && Frame.CanGoBack)
             {

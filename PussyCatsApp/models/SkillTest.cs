@@ -11,9 +11,6 @@ namespace PussyCatsApp.Models
         public static readonly int MinimumScore = 0;
         public static readonly int MaximumScore = 100;
 
-        private string name = string.Empty;
-        private int score;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SkillTest"/> class
         /// with no score (defaults to zero).
@@ -80,12 +77,7 @@ namespace PussyCatsApp.Models
         /// <summary>
         /// Gets or sets the name of the skill test.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown when the value is null.</exception>
-        public string Name
-        {
-            get => name;
-            set => name = value ?? throw new ArgumentNullException(nameof(value), "Test name cannot be null.");
-        }
+        public string Name { get; set; }
 
         public int Score { get; set; }
     }
