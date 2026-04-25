@@ -7,23 +7,30 @@ namespace PussyCatsApp.Tests.Services
     [TestClass]
     public class ImageStorageServiceTests
     {
-        private string tempDir;
-        private ImageStorageService service;
+        private string temporaryDirectory;
+        private ImageStorageService imageStorageService;
+        private const int BytesInKilobyte = 1024;
+        private const int BytesInMegabyte = BytesInKilobyte * BytesInKilobyte;
+        private const int MaxAllowedImageSizeInMB = 5;
+        private const int SmallImageSizeInBytes = 1024;
+        private const int TinyImageSizeInBytes = 64;
+
+
 
         [TestInitialize]
         public void SetUp()
         {
-            tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempDir);
+            temporaryDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(temporaryDirectory);
 
-            service = new ImageStorageService(tempDir);
+            imageStorageService = new ImageStorageService(temporaryDirectory);
         }
 
         [TestCleanup]
         public void TearDown()
         {
-            if (Directory.Exists(tempDir))
-                Directory.Delete(tempDir, recursive: true);
+            if (Directory.Exists(temporaryDirectory))
+                Directory.Delete(temporaryDirectory, recursive: true);
         }
 
 
@@ -42,7 +49,7 @@ namespace PussyCatsApp.Tests.Services
             
             var fileStream = new MemoryStream(Encoding.UTF8.GetBytes("fake image data"));
 
-            service.SaveImage(fileStream, fileName);
+            imageStorageService.SaveImage(fileStream, fileName);
         }
 
         [TestMethod]
@@ -52,7 +59,7 @@ namespace PussyCatsApp.Tests.Services
         {
             var fileStream = new MemoryStream(Encoding.UTF8.GetBytes("fake image data"));
 
-            service.SaveImage(fileStream, fileName);
+            imageStorageService.SaveImage(fileStream, fileName);
         }
 
 
@@ -60,10 +67,10 @@ namespace PussyCatsApp.Tests.Services
         [ExpectedException(typeof(Exception))]
         public void SaveImage_FileSizeTooBig_ThrowsException()
         {
-            var fakeImage = new byte[6*1024*1024];
+            var fakeImage = new byte[(MaxAllowedImageSizeInMB + 1) * BytesInMegabyte];
             var fileStream = new MemoryStream(fakeImage);
 
-            service.SaveImage(fileStream,"myFileName.png");
+            imageStorageService.SaveImage(fileStream,"myFileName.png");
 
         }
 
@@ -77,10 +84,10 @@ namespace PussyCatsApp.Tests.Services
         [DataRow("photo.JpG")]
         public void SaveImage_ValidImage_CreatesFileOnDisk(string fileName)
         {
-            byte[] fakeImage = new byte[1024];
+            byte[] fakeImage = new byte[SmallImageSizeInBytes];
             using var stream = new MemoryStream(fakeImage);
 
-            string savedPath = service.SaveImage(stream, fileName);
+            string savedPath = imageStorageService.SaveImage(stream, fileName);
 
             Assert.IsTrue(File.Exists(savedPath));
         }
@@ -91,7 +98,7 @@ namespace PussyCatsApp.Tests.Services
             byte[] fakeImage = { 1, 2, 3, 4, 5, 123, 0, 12 };
             using var stream = new MemoryStream(fakeImage);
 
-            string savedPath = service.SaveImage(stream, "fileName.png");
+            string savedPath = imageStorageService.SaveImage(stream, "fileName.png");
 
             Assert.IsTrue(File.Exists(savedPath));
             Assert.IsTrue(File.ReadAllBytes(savedPath).SequenceEqual(fakeImage));
@@ -101,12 +108,12 @@ namespace PussyCatsApp.Tests.Services
         [TestMethod]
         public void SaveImage_TwoImagesSameFileName_HaveUniqueFilePaths()
         {
-            
-            using var s1 = new MemoryStream(new byte[64]);
-            using var s2 = new MemoryStream(new byte[64]);
 
-            string path1 = service.SaveImage(s1, "a.jpg");
-            string path2 = service.SaveImage(s2, "a.jpg");
+            using var firstImageStream = new MemoryStream(new byte[TinyImageSizeInBytes]);
+            using var secondImageStream = new MemoryStream(new byte[TinyImageSizeInBytes]);
+
+            string path1 = imageStorageService.SaveImage(firstImageStream, "a.jpg");
+            string path2 = imageStorageService.SaveImage(secondImageStream, "a.jpg");
 
             Assert.AreNotEqual(path1, path2);
             
@@ -116,11 +123,11 @@ namespace PussyCatsApp.Tests.Services
         [TestMethod]
         public void DeleteImage_ExistingFile_RemovesFileFromDisk()
         {
-            using var stream = new MemoryStream(new byte[64]);
-            string savedPath = service.SaveImage(stream, "photo.jpg");
+            using var stream = new MemoryStream(new byte[TinyImageSizeInBytes]);
+            string savedPath = imageStorageService.SaveImage(stream, "photo.jpg");
             Assert.IsTrue(File.Exists(savedPath));
 
-            service.DeleteImage(savedPath);
+            imageStorageService.DeleteImage(savedPath);
 
             Assert.IsFalse(File.Exists(savedPath));
         }
@@ -128,14 +135,14 @@ namespace PussyCatsApp.Tests.Services
         [TestMethod]
         public void DeleteImage_NullOrWhitespacePath_DoesNotThrow()
         {
-            service.DeleteImage("   ");
+            imageStorageService.DeleteImage("   ");
         }
 
         [TestMethod]
         public void DeleteImage_NonExistingFile_DoesNotThrow()
         {
-            string nonExistingPath = Path.Combine(tempDir, "nonexistent.jpg");
-            service.DeleteImage(nonExistingPath);
+            string nonExistingPath = Path.Combine(temporaryDirectory, "nonexistent.jpg");
+            imageStorageService.DeleteImage(nonExistingPath);
         }
     }
 }
