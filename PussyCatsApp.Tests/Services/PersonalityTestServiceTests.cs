@@ -90,8 +90,9 @@ namespace PussyCatsApp.Tests.Services
                 { JobRole.BackendDeveloper, 20 },
                 { JobRole.UIUXDesigner, 15 }
             };
+            int numberOfTopRolesToReturn = 2;
             //Act
-            var result = personalityTestService.GetTopRoles(roleScores, 2);
+            var result = personalityTestService.GetTopRoles(roleScores, numberOfTopRolesToReturn);
             //Assert
             Assert.AreEqual(2, result.Count);
         }
@@ -108,8 +109,9 @@ namespace PussyCatsApp.Tests.Services
                 { JobRole.BackendDeveloper, 20 },
                 { JobRole.UIUXDesigner, 15 }
             };
+            int numberOfTopRolesToReturn = 3;
             //Act
-            var result = personalityTestService.GetTopRoles(roleScores, 3).ToList();
+            var result = personalityTestService.GetTopRoles(roleScores, numberOfTopRolesToReturn).ToList();
             //Assert
             Assert.AreEqual(JobRole.BackendDeveloper, result[0].Key);
         }
