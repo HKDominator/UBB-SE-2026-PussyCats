@@ -26,9 +26,9 @@ namespace PussyCatsApp.Tests.Repositories
             string expectedResult = "Expected Personality Result";
             int userId = TestDatabaseHelper.InsertUser(personalityTestResult: expectedResult);
 
-            var resultFromDb = Repository.Load(userId);
+            var resultFromDatabase = Repository.Load(userId);
 
-            Assert.AreEqual(expectedResult, resultFromDb);
+            Assert.AreEqual(expectedResult, resultFromDatabase);
 
         }
 
@@ -36,8 +36,8 @@ namespace PussyCatsApp.Tests.Repositories
         public void Load_UserDoesNotExist_ExpectsNullResult()
         {
             int nonExistentId = 10876;
-            var resultFromDb = Repository.Load(nonExistentId);
-            Assert.IsNull(resultFromDb);
+            var resultFromDatabase = Repository.Load(nonExistentId);
+            Assert.IsNull(resultFromDatabase);
         }
 
         [TestMethod]
@@ -49,9 +49,9 @@ namespace PussyCatsApp.Tests.Repositories
 
             Repository.Save(userId, afterResult);
 
-            string resultFromDb=TestDatabaseHelper.GetUserPersonalityTestResult(userId);
+            string resultFromDatabase=TestDatabaseHelper.GetUserPersonalityTestResult(userId);
 
-            Assert.AreEqual(afterResult, resultFromDb);
+            Assert.AreEqual(afterResult, resultFromDatabase);
         }
 
 

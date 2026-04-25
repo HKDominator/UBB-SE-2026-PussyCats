@@ -39,8 +39,8 @@ namespace PussyCatsApp.Repositories
                                 DateOnly dateResult;
                                 if (reader["achievedDate"] != DBNull.Value)
                                 {
-                                    DateTime dbDate = (DateTime)reader["achievedDate"];
-                                    dateResult = DateOnly.FromDateTime(dbDate);
+                                    DateTime databaseDate = (DateTime)reader["achievedDate"];
+                                    dateResult = DateOnly.FromDateTime(databaseDate);
                                 }
                                 else
                                 {
@@ -119,8 +119,8 @@ namespace PussyCatsApp.Repositories
                                 DateOnly dateResult;
                                 if (reader["achievedDate"] != DBNull.Value)
                                 {
-                                    DateTime dbDate = (DateTime)reader["achievedDate"];
-                                    dateResult = DateOnly.FromDateTime(dbDate);
+                                    DateTime databaseDate = (DateTime)reader["achievedDate"];
+                                    dateResult = DateOnly.FromDateTime(databaseDate);
                                 }
                                 else
                                 {

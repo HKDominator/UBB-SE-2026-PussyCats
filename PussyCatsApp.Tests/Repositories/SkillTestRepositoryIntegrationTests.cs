@@ -30,9 +30,9 @@ namespace PussyCatsApp.Tests.Repositories
             int userId = TestDatabaseHelper.InsertUser();
             int skillId = TestDatabaseHelper.InsertSkill(userId, SkillName, InitialScore, now);
 
-            SkillTest resultFromDb = Repository.Load(skillId);
+            SkillTest resultFromDatabase = Repository.Load(skillId);
 
-            Assert.AreEqual(SkillName, resultFromDb.Name);
+            Assert.AreEqual(SkillName, resultFromDatabase.Name);
         }
 
         [TestMethod]

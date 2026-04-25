@@ -489,17 +489,17 @@ namespace PussyCatsApp.Repositories
                         @profilePicture, @parsedCV, @formDataJson
                     )";
 
-            string genderDbValue;
+            string genderDatabaseValue;
             switch (profile.Gender)
             {
                 case "Male":
-                    genderDbValue = "M";
+                    genderDatabaseValue = "M";
                     break;
                 case "Female":
-                    genderDbValue = "F";
+                    genderDatabaseValue = "F";
                     break;
                 default:
-                    genderDbValue = profile.Gender;
+                    genderDatabaseValue = profile.Gender;
                     break;
             }
 
@@ -507,12 +507,12 @@ namespace PussyCatsApp.Repositories
             updateOrInsertCommand.Parameters.AddWithValue("@firstName", profile.FirstName);
             updateOrInsertCommand.Parameters.AddWithValue("@lastName", profile.LastName);
 
-            object genderParam = DBNull.Value;
-            if (genderDbValue != null)
+            object genderParameter = DBNull.Value;
+            if (genderDatabaseValue != null)
             {
-                genderParam = genderDbValue;
+                genderParameter = genderDatabaseValue;
             }
-            updateOrInsertCommand.Parameters.AddWithValue("@gender", genderParam);
+            updateOrInsertCommand.Parameters.AddWithValue("@gender", genderParameter);
 
             updateOrInsertCommand.Parameters.AddWithValue("@age", profile.Age);
             updateOrInsertCommand.Parameters.AddWithValue("@email", profile.Email);
