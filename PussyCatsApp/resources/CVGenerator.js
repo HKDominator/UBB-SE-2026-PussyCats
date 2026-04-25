@@ -55,7 +55,7 @@ const CVGenerator = (() => {
 
     // ── Helpers ───────────────────────────────────────────────────
 
-    function esc(str) {
+    function escapeSpecialCharactersInString(str) {
         if (!str) return '';
         return String(str)
             .replace(/&/g, '&amp;')
@@ -64,61 +64,62 @@ const CVGenerator = (() => {
             .replace(/"/g, '&quot;');
     }
 
-    function hasValue(v) {
-        if (v === null || v === undefined) return false;
-        if (Array.isArray(v)) return v.length > 0;
-        if (typeof v === 'string') return v.trim() !== '';
-        if (typeof v === 'number') return v !== 0;
-        return Boolean(v);
+    function hasValue(value) {
+        if (value === null || value === undefined) return false;
+        if (Array.isArray(value)) return value.length > 0;
+        if (typeof value === 'string') return value.trim() !== '';
+        if (typeof value === 'number') return value !== 0;
+        return Boolean(value);
     }
 
     function formatDate(dateValue) {
         if (!dateValue) return '';
+        let delimiterCharacter = 'T';
         // extract just the date part
         if (typeof dateValue === 'string') {
-            return dateValue.split('T')[0];
+            return dateValue.split(delimiterCharacter)[0];
         }
         // i it's a Date object, format it
         if (dateValue instanceof Date) {
-            return dateValue.toISOString().split('T')[0];
+            return dateValue.toISOString().split(delimiterCharacter)[0];
         }
         return String(dateValue);
     }
 
     // ── Renderers ─────────────────────────────────────────────────
 
-    function renderWorkExperience(entries = []) {
-        return entries.map(w => `
+    function renderWorkExperience(workExperienceEntries = []) {
+        return workExperienceEntries.map(workExperience => `
         <div class="work-entry">
             <div class="work-line">
-                <span class="work-role">${esc(w.jobTitle)}</span>
-                <span class="work-company">${esc(w.company)}</span>
+                <span class="work-role">${escapeSpecialCharactersInString(workExperience.jobTitle)}</span>
+                <span class="work-company">${escapeSpecialCharactersInString(workExperience.company)}</span>
                 <span class="work-divider"></span>
-                <span class="work-period">${formatDate(w.startDate)} – ${w.currentlyWorking || !w.endDate ? 'Present' : formatDate(w.endDate)}</span>
+                <span class="work-period">${formatDate(workExperience.startDate)} – ${workExperience.currentlyWorking || !workExperience.endDate ? 'Present' : formatDate(workExperience.endDate)}</span>
             </div>
-            ${w.description ? `<p class="work-description">${esc(w.description)}</p>` : ''}
+            ${workExperience.description ? `<p class="work-description">${escapeSpecialCharactersInString(workExperience.description)}</p>` : ''}
         </div>`).join('');
     }
 
-    function renderProjects(entries = []) {
-        return entries.map(p => `
+    function renderProjects(projectEntries = []) {
+        return projectEntries.map(project => `
         <div class="project-entry-custom">
             <div class="project-line">
-                <span class="project-title">${esc(p.name)}</span>
+                <span class="project-title">${escapeSpecialCharactersInString(project.name)}</span>
                 <span class="project-divider"></span>
-                ${p.url ? `<span class="project-period"><a href="${esc(p.url)}" style="color:#2d6a9f;font-size:7.5pt">${esc(p.url)}</a></span>` : ''}
+                ${project.url ? `<span class="project-period"><a href="${escapeSpecialCharactersInString(project.url)}" style="color:#2d6a9f;font-size:7.5pt">${escapeSpecialCharactersInString(project.url)}</a></span>` : ''}
             </div>
-            ${p.technologies?.length ? `<div class="project-tech">${p.technologies.map(esc).join(' · ')}</div>` : ''}
-            ${p.description ? `<p class="project-description">${esc(p.description)}</p>` : ''}
+            ${project.technologies?.length ? `<div class="project-tech">${project.technologies.map(escapeSpecialCharactersInString).join(' · ')}</div>` : ''}
+            ${project.description ? `<p class="project-description">${escapeSpecialCharactersInString(project.description)}</p>` : ''}
         </div>`).join('');
     }
 
-    function renderExtraCurricular(entries = []) {
-        return entries.map(a => `
+    function renderExtraCurricular(extraCurricularEntries = []) {
+        return extraCurricularEntries.map(extraCurricularActivity => `
         <div class="extra-entry">
-            <div class="extra-title">${esc(a.activityName)}</div>
-            <div class="extra-meta">${[a.organization, a.role, a.period].filter(Boolean).map(esc).join(' · ')}</div>
-            ${a.description ? `<div class="extra-desc">${esc(a.description)}</div>` : ''}
+            <div class="extra-title">${escapeSpecialCharactersInString(extraCurricularActivity.activityName)}</div>
+            <div class="extra-meta">${[extraCurricularActivity.organization, extraCurricularActivity.role, extraCurricularActivity.period].filter(Boolean).map(escapeSpecialCharactersInString).join(' · ')}</div>
+            ${extraCurricularActivity.description ? `<div class="extra-desc">${escapeSpecialCharactersInString(extraCurricularActivity.description)}</div>` : ''}
         </div>`).join('');
     }
 
@@ -143,8 +144,8 @@ const CVGenerator = (() => {
 
         return Object.entries(buckets).map(([label, tags]) => `
             <div class="skill-group">
-                <div class="skill-group-label">${esc(label)}</div>
-                <div class="skill-tags">${tags.map(t => `<span class="skill-tag">${esc(t)}</span>`).join('')}</div>
+                <div class="skill-group-label">${escapeSpecialCharactersInString(label)}</div>
+                <div class="skill-tags">${tags.map(tag => `<span class="skill-tag">${escapeSpecialCharactersInString(tag)}</span>`).join('')}</div>
             </div>`).join('');
     }
 
@@ -152,29 +153,32 @@ const CVGenerator = (() => {
 
     /** Replace text content of all elements matching selector */
     function setText(selector, value) {
-        document.querySelectorAll(selector).forEach(el => {
-            el.textContent = value || '';
+        let defaultValue = '';
+        document.querySelectorAll(selector).forEach(element => {
+            element.textContent = value || defaultValue;
         });
     }
 
     /** Show or hide a section based on whether data has a value */
     function toggleSection(sectionId, show) {
-        const el = document.getElementById(sectionId);
-        if (el) el.style.display = show ? '' : 'none';
+        const element = document.getElementById(sectionId);
+        if (element) element.style.display = show ? '' : 'none';
     }
 
     /** Set inner HTML of an element */
-    function setHtml(selector, html) {
-        const el = document.querySelector(selector);
-        if (el) el.innerHTML = html;
+    function setHtml(selector, htmlContent) {
+        const element = document.querySelector(selector);
+        if (element) element.innerHTML = htmlContent;
     }
 
     /** Set href and text of a link element */
     function setLink(selector, value) {
-        const el = document.querySelector(selector);
-        if (el) {
-            el.href = value || '#';
-            el.textContent = value || '';
+        const element = document.querySelector(selector);
+        let defaultHref = '#'; 
+        let defaultTextContent = '';
+        if (element) {
+            element.href = value || defaultHref;
+            element.textContent = value || defaultTextContent;
         }
     }
 
@@ -182,41 +186,45 @@ const CVGenerator = (() => {
     // PUBLIC API
     // ─────────────────────────────────────────────────────────────
 
-    function generate(profile) {
+    function generateProfile(profile) {
 
+        let defaultFirstName = '';
+        let defaultLastName = '';
+        let defaultCity = '';
+        let deafultCountry = '';
         // ── Header ────────────────────────────────────────────────
-        setText('#cv-name', `${profile.firstName || ''} ${profile.lastName || ''}`);
+        setText('#cv-name', `${profile.firstName || defaultFirstName} ${profile.lastName || defaultLastName}`);
         setText('#cv-email', profile.email);
         setText('#cv-phone', profile.phoneNumber);
-        setText('#cv-location', `${profile.city || ''} ${profile.country || ''}`);
+        setText('#cv-location', `${profile.city || defaultCity} ${profile.country || defaultCountry}`);
 
-        const githubEl = document.getElementById('cv-github');
-        if (githubEl) {
+        const githubElement = document.getElementById('cv-github');
+        if (githubElement) {
             if (hasValue(profile.gitHub)) {
-                githubEl.style.display = '';
-                githubEl.querySelector('a').href = profile.gitHub;
-                githubEl.querySelector('a').textContent = profile.gitHub;
+                githubElement.style.display = '';
+                githubElement.querySelector('a').href = profile.gitHub;
+                githubElement.querySelector('a').textContent = profile.gitHub;
             } else {
-                githubEl.style.display = 'none';
+                githubElement.style.display = 'none';
             }
         }
 
-        const linkedInEl = document.getElementById('cv-linkedin');
-        if (linkedInEl) {
+        const linkedInElement = document.getElementById('cv-linkedin');
+        if (linkedInElement) {
             if (hasValue(profile.linkedIn)) {
-                linkedInEl.style.display = '';
-                linkedInEl.querySelector('a').href = profile.linkedIn;
-                linkedInEl.querySelector('a').textContent = profile.linkedIn;
+                linkedInElement.style.display = '';
+                linkedInElement.querySelector('a').href = profile.linkedIn;
+                linkedInElement.querySelector('a').textContent = profile.linkedIn;
             } else {
-                linkedInEl.style.display = 'none';
+                linkedInElement.style.display = 'none';
             }
         }
 
         // ── Education ─────────────────────────────────────────────
-        const eduSection = document.getElementById('section-education');
-        if (eduSection) {
+        const educationSection = document.getElementById('section-education');
+        if (educationSection) {
             if (hasValue(profile.university)) {
-                eduSection.style.display = '';
+                educationSection.style.display = '';
                 setText('#cv-university', profile.university);
                 setText('#cv-degree', profile.degree || '');
                 setText('#cv-graduation',
@@ -224,7 +232,7 @@ const CVGenerator = (() => {
                 setText('#cv-university-start',
                     profile.universityStartYear ? profile.universityStartYear : '');
             } else {
-                eduSection.style.display = 'none';
+                educationSection.style.display = 'none';
             }
         }
 
@@ -251,13 +259,13 @@ const CVGenerator = (() => {
         }
 
         // ── Extracurricular ───────────────────────────────────────
-        const extraSection = document.getElementById('section-extra');
-        if (extraSection) {
+        const extraCurricularSection = document.getElementById('section-extra');
+        if (extraCurricularSection) {
             if (hasValue(profile.extraCurricularActivities)) {
-                extraSection.style.display = '';
+                extraCurricularSection.style.display = '';
                 setHtml('#extra-list', renderExtraCurricular(profile.extraCurricularActivities));
             } else {
-                extraSection.style.display = 'none';
+                extraCurricularSection.style.display = 'none';
             }
         }
 
@@ -274,7 +282,7 @@ const CVGenerator = (() => {
         }
     }
 
-    return { generate };
+    return { generateProfile };
 
 })();
 

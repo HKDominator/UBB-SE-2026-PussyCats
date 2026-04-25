@@ -34,7 +34,7 @@ namespace PussyCatsApp.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
 
-            await webView.ExecuteScriptAsync($"CVGenerator.generate({json});");
+            await webView.ExecuteScriptAsync($"CVGenerator.generateProfile({json});");
 
             // Wait for DOM updates to settle
             await Task.Delay(RenderDelayMilliseconds);
