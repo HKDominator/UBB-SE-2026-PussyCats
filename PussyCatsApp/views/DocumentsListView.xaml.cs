@@ -117,10 +117,10 @@ namespace PussyCatsApp.Views
 
                 LoadGrid();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                ShowUploadError(ex.Message);
-                Debug.WriteLine($"[DocumentsView] Upload error: {ex}");
+                ShowUploadError(exception.Message);
+                Debug.WriteLine($"[DocumentsView] Upload error: {exception}");
             }
         }
 
@@ -151,9 +151,9 @@ namespace PussyCatsApp.Views
                 listViewModel.DeleteDocument(document.Id);
                 LoadGrid();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                ShowStatus(ex.Message);
+                ShowStatus(exception.Message);
             }
         }
 

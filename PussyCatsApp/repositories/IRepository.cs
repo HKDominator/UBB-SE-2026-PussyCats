@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PussyCatsApp.Repositories
 {
-    public interface IRepository<T>
+    public interface IRepository<Type>
     {
-        T? Load(int id);
-        void Save(int id, T data);
+        Type? Load(int id);
+        void Save(int id, Type data);
     }
 }

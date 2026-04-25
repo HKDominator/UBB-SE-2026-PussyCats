@@ -74,9 +74,9 @@ namespace PussyCatsApp.Services
 
                 throw new Exception(UnsupportedTypeMessage);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                throw new Exception(ParseErrorMessage + ex.Message, ex);
+                throw new Exception(ParseErrorMessage + exception.Message, exception);
             }
         }
 

@@ -44,13 +44,13 @@ namespace PussyCatsApp.Repositories
                     documents.Add(document);
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine($"Database error retrieving documents for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"Database error retrieving documents for user {userId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine($"An error occurred retrieving documents for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"An error occurred retrieving documents for user {userId}: {exception.Message}");
             }
 
             return documents;
@@ -82,13 +82,13 @@ namespace PussyCatsApp.Repositories
                     return document;
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine($"Database error retrieving document with ID {documentId}: {ex.Message}");
+                Console.Error.WriteLine($"Database error retrieving document with ID {documentId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine($"An error occurred retrieving document with ID {documentId}: {ex.Message}");
+                Console.Error.WriteLine($"An error occurred retrieving document with ID {documentId}: {exception.Message}");
             }
             return null;
         }
@@ -119,13 +119,13 @@ namespace PussyCatsApp.Repositories
 
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine($"Database error adding document for user {document.UserId}: {ex.Message}");
+                Console.Error.WriteLine($"Database error adding document for user {document.UserId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine($"An error occurred adding document for user {document.UserId}: {ex.Message}");
+                Console.Error.WriteLine($"An error occurred adding document for user {document.UserId}: {exception.Message}");
             }
         }
         public void DeleteDocument(int documentId)
@@ -141,13 +141,13 @@ namespace PussyCatsApp.Repositories
                 command.Parameters.AddWithValue("@Id", documentId);
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine($"Database error deleting document with ID {documentId}: {ex.Message}");
+                Console.Error.WriteLine($"Database error deleting document with ID {documentId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine($"An error occurred deleting document with ID {documentId}: {ex.Message}");
+                Console.Error.WriteLine($"An error occurred deleting document with ID {documentId}: {exception.Message}");
             }
         }
 

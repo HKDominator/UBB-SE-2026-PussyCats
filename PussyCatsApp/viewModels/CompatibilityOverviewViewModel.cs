@@ -34,9 +34,9 @@ namespace PussyCatsApp.ViewModels
                 roleResults = compatibilityService.CalculateAll(currentUserId);
                 errorMessage = null;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                errorMessage = ex.Message;
+                errorMessage = exception.Message;
             }
         }
 

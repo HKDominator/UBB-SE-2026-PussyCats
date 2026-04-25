@@ -19,7 +19,7 @@ public class PersonalityTestRepository : IPersonalityTestRepository
         this.connectionString = connectionString;
     }
 
-    public string? Load(int id)
+    public string? Load(int userId)
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
@@ -28,7 +28,7 @@ public class PersonalityTestRepository : IPersonalityTestRepository
                 connection.Open();
                 using (SqlCommand selectPersonalityTestResultCommand = new SqlCommand("SELECT personalityTestResult FROM Users WHERE userID = @userID", connection))
                 {
-                    selectPersonalityTestResultCommand.Parameters.AddWithValue("@userID", id);
+                    selectPersonalityTestResultCommand.Parameters.AddWithValue("@userID", userId);
                     using (SqlDataReader reader = selectPersonalityTestResultCommand.ExecuteReader())
                     {
                         if (reader.Read())
@@ -38,9 +38,9 @@ public class PersonalityTestRepository : IPersonalityTestRepository
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Debug.WriteLine($"Database error: {ex.Message}");
+                Debug.WriteLine($"Database error: {exception.Message}");
             }
         }
 
@@ -61,9 +61,9 @@ public class PersonalityTestRepository : IPersonalityTestRepository
                     updatePersonalityTestResultByUserIdCommand.ExecuteNonQuery();
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Debug.WriteLine($"Database error: {ex.Message}");
+                Debug.WriteLine($"Database error: {exception.Message}");
             }
         }
     }

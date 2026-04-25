@@ -47,13 +47,13 @@ namespace PussyCatsApp.Repositories
                     });
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine($"Database error retrieving matches for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"Database error retrieving matches for user {userId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine($"An error occurred retrieving matches for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"An error occurred retrieving matches for user {userId}: {exception.Message}");
             }
 
             return matches;

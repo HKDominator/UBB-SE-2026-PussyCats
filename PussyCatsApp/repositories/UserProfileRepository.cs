@@ -58,9 +58,9 @@ namespace PussyCatsApp.Repositories
                 connection.Open();
                 Debug.WriteLine("Database connection opened successfully.");
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"Failed to connect to database.{e.Message}");
+                Debug.WriteLine($"Failed to connect to database.{exception.Message}");
                 return null;
             }
 
@@ -79,9 +79,9 @@ namespace PussyCatsApp.Repositories
 
                 return profile;
             }
-            catch (SqlException e)
+            catch (SqlException exception)
             {
-                Debug.WriteLine($"SQL Exception: {e.Message}");
+                Debug.WriteLine($"SQL Exception: {exception.Message}");
                 return null;
             }
             finally
@@ -106,9 +106,9 @@ namespace PussyCatsApp.Repositories
                 UpsertUserRow(connection, databaseTransaction, id, profileData);
                 databaseTransaction.Commit();
             }
-            catch (SqlException e)
+            catch (SqlException exception)
             {
-                Debug.WriteLine($"SQL Exception: {e.Message}");
+                Debug.WriteLine($"SQL Exception: {exception.Message}");
             }
             finally
             {
@@ -140,13 +140,13 @@ namespace PussyCatsApp.Repositories
                     Console.WriteLine($"No user found with ID {userId} to update account status");
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine($"Database error updating account status for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"Database error updating account status for user {userId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine($"An error occurred updating account status for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"An error occurred updating account status for user {userId}: {exception.Message}");
             }
         }
 
@@ -165,13 +165,13 @@ namespace PussyCatsApp.Repositories
 
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Debug.WriteLine($"Database error updating LastModified for user {userId}: {ex.Message}");
+                Debug.WriteLine($"Database error updating LastModified for user {userId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"An error occurred updating LastModified for user {userId}: {ex.Message}");
+                Debug.WriteLine($"An error occurred updating LastModified for user {userId}: {exception.Message}");
             }
         }
 
@@ -195,13 +195,13 @@ namespace PussyCatsApp.Repositories
 
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine($"Database error updating profile picture for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"Database error updating profile picture for user {userId}: {exception.Message}");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine($"An error occurred updating profile picture for user {userId}: {ex.Message}");
+                Console.Error.WriteLine($"An error occurred updating profile picture for user {userId}: {exception.Message}");
             }
         }
 
@@ -229,12 +229,14 @@ namespace PussyCatsApp.Repositories
             string rawGenderValue = GetString(dataReader, "gender").Trim();
             string genderToDisplay;
 
+            const string maleShortValue = "M";
+            const string femaleShortValue = "F";
             switch (rawGenderValue)
             {
-                case "M":
+                case maleShortValue:
                     genderToDisplay = "Male";
                     break;
-                case "F":
+                case femaleShortValue:
                     genderToDisplay = "Female";
                     break;
                 default:
@@ -487,17 +489,17 @@ namespace PussyCatsApp.Repositories
                         @profilePicture, @parsedCV, @formDataJson
                     )";
 
-            string genderDbValue;
+            string genderDatabaseValue;
             switch (profile.Gender)
             {
                 case "Male":
-                    genderDbValue = "M";
+                    genderDatabaseValue = "M";
                     break;
                 case "Female":
-                    genderDbValue = "F";
+                    genderDatabaseValue = "F";
                     break;
                 default:
-                    genderDbValue = profile.Gender;
+                    genderDatabaseValue = profile.Gender;
                     break;
             }
 
@@ -505,12 +507,12 @@ namespace PussyCatsApp.Repositories
             updateOrInsertCommand.Parameters.AddWithValue("@firstName", profile.FirstName);
             updateOrInsertCommand.Parameters.AddWithValue("@lastName", profile.LastName);
 
-            object genderParam = DBNull.Value;
-            if (genderDbValue != null)
+            object genderParameter = DBNull.Value;
+            if (genderDatabaseValue != null)
             {
-                genderParam = genderDbValue;
+                genderParameter = genderDatabaseValue;
             }
-            updateOrInsertCommand.Parameters.AddWithValue("@gender", genderParam);
+            updateOrInsertCommand.Parameters.AddWithValue("@gender", genderParameter);
 
             updateOrInsertCommand.Parameters.AddWithValue("@age", profile.Age);
             updateOrInsertCommand.Parameters.AddWithValue("@email", profile.Email);

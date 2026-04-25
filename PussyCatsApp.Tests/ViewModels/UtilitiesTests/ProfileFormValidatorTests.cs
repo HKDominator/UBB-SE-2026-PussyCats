@@ -228,7 +228,8 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
             workExperiences.Add(workExperienceCurrentlyWorking);
 
             List<string> errorsWithWorkExperienceCurrentlyWorking = ProfileFormValidator.ValidateForm(firstName, lastName, age, gender, email, phonePrefix, phoneNumber, country, city, university, expectedGraduationYear, workExperiences);
-            Assert.AreEqual(0, errorsWithWorkExperienceCurrentlyWorking.Count); /// Everything should be fine
+            const int expectedNumberOfErrors = 0; /// Everything should be fine
+            Assert.AreEqual(expectedNumberOfErrors, errorsWithWorkExperienceCurrentlyWorking.Count); 
         }
 
         [TestMethod]
@@ -260,7 +261,8 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
             workExperiences.Add(workExperienceRight);
 
             List<string> errorsWithWorkExperienceCurrentlyWorking = ProfileFormValidator.ValidateForm(firstName, lastName, age, gender, email, phonePrefix, phoneNumber, country, city, university, expectedGraduationYear, workExperiences);
-            Assert.AreEqual(0, errorsWithWorkExperienceCurrentlyWorking.Count); /// Everything should be fine
+            const int expectedNumberOfErrors = 0; /// Everything should be fine
+            Assert.AreEqual(expectedNumberOfErrors, errorsWithWorkExperienceCurrentlyWorking.Count); /// Everything should be fine
         }
     }
 }

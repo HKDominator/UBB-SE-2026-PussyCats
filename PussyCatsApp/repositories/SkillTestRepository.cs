@@ -39,8 +39,8 @@ namespace PussyCatsApp.Repositories
                                 DateOnly dateResult;
                                 if (reader["achievedDate"] != DBNull.Value)
                                 {
-                                    DateTime dbDate = (DateTime)reader["achievedDate"];
-                                    dateResult = DateOnly.FromDateTime(dbDate);
+                                    DateTime databaseDate = (DateTime)reader["achievedDate"];
+                                    dateResult = DateOnly.FromDateTime(databaseDate);
                                 }
                                 else
                                 {
@@ -53,13 +53,13 @@ namespace PussyCatsApp.Repositories
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine("Database error loading skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("Database error loading skill " + skillId + ": " + exception.Message);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine("An error occurred loading skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("An error occurred loading skill " + skillId + ": " + exception.Message);
             }
 
             throw new Exception("SkillTest with ID " + skillId + " not found.");
@@ -84,13 +84,13 @@ namespace PussyCatsApp.Repositories
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine("Database error saving skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("Database error saving skill " + skillId + ": " + exception.Message);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine("An error occurred saving skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("An error occurred saving skill " + skillId + ": " + exception.Message);
             }
         }
 
@@ -119,8 +119,8 @@ namespace PussyCatsApp.Repositories
                                 DateOnly dateResult;
                                 if (reader["achievedDate"] != DBNull.Value)
                                 {
-                                    DateTime dbDate = (DateTime)reader["achievedDate"];
-                                    dateResult = DateOnly.FromDateTime(dbDate);
+                                    DateTime databaseDate = (DateTime)reader["achievedDate"];
+                                    dateResult = DateOnly.FromDateTime(databaseDate);
                                 }
                                 else
                                 {
@@ -134,13 +134,13 @@ namespace PussyCatsApp.Repositories
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine("Database error retrieving skills for user " + userId + ": " + ex.Message);
+                Console.Error.WriteLine("Database error retrieving skills for user " + userId + ": " + exception.Message);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine("An error occurred retrieving skills for user " + userId + ": " + ex.Message);
+                Console.Error.WriteLine("An error occurred retrieving skills for user " + userId + ": " + exception.Message);
             }
 
             return skillTests;
@@ -164,13 +164,13 @@ namespace PussyCatsApp.Repositories
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine("Database error updating score for skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("Database error updating score for skill " + skillId + ": " + exception.Message);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine("An error occurred updating score for skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("An error occurred updating score for skill " + skillId + ": " + exception.Message);
             }
         }
 
@@ -192,13 +192,13 @@ namespace PussyCatsApp.Repositories
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException exception)
             {
-                Console.Error.WriteLine("Database error updating achieved date for skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("Database error updating achieved date for skill " + skillId + ": " + exception.Message);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine("An error occurred updating achieved date for skill " + skillId + ": " + ex.Message);
+                Console.Error.WriteLine("An error occurred updating achieved date for skill " + skillId + ": " + exception.Message);
             }
         }
     }

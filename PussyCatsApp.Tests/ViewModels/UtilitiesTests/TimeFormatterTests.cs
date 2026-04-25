@@ -15,7 +15,8 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         [TestMethod]
         public void CalculateFreshnessLabel_Updated_Yesterday_ReturnsCorrectFormatted()
         {
-            DateTime targetDateYesterday = DateTime.Now.Date.AddDays(-1);
+            int numberOfDays = 1;
+            DateTime targetDateYesterday = DateTime.Now.Date.AddDays(-numberOfDays);
             Assert.AreEqual("Profile last updated: Yesterday", TimeFormatter.CalculateFreshnessLabel(targetDateYesterday));
         }
 
