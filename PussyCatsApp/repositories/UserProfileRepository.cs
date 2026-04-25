@@ -536,64 +536,6 @@ namespace PussyCatsApp.Repositories
             updateOrInsertCommand.ExecuteNonQuery();
         }
 
-        // private static void SaveSkills(SqlConnection connection, SqlTransaction transaction,
-        //    int userId, List<string> skills)
-        // {
-        //    using (var del = connection.CreateCommand())
-        //    {
-        //        del.Transaction = transaction;
-        //        del.CommandText = "DELETE FROM Skills WHERE userID = @id";
-        //        del.Parameters.AddWithValue("@id", userId);
-        //        del.ExecuteNonQuery();
-        //    }
-
-        // foreach (var skill in skills ?? new List<string>())
-        //    {
-        //        using var cmd = connection.CreateCommand();
-        //        cmd.Transaction = transaction;
-        //        cmd.CommandText = "INSERT INTO Skills (userID, name) VALUES (@uid, @name)";
-        //        cmd.Parameters.AddWithValue("@uid", userId);
-        //        cmd.Parameters.AddWithValue("@name", skill);
-        //        cmd.ExecuteNonQuery();
-        //    }
-        // }
-
-        // private static void SavePreferences(SqlConnection connection, SqlTransaction transaction,
-        //    int userId, UserProfile profile)
-        // {
-        //    using (var del = connection.CreateCommand())
-        //    {
-        //        del.Transaction = transaction;
-        //        del.CommandText = "DELETE FROM Preferences WHERE userID = @id";
-        //        del.Parameters.AddWithValue("@id", userId);
-        //        del.ExecuteNonQuery();
-        //    }
-
-        // void Insert(string type, string value)
-        //    {
-        //        if (string.IsNullOrWhiteSpace(value))
-        //        {
-        //            return;
-        //        }
-        //        using var cmd = connection.CreateCommand();
-        //        cmd.Transaction = transaction;
-        //        cmd.CommandText = @"
-        //            INSERT INTO Preferences (userID, preferanceType, value)
-        //            VALUES (@uid, @type, @value)";
-        //        cmd.Parameters.AddWithValue("@uid", userId);
-        //        cmd.Parameters.AddWithValue("@type", type);
-        //        cmd.Parameters.AddWithValue("@value", value);
-        //        cmd.ExecuteNonQuery();
-        //    }
-
-        // foreach (var role in profile.PreferredJobRoles ?? new List<string>())
-        //    {
-        //        Insert("JobRole", role);
-        //    }
-
-        // Insert("WorkMode", profile.WorkModePreference);
-        // Insert("Location", profile.LocationPreference);
-        // }
         private static string GetString(SqlDataReader reader, string columnName)
         {
             int ordinalIndex = reader.GetOrdinal(columnName);
