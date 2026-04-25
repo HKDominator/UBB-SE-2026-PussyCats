@@ -30,8 +30,8 @@ namespace PussyCatsApp.Tests.Services
             service.SavePreferences(1, roles, workMode, location);
 
             // Assert
-            mockRepo.Verify(r => r.DeleteAllByUserId(1), Times.Once);
-            mockRepo.Verify(r => r.AddPreference(It.IsAny<Preference>()), Times.Exactly(roles.Count + 2));
+            mockRepo.Verify(preferencesDeletedForUser => preferencesDeletedForUser.DeleteAllByUserId(1), Times.Once);
+            mockRepo.Verify(addPreferenceForAUser => addPreferenceForAUser.AddPreference(It.IsAny<Preference>()), Times.Exactly(roles.Count + 2));
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -63,7 +63,7 @@ namespace PussyCatsApp.Tests.Services
             var result = service.SearchLocations("London");
 
             // Assert
-            Assert.IsTrue(result.Any(r => r.Contains("London")));
+            Assert.IsTrue(result.Any(userLocationsList => userLocationsList.Contains("London")));
         }
         [TestMethod]
         public void SearchLocations_EmptyQuery_ReturnsEmptyList()

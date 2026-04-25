@@ -36,7 +36,7 @@ namespace PussyCatsApp.Tests.ViewModels
                 PreferenceType = "JobRole",
                 Value = "BackendDeveloper"
             };
-            mockPreferenceService.Setup(s => s.GetByUserId(testUserId)).Returns(new List<Preference>
+            mockPreferenceService.Setup(serviceForPreferencesJobs => serviceForPreferencesJobs.GetByUserId(testUserId)).Returns(new List<Preference>
             {
                 preference
             });
@@ -55,7 +55,7 @@ namespace PussyCatsApp.Tests.ViewModels
                 PreferenceType = "WorkMode",
                 Value = "Remote"
             };
-            mockPreferenceService.Setup(s => s.GetByUserId(testUserId)).Returns(new List<Preference>
+            mockPreferenceService.Setup(serviceForPreferencesWorkMode => serviceForPreferencesWorkMode.GetByUserId(testUserId)).Returns(new List<Preference>
             {
                 preference
             });
@@ -74,7 +74,7 @@ namespace PussyCatsApp.Tests.ViewModels
                 PreferenceType = "Location",
                 Value = location
             };
-            mockPreferenceService.Setup(s => s.GetByUserId(testUserId)).Returns(new List<Preference>
+            mockPreferenceService.Setup(serviceForPreferencesLocation => serviceForPreferencesLocation.GetByUserId(testUserId)).Returns(new List<Preference>
             {
                 preference
             });
