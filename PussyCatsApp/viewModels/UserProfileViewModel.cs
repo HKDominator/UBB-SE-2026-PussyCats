@@ -143,7 +143,8 @@ namespace PussyCatsApp.ViewModels
         {
             if (App.MainAppWindow is MainWindow mainWindow)
             {
-                mainWindow.NavigationFrame.Navigate(typeof(PersonalityTestView), 1);
+                int navigateOption = 1; // Default
+                mainWindow.NavigationFrame.Navigate(typeof(PersonalityTestView), navigateOption);
             }
         }
     }
