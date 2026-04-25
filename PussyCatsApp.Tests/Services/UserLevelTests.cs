@@ -1,6 +1,7 @@
 ﻿using PussyCatsApp.Models;
+using PussyCatsApp.Services;
 
-namespace PussyCatsApp.Tests.Models
+namespace PussyCatsApp.Tests.Services
 {
     [TestClass]
     public class UserLevelTests
@@ -23,7 +24,7 @@ namespace PussyCatsApp.Tests.Models
             int expectedMinXp,
             int expectedMaxXp)
         {
-            var level = UserLevel.CalculateLevel(xp);
+            var level = UserLevelService.CalculateLevel(xp);
 
             Assert.AreEqual(expectedLevel, level.LevelNumber);
             Assert.AreEqual(expectedTitle, level.Title);
@@ -35,7 +36,7 @@ namespace PussyCatsApp.Tests.Models
         [ExpectedException(typeof(ArgumentException))]
         public void CalculateLevel_NegativeXp_ThrowsArgumentException()
         {
-            var level = UserLevel.CalculateLevel(-1);
+            var level = UserLevelService.CalculateLevel(-1);
         }
 
 
@@ -52,9 +53,9 @@ namespace PussyCatsApp.Tests.Models
         [DataRow(900, 100)]
         public void GetLevelProgressPercent_GivenTotalPositiveXp_ReturnsCorrectProgress(int givenXp, int expectedPercentage)
         {
-            UserLevel level = UserLevel.CalculateLevel(givenXp);
+            UserLevel level = UserLevelService.CalculateLevel(givenXp);
 
-            int progressPercent = level.GetLevelProgressPercent(givenXp);
+            int progressPercent = UserLevelService.GetLevelProgressPercent(givenXp, level);
 
             Assert.AreEqual(expectedPercentage, progressPercent);
         }
@@ -64,7 +65,7 @@ namespace PussyCatsApp.Tests.Models
         public void GetLevelProgressPercent_GivenNegativeXp_ThrowsArgumentException()
         {
             UserLevel level = new UserLevel();
-            level.GetLevelProgressPercent(-23);
+            UserLevelService.GetLevelProgressPercent(-23, level);
         }
 
         [TestMethod]
@@ -77,8 +78,8 @@ namespace PussyCatsApp.Tests.Models
         [DataRow(799, 1)]
         public void GetXpToNextLevel_GivenTotalXpIn0To799Range_ReturnsCorrectXpToNextLevel(int givenXp, int expectedNrXpToNextLevel)
         {
-            var level = UserLevel.CalculateLevel(175);
-            int xpToNextLevel = level.GetXpToNextLevel(175);
+            var level = UserLevelService.CalculateLevel(175);
+            int xpToNextLevel = UserLevelService.GetXpToNextLevel(175,level);
             Assert.AreEqual(75, xpToNextLevel);
         }
 
@@ -87,8 +88,8 @@ namespace PussyCatsApp.Tests.Models
         [DataRow(900,0)]
         public void GetXpToNextLevel_GivenTotalXpAbove800_ReturnsCorrectXpToNextLevel(int givenXp, int expectedNrXpToNextLevel)
         {
-            var level = UserLevel.CalculateLevel(175);
-            int xpToNextLevel = level.GetXpToNextLevel(175);
+            var level = UserLevelService.CalculateLevel(175);
+            int xpToNextLevel = UserLevelService.GetXpToNextLevel(175,level);
             Assert.AreEqual(75, xpToNextLevel);
         }
 
@@ -96,7 +97,7 @@ namespace PussyCatsApp.Tests.Models
         [ExpectedException(typeof(ArgumentException))]
         public void GetXpToNextLevel_GivenTotalXpNegative_ThrowsArgumentException()
         {
-            var level = UserLevel.CalculateLevel(-10);
+            var level = UserLevelService.CalculateLevel(-10);
             
         }
     }

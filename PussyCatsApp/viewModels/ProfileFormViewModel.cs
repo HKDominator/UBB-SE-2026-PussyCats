@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PussyCatsApp.Utilities;
 using PussyCatsApp.Configuration;
+using PussyCatsApp.Models.Enumerators;
 
 namespace PussyCatsApp.ViewModels
 {

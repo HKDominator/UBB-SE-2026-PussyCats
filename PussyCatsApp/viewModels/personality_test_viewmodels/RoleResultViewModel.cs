@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 
 namespace PussyCatsApp.ViewModels
 {

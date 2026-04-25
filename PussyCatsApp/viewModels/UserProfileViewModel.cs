@@ -111,7 +111,7 @@ namespace PussyCatsApp.ViewModels
             try
             {
                 string newPath = imageStorageService.SaveImage(fileStream, fileName);
-                profileService.UpdateAvatarPath(UserProfile.UserId, newPath);
+                profileService.UpdateProfilePicturePath(UserProfile.UserId, newPath);
                 UserProfile.ProfilePicture = newPath;
             }
             catch (Exception exception)
@@ -126,7 +126,7 @@ namespace PussyCatsApp.ViewModels
             if (!string.IsNullOrEmpty(UserProfile?.ProfilePicture))
             {
                 imageStorageService.DeleteImage(UserProfile.ProfilePicture);
-                profileService.RemoveAvatarPath(UserProfile.UserId);
+                profileService.RemoveProfilePicturePath(UserProfile.UserId);
                 UserProfile.ProfilePicture = null;
             }
         }

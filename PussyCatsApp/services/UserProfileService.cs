@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 using PussyCatsApp.Repositories;
 
 namespace PussyCatsApp.Services
@@ -39,66 +40,66 @@ namespace PussyCatsApp.Services
             return userProfile.ActiveAccount;
         }
 
-        public void ToggleAccountStatus(int userId, string currentStatus)
+        public void ToggleAccountStatus(int userId, string currentAccountStatus)
         {
-            string newStatus = currentStatus == AccountStatus.Active.ToString().ToUpper()
+            string newAccountStatus = currentAccountStatus == AccountStatus.Active.ToString().ToUpper()
                 ? AccountStatus.Inactive.ToString().ToUpper()
                 : AccountStatus.Active.ToString().ToUpper();
 
-            userProfileRepository.UpdateAccountStatus(userId, newStatus);
+            userProfileRepository.UpdateAccountStatus(userId, newAccountStatus);
             userProfileRepository.UpdateProfileLastModified(userId, DateTime.Now);
         }
 
-        public void UpdateAvatarPath(int userId, string newPath)
+        public void UpdateProfilePicturePath(int userId, string newProfilePicturePath)
         {
-            userProfileRepository.UpdateProfilePicture(userId, newPath);
+            userProfileRepository.UpdateProfilePicture(userId, newProfilePicturePath);
             userProfileRepository.UpdateProfileLastModified(userId, DateTime.Now);
         }
 
-        public void RemoveAvatarPath(int userId)
+        public void RemoveProfilePicturePath(int userId)
         {
             userProfileRepository.UpdateProfilePicture(userId, null);
             userProfileRepository.UpdateProfileLastModified(userId, DateTime.Now);
         }
 
-        public string GenerateParsedCVText(UserProfile profile)
+        public string GenerateParsedCVText(UserProfile userProfile)
         {
-            if (profile == null)
+            if (userProfile == null)
             {
                 return string.Empty;
             }
 
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"{profile.FirstName} {profile.LastName}".Trim());
-            stringBuilder.AppendLine(profile.University ?? string.Empty);
-            stringBuilder.AppendLine(string.Join(", ", profile.Skills ?? new List<string>()));
-            return stringBuilder.ToString().TrimEnd();
+            var parsedCvTextBuilder = new StringBuilder();
+            parsedCvTextBuilder.AppendLine($"{userProfile.FirstName} {userProfile.LastName}".Trim());
+            parsedCvTextBuilder.AppendLine(userProfile.University ?? string.Empty);
+            parsedCvTextBuilder.AppendLine(string.Join(", ", userProfile.Skills ?? new List<string>()));
+            return parsedCvTextBuilder.ToString().TrimEnd();
         }
-        public void SaveProfile(int userId, UserProfile profile)
+        public void SaveProfile(int userId, UserProfile userProfile)
         {
-            profile.ParsedCV = GenerateParsedCVText(profile);
-            userProfileRepository.Save(userId, profile);
+            userProfile.ParsedCV = GenerateParsedCVText(userProfile);
+            userProfileRepository.Save(userId, userProfile);
             userProfileRepository.UpdateProfileLastModified(userId, DateTime.Now);
         }
 
-        public int RecalculateLevel(UserProfile profile)
+        public int RecalculateLevel(UserProfile userProfile)
         {
-            if (profile == null)
+            if (userProfile == null)
             {
                 return 0;
             }
 
-            int totalXP = 0;
+            int totalExperiencePoints = 0;
 
-            List<SkillTest> tests = GetSkillTestsForUser(profile.UserId);
-            foreach (SkillTest test in tests)
+            List<SkillTest> skillTests = GetSkillTestsForUser(userProfile.UserId);
+            foreach (SkillTest skillTest in skillTests)
             {
-                totalXP += test.GetExperiencePoints();
+                totalExperiencePoints += SkillTestService.GetExperiencePoints(skillTest);
             }
 
-            profile.UserLevel = UserLevel.CalculateLevel(totalXP);
+            userProfile.UserLevel = UserLevelService.CalculateLevel(totalExperiencePoints);
 
-            return totalXP;
+            return totalExperiencePoints;
         }
     }
 }

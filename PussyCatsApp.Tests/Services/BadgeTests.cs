@@ -1,6 +1,8 @@
 ﻿using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
+using PussyCatsApp.Services;
 
-namespace PussyCatsApp.Tests.Models
+namespace PussyCatsApp.Tests.Services
 {
     [TestClass]
     public class BadgeTests
@@ -17,7 +19,7 @@ namespace PussyCatsApp.Tests.Models
         [DataRow(-23f, BadgeTier.PARTICIPANT)]
         public void AssignTier_GivenScore_ReturnsCorrectTier(float score, BadgeTier tier)
         {
-            var returnedBadge = Badge.AssignTier(score);
+            var returnedBadge = SimpleModelOperations.AssignTier(score);
 
             Assert.AreEqual(tier, returnedBadge.Tier);
         }
@@ -32,7 +34,7 @@ namespace PussyCatsApp.Tests.Models
         [DataRow(49f, 10)]
         public void AssignTier_GivenScore_ReturnsCorrectExperiencePoints(float score, int expectedXp)
         {
-            var returnedBadge = Badge.AssignTier(score);
+            var returnedBadge = SimpleModelOperations.AssignTier(score);
 
             Assert.AreEqual(expectedXp, returnedBadge.XpValue);
 

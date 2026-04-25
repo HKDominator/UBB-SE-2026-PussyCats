@@ -10,8 +10,8 @@ namespace PussyCatsApp.Utilities
         {
             try
             {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
+                var mailAddress = new System.Net.Mail.MailAddress(email);
+                return mailAddress.Address == email;
             }
             catch
             {
@@ -73,11 +73,11 @@ namespace PussyCatsApp.Utilities
                 errors.Add("Expected Graduation Year");
             }
 
-            foreach (var we in workExperiences)
+            foreach (var workExperience in workExperiences)
             {
-                if (!we.CurrentlyWorking && we.EndDate.HasValue && we.EndDate.Value < we.StartDate)
+                if (!workExperience.CurrentlyWorking && workExperience.EndDate.HasValue && workExperience.EndDate.Value < workExperience.StartDate)
                 {
-                    errors.Add($"Work Experience \"{we.Company}\": End date is before start date");
+                    errors.Add($"Work Experience \"{workExperience.Company}\": End date is before start date");
                 }
             }
 

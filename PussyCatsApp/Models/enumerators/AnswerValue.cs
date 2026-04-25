@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PussyCatsApp.Models
+﻿namespace PussyCatsApp.Models.Enumerators
 {
     /// <summary>
     /// Possible answers for the personality test questions.

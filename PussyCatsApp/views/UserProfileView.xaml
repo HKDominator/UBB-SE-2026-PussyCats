@@ -20,7 +20,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="15" Margin="40,0,40,0" VerticalAlignment="Center">
-                    <PersonPicture x:Name="pbAvatar" Width="200" Height="200" HorizontalAlignment="Center" />
+                    <PersonPicture x:Name="publicAvatar" Width="200" Height="200" HorizontalAlignment="Center" />
 
                     <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
                         <Button x:Name="btnUploadAvatar" Content="Upload avatar" Click="OnAvatarUploadClick" Width="140" />
@@ -46,7 +46,7 @@
                                        FontSize="14"
                                        FontWeight="Bold"
                                        HorizontalAlignment="Center" />
-                            <ToggleSwitch x:Name="chkAccountStatus"
+                            <ToggleSwitch x:Name="checkAccountStatus"
                                           Toggled="OnStatusToggle"
                                           OnContent="Active"
                                           OffContent="Inactive"
@@ -62,20 +62,20 @@
                                    Foreground="Black"
                                    FontSize="16"
                                    FontWeight="Medium" />
-                        <ProgressBar x:Name="XpProgressBar"
+                        <ProgressBar x:Name="ExperienceProgressBar"
                                      Minimum="0"
                                      Maximum="100"
                                      Height="12"
                                      Foreground="Purple"
                                      Background="Black" />
-                        <TextBlock x:Name="XpCountText"
+                        <TextBlock x:Name="ExperienceCountText"
                                    Foreground="Black"
                                    FontSize="12" />
                     </StackPanel>
 
                 </StackPanel>
 
-                <TextBlock x:Name="lblFreshness" Grid.Column="1" Text="Profile last updated:..." HorizontalAlignment="Right" VerticalAlignment="Bottom" Opacity="0.7" FontSize="13" />
+                <TextBlock x:Name="freshnessLabel" Grid.Column="1" Text="Profile last updated:..." HorizontalAlignment="Right" VerticalAlignment="Bottom" Opacity="0.7" FontSize="13" />
             </Grid>
 
             <Grid Padding="30,60,30,80" MinHeight="600">
@@ -89,24 +89,24 @@
                             Spacing="25"
                             HorizontalAlignment="Left"
                             Margin="20,0,0,0">
-                    <TextBlock x:Name="lblFirstName" Text="First Name: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblLastName" Text="Last Name: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblEmail" Text="Email: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblPhone" Text="Phone: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblGithubAccount" Text="GitHub: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblLinkedinAccount" Text="LinkedIn: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblGender" Text="Gender: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblUniversity" Text="University: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblGraduationYear" Text="Expected year to finish university: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblCountry" Text="Country: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblCity" Text="City: " Foreground="Black" FontSize="16" /> 
-                    <TextBlock x:Name="lblPersonalityTestResult" Text="Personality Test Result: " Foreground="Black" FontSize="16" />
-                    <TextBlock x:Name="lblError" Foreground="#FFA0A0" TextWrapping="Wrap" Margin="0,20,0,0" />
+                    <TextBlock x:Name="firstNameLabel" Text="First Name: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="lastNameLabel" Text="Last Name: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="emailLabel" Text="Email: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="phoneLabel" Text="Phone: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="githubAccountLabel" Text="GitHub: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="linkedinAccountLabel" Text="LinkedIn: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="genderLabel" Text="Gender: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="universityLabel" Text="University: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="graduationYearLabel" Text="Expected year to finish university: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="countryLabel" Text="Country: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="cityLabel" Text="City: " Foreground="Black" FontSize="16" /> 
+                    <TextBlock x:Name="personalityTestResultLabel" Text="Personality Test Result: " Foreground="Black" FontSize="16" />
+                    <TextBlock x:Name="errorLabel" Foreground="#FFA0A0" TextWrapping="Wrap" Margin="0,20,0,0" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="25" HorizontalAlignment="Right" Width="300" Margin="0,0,75,0">
-                    <Button x:Name="btnEdit" Content="Edit Profile" HorizontalAlignment="Stretch" />
-                    <Button x:Name="btnPersonalityTest" Content="Take Personality Test" Click="OnPersonalityTestClick" HorizontalAlignment="Stretch" />
+                    <Button x:Name="buttonEdit" Content="Edit Profile" HorizontalAlignment="Stretch" />
+                    <Button x:Name="buttonPersonalityTest" Content="Take Personality Test" Click="OnPersonalityTestClick" HorizontalAlignment="Stretch" />
 
                     <Button x:Name="btnPreviewCV" Content="Download Profile as PDF" Click="OnPreviewCVClick" HorizontalAlignment="Stretch" />
 
@@ -114,7 +114,7 @@
                     <Button x:Name="btnMatchHistory" Content="Match History" Click="OnMatchmakingHistoryClick" HorizontalAlignment="Stretch" />
                     <Button x:Name="btnRoleCompatibility" Content="Check Compatibility" Click="OnCompatibilityAnalyzerClick" HorizontalAlignment="Stretch" />
                     <Button x:Name="btnPublicProfile" Content="See Public Profile" Click="OnSeePublicProfileClick" HorizontalAlignment="Stretch" />
-                    <Button x:Name="btnOldTests" Content="Go to old tests" Click="OnGoToOldTestsClick" HorizontalAlignment="Stretch" />
+                    <Button x:Name="buttonOldTests" Content="Go to old tests" Click="OnGoToOldTestsClick" HorizontalAlignment="Stretch" />
                     <Button x:Name="btnSkillTests" Content="Skill Tests" Click="OnGoToOldTestsClick" HorizontalAlignment="Stretch" />
                 </StackPanel>
             </Grid>

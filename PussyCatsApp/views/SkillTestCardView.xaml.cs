@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Navigation;
 using PussyCatsApp.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using PussyCatsApp.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,6 +26,10 @@ namespace PussyCatsApp.Views
     public sealed partial class SkillTestCardView : UserControl
     {
         private SkillTestCardViewModel skillTestCardViewModel;
+        private static readonly int BadgeIconRasterizePixelSize = 100;
+        private static readonly double RetakeButtonEnabledOpacity = 1.0;
+        private static readonly double RetakeButtonDisabledOpacity = 0.4;
+
         public SkillTestCardView(SkillTestCardViewModel viewModel)
         {
             this.InitializeComponent();
@@ -42,7 +47,7 @@ namespace PussyCatsApp.Views
             TestNameText.Text = skillTestCardViewModel.SkillTest.Name?.ToUpper() + " TEST" ?? "UNKNOWN TEST";
             string scoreDisplay = $"SCORE: {skillTestCardViewModel.SkillTest.Score}%";
             ScoreText.Text = scoreDisplay;
-            DateText.Text = skillTestCardViewModel.SkillTest.AchievedDateFormatted;
+            DateText.Text = SkillTestService.AchievedDateFormatted(skillTestCardViewModel.SkillTest);
 
             if (skillTestCardViewModel.Badge != null && !string.IsNullOrEmpty(skillTestCardViewModel.Badge.IconPath))
             {
@@ -57,8 +62,8 @@ namespace PussyCatsApp.Views
                 System.Diagnostics.Debug.WriteLine($"FIXED URI: {uri}");
 
                 var svgSource = new SvgImageSource(uri);
-                svgSource.RasterizePixelWidth = 100;
-                svgSource.RasterizePixelHeight = 100;
+                svgSource.RasterizePixelWidth = BadgeIconRasterizePixelSize;
+                svgSource.RasterizePixelHeight = BadgeIconRasterizePixelSize;
 
                 BadgeIcon.Source = svgSource;
             }
@@ -68,10 +73,10 @@ namespace PussyCatsApp.Views
         private void UpdateRetakeButton()
         {
             RetakeButton.IsEnabled = skillTestCardViewModel.IsRetakeEnabled;
-            RetakeButton.Opacity = skillTestCardViewModel.IsRetakeEnabled ? 1.0 : 0.4;
+            RetakeButton.Opacity = skillTestCardViewModel.IsRetakeEnabled ? RetakeButtonEnabledOpacity : RetakeButtonDisabledOpacity;
         }
 
-        private void RetakeButton_Click(object sender, RoutedEventArgs e)
+        private void RetakeButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             skillTestCardViewModel.RetakeCommand();
             LoadCard();

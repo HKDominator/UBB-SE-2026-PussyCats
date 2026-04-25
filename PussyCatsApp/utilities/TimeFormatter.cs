@@ -8,12 +8,14 @@ namespace PussyCatsApp.Utilities
         {
             TimeSpan difference = DateTime.Now.Date - targetDate.Date;
             int totalDays = (int)difference.TotalDays;
+            const int zeroDaysForToday = 0;
+            const int oneDayForYesterday = 1;
 
-            if (totalDays == 0)
+            if (totalDays == zeroDaysForToday)
             {
                 return "Profile last updated: Today";
             }
-            else if (totalDays == 1)
+            else if (totalDays == oneDayForYesterday)
             {
                 return "Profile last updated: Yesterday";
             }

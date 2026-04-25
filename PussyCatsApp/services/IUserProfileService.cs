@@ -13,9 +13,9 @@ namespace PussyCatsApp.Services
 
         void ToggleAccountStatus(int userId, string currentStatus);
 
-        void UpdateAvatarPath(int userId, string newPath);
+        void UpdateProfilePicturePath(int userId, string newPath);
 
-        void RemoveAvatarPath(int userId);
+        void RemoveProfilePicturePath(int userId);
 
         string GenerateParsedCVText(UserProfile profile);
 

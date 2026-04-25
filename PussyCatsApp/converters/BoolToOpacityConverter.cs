@@ -9,10 +9,17 @@ namespace PussyCatsApp.Converters
         {
             // Parameter should be in format "disabledOpacity|enabledOpacity"
             // e.g., "0.6|1.0"
-            string[] opacities = parameter?.ToString().Split('|') ?? new[] { "0.5", "1.0" };
+            const double disabledOpacityDefaultValue = 0.5;
+            const double enabledOpacityDefaultValue = 1.0;
 
-            double disabledOpacity = double.TryParse(opacities[0], out var d) ? d : 0.5;
-            double enabledOpacity = opacities.Length > 1 && double.TryParse(opacities[1], out var e) ? e : 1.0;
+            const double selectedDisabledOpacityValue = 0.5;
+            const double selectedEnabledOpacityValue = 1.0;
+            const char delimiterCharacter = '|';
+
+            string[] opacities = parameter?.ToString().Split(delimiterCharacter) ?? new[] { selectedDisabledOpacityValue.ToString(), selectedEnabledOpacityValue.ToString() };
+
+            double disabledOpacity = double.TryParse(opacities[0], out var parsedDisabledOpacity) ? parsedDisabledOpacity : disabledOpacityDefaultValue;
+            double enabledOpacity = opacities.Length > 1 && double.TryParse(opacities[1], out var parsedEnabledOpacity) ? parsedEnabledOpacity : enabledOpacityDefaultValue;
 
             if (value is bool boolValue)
             {

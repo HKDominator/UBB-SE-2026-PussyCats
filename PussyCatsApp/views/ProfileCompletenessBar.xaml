@@ -7,9 +7,9 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="lblTitle" Grid.Column="0" Text="Profile Completeness" FontWeight="SemiBold" FontSize="14" />
-            <TextBlock x:Name="lblPercentage" Grid.Column="1" Text="0%" FontWeight="Bold" FontSize="14" />
+            <TextBlock x:Name="percentageLabel" Grid.Column="1" Text="0%" FontWeight="Bold" FontSize="14" />
         </Grid>
         <ProgressBar x:Name="barProgress" Minimum="0" Maximum="100" Value="0" Height="14" CornerRadius="7" />
-        <TextBlock x:Name="lblPrompt" Text="" FontSize="12" TextWrapping="Wrap" Opacity="0.85" />
+        <TextBlock x:Name="promptLabel" Text="" FontSize="12" TextWrapping="Wrap" Opacity="0.85" />
     </StackPanel>
 </UserControl>

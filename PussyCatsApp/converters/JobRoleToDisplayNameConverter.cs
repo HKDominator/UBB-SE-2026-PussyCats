@@ -1,6 +1,7 @@
 using System;
 using Microsoft.UI.Xaml.Data;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 
 namespace PussyCatsApp.Converters
 {

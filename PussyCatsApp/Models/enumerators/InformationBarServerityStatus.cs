@@ -1,4 +1,4 @@
-﻿namespace PussyCatsApp.Models
+﻿namespace PussyCatsApp.Models.Enumerators
 {
     /// <summary>
     /// Severity Status codes for the Information Bar.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using PussyCatsApp.Configuration;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 using PussyCatsApp.Repositories;
 using PussyCatsApp.Services;
 

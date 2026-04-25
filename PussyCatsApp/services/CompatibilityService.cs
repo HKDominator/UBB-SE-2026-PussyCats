@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 using PussyCatsApp.Repositories;
 
 namespace PussyCatsApp.Services
@@ -27,10 +28,10 @@ namespace PussyCatsApp.Services
 
         private List<UserSkill> GetUserSkills(int userId)
         {
-            List<UserSkill> verifiedSkills = userSkillRepository.GetVerifiedSkillsByUserId(userId);
-            string parsedCv = userSkillRepository.GetParsedCvByUserId(userId);
-            List<string> cvSkills = ExtractSkillsFromParsedCv(parsedCv);
-            return MergeVerifiedAndUnverifiedSkills(verifiedSkills, cvSkills);
+            List<UserSkill> verifiedSkillsOfUser = userSkillRepository.GetVerifiedSkillsByUserId(userId);
+            string parsedCvText = userSkillRepository.GetParsedCvByUserId(userId);
+            List<string> extractedCvSkills = ExtractSkillsFromParsedCv(parsedCvText);
+            return MergeVerifiedAndUnverifiedSkills(verifiedSkillsOfUser, extractedCvSkills);
         }
 
         private List<string> ExtractSkillsFromParsedCv(string parsedCv)
@@ -81,18 +82,18 @@ namespace PussyCatsApp.Services
 
             foreach (string cvSkill in cvSkills)
             {
-                bool alreadyExists = false;
+                bool isSkillAlreadyInAllSkills = false;
 
                 foreach (UserSkill existingSkill in allSkills)
                 {
                     if (string.Equals(existingSkill.SkillName, cvSkill, StringComparison.OrdinalIgnoreCase))
                     {
-                        alreadyExists = true;
+                        isSkillAlreadyInAllSkills = true;
                         break;
                     }
                 }
 
-                if (!alreadyExists)
+                if (!isSkillAlreadyInAllSkills)
                 {
                     allSkills.Add(new UserSkill
                     {
@@ -108,7 +109,7 @@ namespace PussyCatsApp.Services
 
         private double ComputeGroupScore(SkillGroup group, List<UserSkill> userSkills)
         {
-            double maxSkillScore = 0;
+            double maximumSkillScore = 0;
 
             foreach (string skill in group.Skills)
             {
@@ -126,13 +127,13 @@ namespace PussyCatsApp.Services
                     }
                 }
 
-                if (skillScore > maxSkillScore)
+                if (skillScore > maximumSkillScore)
                 {
-                    maxSkillScore = skillScore;
+                    maximumSkillScore = skillScore;
                 }
             }
 
-            return maxSkillScore;
+            return maximumSkillScore;
         }
 
         private double ComputeMatchScore(List<SkillGroup> groups, List<double> groupScores)
@@ -161,11 +162,22 @@ namespace PussyCatsApp.Services
         {
             return ScoreNormalizationFactor * group.Weight * (TargetGroupScore - groupScore) / totalWeight;
         }
-        private int CompareGains(Suggestion a, Suggestion b)
+        private int CompareGains(Suggestion firstSuggestion, Suggestion secondSuggestion)
         {
-            return b.GainScore.CompareTo(a.GainScore);
+            return secondSuggestion.GainScore.CompareTo(firstSuggestion.GainScore);
         }
+        private bool UserHasSkill(List<UserSkill> userSkills, string skill)
+        {
+            foreach (UserSkill userSkill in userSkills)
+            {
+                if (string.Equals(userSkill.SkillName, skill, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
 
+            return false;
+        }
         private List<Suggestion> IdentifyGaps(List<SkillGroup> groups, List<UserSkill> userSkills, int totalWeight)
         {
             List<Suggestion> suggestions = new List<Suggestion>();
@@ -173,60 +185,37 @@ namespace PussyCatsApp.Services
             foreach (SkillGroup group in groups)
             {
                 double groupScore = ComputeGroupScore(group, userSkills);
+
                 if (groupScore > GapThreshold)
                 {
                     continue;
                 }
 
-                Suggestion bestSuggestionForGroup = null;
+                Suggestion bestSuggestion = null;
 
                 foreach (string skill in group.Skills)
                 {
-                    bool userHasVerified = false;
-                    bool userHasUnverified = false;
-
-                    foreach (UserSkill userSkill in userSkills)
-                    {
-                        if (string.Equals(userSkill.SkillName, skill, StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (userSkill.IsVerified)
-                            {
-                                userHasVerified = true;
-                            }
-                            else
-                            {
-                                userHasUnverified = true;
-                            }
-                        }
-                    }
-
-                    if (userHasVerified)
+                    if (UserHasSkill(userSkills, skill))
                     {
                         continue;
                     }
 
                     double gain = ComputeGain(group, groupScore, totalWeight);
 
-                    Suggestion candidate = new Suggestion
+                    Suggestion suggestion = new Suggestion
                     {
                         SkillName = skill,
                         GroupName = group.GroupName,
                         GainScore = gain
                     };
 
-                    if (bestSuggestionForGroup == null)
-                    {
-                        bestSuggestionForGroup = candidate;
-                    }
-                    else if (userHasUnverified && bestSuggestionForGroup.SkillName != null)
-                    {
-                        continue;
-                    }
+                    bestSuggestion = suggestion;
+                    break;
                 }
 
-                if (bestSuggestionForGroup != null)
+                if (bestSuggestion != null)
                 {
-                    suggestions.Add(bestSuggestionForGroup);
+                    suggestions.Add(bestSuggestion);
                 }
             }
 

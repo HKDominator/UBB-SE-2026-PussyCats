@@ -38,7 +38,7 @@
                     </Button>
                     <TextBlock x:Name="CVStatusText" VerticalAlignment="Center" Foreground="Green"/>
                 </StackPanel>
-                <InfoBar x:Name="CVUploadInfoBar" Severity="Informational" IsOpen="False" Margin="0,10,0,0"/>
+                <InfoBar x:Name="CVUploadInformationBar" Severity="Informational" IsOpen="False" Margin="0,10,0,0"/>
             </StackPanel>
 
             <!-- Form Fields -->
@@ -423,7 +423,7 @@
                          AcceptsReturn="True" Height="120"/>
 
                 <!-- Form Validation InfoBar -->
-                <InfoBar x:Name="FormValidationInfoBar" Severity="Warning" IsOpen="False" Margin="0,10,0,0"/>
+                <InfoBar x:Name="FormValidationInformationBar" Severity="Warning" IsOpen="False" Margin="0,10,0,0"/>
                 
                 
                 <!-- Buttons -->

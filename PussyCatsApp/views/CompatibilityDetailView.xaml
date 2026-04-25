@@ -13,15 +13,15 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button Grid.Row="0" Content="Back" Click="BtnBack_Click" Margin="0,0,0,16"/>
+        <Button Grid.Row="0" Content="Back" Click="ButtonBack_Click" Margin="0,0,0,16"/>
 
-        <TextBlock x:Name="lblRoleName" Grid.Row="1" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,8"/>
+        <TextBlock x:Name="roleNameLabel" Grid.Row="1" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,8"/>
 
-        <TextBlock x:Name="lblMatchScore" Grid.Row="2" FontSize="16" Margin="0,0,0,16"/>
+        <TextBlock x:Name="matchScoreLabel" Grid.Row="2" FontSize="16" Margin="0,0,0,16"/>
 
         <StackPanel Grid.Row="3">
             <TextBlock Text="Top Improvement Suggestions" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8"/>
-            <ListView x:Name="lstSuggestions">
+            <ListView x:Name="suggestionsList">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="0,4,0,4">
@@ -32,7 +32,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <TextBlock x:Name="lblNoSuggestions" Text="No significant skill gaps found for this role." Visibility="Collapsed"/>
+            <TextBlock x:Name="noSuggestionsLabel" Text="No significant skill gaps found for this role." Visibility="Collapsed"/>
         </StackPanel>
     </Grid>
 </Page>

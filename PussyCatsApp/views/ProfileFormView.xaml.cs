@@ -17,34 +17,34 @@ namespace PussyCatsApp.Views
     /// </summary>
     public sealed partial class ProfileFormView : Page
     {
-        private ProfileFormViewModel viewModel;
+        private ProfileFormViewModel profileFormViewModel;
 
         public ProfileFormView()
         {
             this.InitializeComponent();
 
-            viewModel = ProfileFormViewModel.Create();
+            profileFormViewModel = ProfileFormViewModel.Create();
 
             PopulateGraduationYears();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
-            if (e.Parameter is UserProfile profile)
+            base.OnNavigatedTo(navigationEventArguments);
+            if (navigationEventArguments.Parameter is UserProfile profile)
             {
-                viewModel.LoadProfile(profile);
+                profileFormViewModel.LoadProfile(profile);
                 LoadViewFromViewModel();
             }
             else
             {
-                viewModel.LoadProfile(new UserProfile());
+                profileFormViewModel.LoadProfile(new UserProfile());
             }
         }
 
         private void PopulateGraduationYears()
         {
-            foreach (var year in viewModel.GraduationYears)
+            foreach (var year in profileFormViewModel.GraduationYears)
             {
                 GraduationYearComboBox.Items.Add(year.ToString());
             }
@@ -52,70 +52,70 @@ namespace PussyCatsApp.Views
 
         private void LoadViewFromViewModel()
         {
-            FirstNameTextBox.Text = viewModel.FirstName;
-            LastNameTextBox.Text = viewModel.LastName;
-            AgeNumberBox.Value = viewModel.Age;
+            FirstNameTextBox.Text = profileFormViewModel.FirstName;
+            LastNameTextBox.Text = profileFormViewModel.LastName;
+            AgeNumberBox.Value = profileFormViewModel.Age;
 
-            if (!string.IsNullOrEmpty(viewModel.Gender))
+            if (!string.IsNullOrEmpty(profileFormViewModel.Gender))
             {
-                SelectGender(viewModel.Gender);
+                SelectGender(profileFormViewModel.Gender);
             }
 
-            EmailTextBox.Text = viewModel.Email;
-            GitHubTextBox.Text = viewModel.GitHub;
-            LinkedInTextBox.Text = viewModel.LinkedIn;
-            UniversityAutoSuggest.Text = viewModel.University;
-            AddressTextBox.Text = viewModel.Address;
-            MotivationTextBox.Text = viewModel.Motivation;
+            EmailTextBox.Text = profileFormViewModel.Email;
+            GitHubTextBox.Text = profileFormViewModel.GitHub;
+            LinkedInTextBox.Text = profileFormViewModel.LinkedIn;
+            UniversityAutoSuggest.Text = profileFormViewModel.University;
+            AddressTextBox.Text = profileFormViewModel.Address;
+            MotivationTextBox.Text = profileFormViewModel.Motivation;
 
-            if (!string.IsNullOrEmpty(viewModel.PhonePrefix))
+            if (!string.IsNullOrEmpty(profileFormViewModel.PhonePrefix))
             {
-                SelectPhonePrefix(viewModel.PhonePrefix);
+                SelectPhonePrefix(profileFormViewModel.PhonePrefix);
             }
 
-            PhoneNumberTextBox.Text = viewModel.PhoneNumber;
+            PhoneNumberTextBox.Text = profileFormViewModel.PhoneNumber;
 
-            if (!string.IsNullOrEmpty(viewModel.Country))
+            if (!string.IsNullOrEmpty(profileFormViewModel.Country))
             {
-                SelectCountry(viewModel.Country);
+                SelectCountry(profileFormViewModel.Country);
             }
 
             // Set city AFTER country selection to avoid CountryComboBox_SelectionChanged clearing it
-            CityTextBox.Text = viewModel.City;
+            CityTextBox.Text = profileFormViewModel.City;
 
-            if (viewModel.ExpectedGraduationYear > 0)
+            if (profileFormViewModel.ExpectedGraduationYear > 0)
             {
-                SelectGraduationYear(viewModel.ExpectedGraduationYear);
+                SelectGraduationYear(profileFormViewModel.ExpectedGraduationYear);
             }
 
-            SkillsItemsRepeater.ItemsSource = viewModel.Skills;
-            WorkExperienceItemsRepeater.ItemsSource = viewModel.WorkExperiences;
-            ProjectsItemsRepeater.ItemsSource = viewModel.Projects;
-            ActivitiesItemsRepeater.ItemsSource = viewModel.ExtraCurricularActivities;
-            DisabilitiesCheckBox.IsChecked = viewModel.HasDisabilities;
+            SkillsItemsRepeater.ItemsSource = profileFormViewModel.Skills;
+            WorkExperienceItemsRepeater.ItemsSource = profileFormViewModel.WorkExperiences;
+            ProjectsItemsRepeater.ItemsSource = profileFormViewModel.Projects;
+            ActivitiesItemsRepeater.ItemsSource = profileFormViewModel.ExtraCurricularActivities;
+            DisabilitiesCheckBox.IsChecked = profileFormViewModel.HasDisabilities;
         }
 
         private void SyncViewToViewModel()
         {
-            viewModel.FirstName = FirstNameTextBox.Text;
-            viewModel.LastName = LastNameTextBox.Text;
-            viewModel.Age = AgeNumberBox.Value;
-            viewModel.Gender = (GenderComboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? string.Empty;
-            viewModel.Email = EmailTextBox.Text;
-            viewModel.PhonePrefix = (PhonePrefixComboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? string.Empty;
-            viewModel.PhoneNumber = PhoneNumberTextBox.Text;
-            viewModel.GitHub = GitHubTextBox.Text;
-            viewModel.LinkedIn = LinkedInTextBox.Text;
-            viewModel.Country = (CountryComboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? string.Empty;
-            viewModel.City = CityTextBox.Text;
-            viewModel.University = UniversityAutoSuggest.Text;
-            viewModel.Address = AddressTextBox.Text;
-            viewModel.Motivation = MotivationTextBox.Text;
-            viewModel.ExpectedGraduationYear = int.TryParse(GraduationYearComboBox.SelectedItem?.ToString(), out var yr) ? yr : 0;
-            // ViewModel.HasDisabilities = DisabilitiesCheckBox.IsChecked == true;
+            profileFormViewModel.FirstName = FirstNameTextBox.Text;
+            profileFormViewModel.LastName = LastNameTextBox.Text;
+            profileFormViewModel.Age = AgeNumberBox.Value;
+            profileFormViewModel.Gender = (GenderComboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? string.Empty;
+            profileFormViewModel.Email = EmailTextBox.Text;
+            profileFormViewModel.PhonePrefix = (PhonePrefixComboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? string.Empty;
+            profileFormViewModel.PhoneNumber = PhoneNumberTextBox.Text;
+            profileFormViewModel.GitHub = GitHubTextBox.Text;
+            profileFormViewModel.LinkedIn = LinkedInTextBox.Text;
+            profileFormViewModel.Country = (CountryComboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? string.Empty;
+            profileFormViewModel.City = CityTextBox.Text;
+            profileFormViewModel.University = UniversityAutoSuggest.Text;
+            profileFormViewModel.Address = AddressTextBox.Text;
+            profileFormViewModel.Motivation = MotivationTextBox.Text;
+            profileFormViewModel.ExpectedGraduationYear = int.TryParse(GraduationYearComboBox.SelectedItem?.ToString(), out var yr) ? yr : 0;
+            // profileFormViewModel.HasDisabilities = DisabilitiesCheckBox.IsChecked == true;
         }
 
-        private async void UploadCVButton_Click(object sender, RoutedEventArgs e)
+        private async void UploadCVButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             var picker = new FileOpenPicker();
             picker.ViewMode = PickerViewMode.List;
@@ -123,39 +123,39 @@ namespace PussyCatsApp.Views
             picker.FileTypeFilter.Add(".json");
             picker.FileTypeFilter.Add(".xml");
 
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainAppWindow);
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+            var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(App.MainAppWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, windowHandle);
 
             StorageFile file = await picker.PickSingleFileAsync();
             if (file != null)
             {
                 string content = await FileIO.ReadTextAsync(file);
-                viewModel.ProcessCVFile(content, file.FileType);
+                profileFormViewModel.ProcessCVFile(content, file.FileType);
                 LoadViewFromViewModel();
-                ShowInfoBarFromViewModel();
+                ShowInformationBarFromViewModel();
             }
         }
 
-        private void ShowInfoBarFromViewModel()
+        private void ShowInformationBarFromViewModel()
         {
-            CVUploadInfoBar.Message = viewModel.InfoBarMessage;
-            CVUploadInfoBar.Severity = (InfoBarSeverity)viewModel.InfoBarSeverity;
-            CVUploadInfoBar.IsOpen = viewModel.IsInfoBarOpen;
-            CVStatusText.Text = viewModel.CvStatusText;
+            CVUploadInformationBar.Message = profileFormViewModel.InfoBarMessage;
+            CVUploadInformationBar.Severity = (InfoBarSeverity)profileFormViewModel.InfoBarSeverity;
+            CVUploadInformationBar.IsOpen = profileFormViewModel.IsInfoBarOpen;
+            CVStatusText.Text = profileFormViewModel.CvStatusText;
         }
 
-        private void ShowInfoBar(string message, InfoBarSeverity severity)
+        private void ShowInformationBar(string message, InfoBarSeverity severity)
         {
-            CVUploadInfoBar.Message = message;
-            CVUploadInfoBar.Severity = severity;
-            CVUploadInfoBar.IsOpen = true;
+            CVUploadInformationBar.Message = message;
+            CVUploadInformationBar.Severity = severity;
+            CVUploadInformationBar.IsOpen = true;
         }
 
         private void ShowFormValidation(string message, InfoBarSeverity severity)
         {
-            FormValidationInfoBar.Message = message;
-            FormValidationInfoBar.Severity = severity;
-            FormValidationInfoBar.IsOpen = true;
+            FormValidationInformationBar.Message = message;
+            FormValidationInformationBar.Severity = severity;
+            FormValidationInformationBar.IsOpen = true;
         }
 
         private void SelectGender(string gender)
@@ -207,119 +207,119 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void UniversityAutoSuggest_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void UniversityAutoSuggest_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs autoSuggestBoxTextChangedEventArguments)
         {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            if (autoSuggestBoxTextChangedEventArguments.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                sender.ItemsSource = viewModel.FilterUniversities(sender.Text);
+                sender.ItemsSource = profileFormViewModel.FilterUniversities(sender.Text);
             }
         }
 
-        private void UniversityAutoSuggest_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void UniversityAutoSuggest_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs autoSuggestBoxQuerySubmittedEventArguments)
         {
-            if (args.ChosenSuggestion != null)
+            if (autoSuggestBoxQuerySubmittedEventArguments.ChosenSuggestion != null)
             {
-                sender.Text = args.ChosenSuggestion.ToString();
+                sender.Text = autoSuggestBoxQuerySubmittedEventArguments.ChosenSuggestion.ToString();
             }
         }
 
-        private void SkillsAutoSuggest_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void SkillsAutoSuggest_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs autoSuggestBoxTextChangedEventArguments)
         {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            if (autoSuggestBoxTextChangedEventArguments.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                sender.ItemsSource = viewModel.FilterSkillSuggestions(sender.Text);
+                sender.ItemsSource = profileFormViewModel.FilterSkillSuggestions(sender.Text);
             }
         }
 
-        private void SkillsAutoSuggest_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void SkillsAutoSuggest_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs autoSuggestBoxQuerySubmittedEventArguments)
         {
-            string skillToAdd = args.ChosenSuggestion?.ToString() ?? sender.Text;
-            viewModel.AddSkill(skillToAdd);
+            string skillToAdd = autoSuggestBoxQuerySubmittedEventArguments.ChosenSuggestion?.ToString() ?? sender.Text;
+            profileFormViewModel.AddSkill(skillToAdd);
             sender.Text = string.Empty;
-            ShowInfoBarFromViewModel();
+            ShowInformationBarFromViewModel();
         }
 
-        private void AddSkillButton_Click(object sender, RoutedEventArgs e)
+        private void AddSkillButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
-            viewModel.AddSkill(SkillsAutoSuggest.Text);
+            profileFormViewModel.AddSkill(SkillsAutoSuggest.Text);
             SkillsAutoSuggest.Text = string.Empty;
-            ShowInfoBarFromViewModel();
+            ShowInformationBarFromViewModel();
         }
 
-        private void RemoveSkillButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveSkillButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (sender is Button button && button.Tag is string skill)
             {
-                viewModel.RemoveSkill(skill);
+                profileFormViewModel.RemoveSkill(skill);
             }
         }
 
-        private void AddWorkExperienceButton_Click(object sender, RoutedEventArgs e)
+        private void AddWorkExperienceButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
-            viewModel.AddWorkExperience();
-            ShowInfoBarFromViewModel();
+            profileFormViewModel.AddWorkExperience();
+            ShowInformationBarFromViewModel();
         }
 
-        private void RemoveWorkExperienceButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveWorkExperienceButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
-            if (sender is Button button && button.Tag is WorkExperience we)
+            if (sender is Button button && button.Tag is WorkExperience workExperience)
             {
-                viewModel.RemoveWorkExperience(we);
+                profileFormViewModel.RemoveWorkExperience(workExperience);
             }
         }
 
-        private void AddProjectButton_Click(object sender, RoutedEventArgs e)
+        private void AddProjectButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
-            viewModel.AddProject();
-            ShowInfoBarFromViewModel();
+            profileFormViewModel.AddProject();
+            ShowInformationBarFromViewModel();
         }
 
-        private void RemoveProjectButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveProjectButton_Click(object sender, RoutedEventArgs routedEventArgs)
         {
             if (sender is Button button && button.Tag is Project project)
             {
-                viewModel.RemoveProject(project);
+                profileFormViewModel.RemoveProject(project);
             }
         }
 
-        private void AddActivityButton_Click(object sender, RoutedEventArgs e)
+        private void AddActivityButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
-            viewModel.AddExtraCurricularActivity();
-            ShowInfoBarFromViewModel();
+            profileFormViewModel.AddExtraCurricularActivity();
+            ShowInformationBarFromViewModel();
         }
 
-        private void RemoveActivityButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveActivityButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (sender is Button button && button.Tag is ExtraCurricularActivity activity)
             {
-                viewModel.RemoveExtraCurricularActivity(activity);
+                profileFormViewModel.RemoveExtraCurricularActivity(activity);
             }
         }
 
-        private void NameTextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
+        private void NameTextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs textBoxBeforeTextChangingEventArguments)
         {
-            args.Cancel = args.NewText.Any(c => char.IsDigit(c));
+            textBoxBeforeTextChangingEventArguments.Cancel = textBoxBeforeTextChangingEventArguments.NewText.Any(character => char.IsDigit(character));
         }
 
-        private void PhoneNumberTextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
+        private void PhoneNumberTextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs textBoxBeforeTextChangingEventArguments)
         {
-            args.Cancel = args.NewText.Any(c => !char.IsDigit(c));
+            textBoxBeforeTextChangingEventArguments.Cancel = textBoxBeforeTextChangingEventArguments.NewText.Any(character => !char.IsDigit(character));
         }
 
-        private void EndDatePicker_DateChanged(object sender, DatePickerValueChangedEventArgs args)
+        private void EndDatePicker_DateChanged(object sender, DatePickerValueChangedEventArgs datePickerValueChangedEventArguments)
         {
             try
             {
                 if (sender is DatePicker endPicker && endPicker.Parent is Grid dateGrid)
                 {
-                    var startPicker = dateGrid.Children.OfType<DatePicker>().FirstOrDefault(dp => dp != endPicker);
-                    if (startPicker != null && args.NewDate.Date < startPicker.Date.Date)
+                    var startPicker = dateGrid.Children.OfType<DatePicker>().FirstOrDefault(datePicker => datePicker != endPicker);
+                    if (startPicker != null && datePickerValueChangedEventArguments.NewDate.Date < startPicker.Date.Date)
                     {
                         ShowFormValidation("End date cannot be before start date. Please correct it before saving.", InfoBarSeverity.Warning);
                     }
                     else
                     {
-                        FormValidationInfoBar.IsOpen = false;
+                        FormValidationInformationBar.IsOpen = false;
                     }
                 }
             }
@@ -329,25 +329,25 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void CountryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CountryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArguments)
         {
             CityTextBox.Text = string.Empty;
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             SyncViewToViewModel();
 
-            bool success = viewModel.SaveProfile();
-            ShowInfoBarFromViewModel();
+            bool success = profileFormViewModel.SaveProfile();
+            ShowInformationBarFromViewModel();
 
             if (!success)
             {
-                ShowFormValidation(viewModel.InfoBarMessage, (InfoBarSeverity)viewModel.InfoBarSeverity);
+                ShowFormValidation(profileFormViewModel.InfoBarMessage, (InfoBarSeverity)profileFormViewModel.InfoBarSeverity);
                 return;
             }
 
-            FormValidationInfoBar.IsOpen = false;
+            FormValidationInformationBar.IsOpen = false;
 
             if (Frame.CanGoBack)
             {
@@ -359,7 +359,7 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame.CanGoBack)
             {
@@ -370,7 +370,7 @@ namespace PussyCatsApp.Views
                 Frame.Navigate(typeof(UserProfileView));
             }
         }
-        private void EditPreferencesButton_Click(object sender, RoutedEventArgs e)
+        private void EditPreferencesButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             SyncViewToViewModel();
 
