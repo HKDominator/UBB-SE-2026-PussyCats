@@ -35,9 +35,9 @@ namespace PussyCatsApp.Views
             this.InitializeComponent();
             this.skillTestCardViewModel = viewModel;
             this.DataContext = skillTestCardViewModel;
-            BadgeIcon.ImageFailed += (s, e) =>
+            BadgeIcon.ImageFailed += (sender, exception) =>
             {
-                System.Diagnostics.Debug.WriteLine($"IMAGE ERROR: {e.ErrorMessage}");
+                System.Diagnostics.Debug.WriteLine($"IMAGE ERROR: {exception.ErrorMessage}");
             };
             LoadCard();
         }
