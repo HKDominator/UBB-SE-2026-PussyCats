@@ -11,6 +11,9 @@ namespace PussyCatsApp.Tests.Services
 
         private Mock<ISkillTestRepository> mockSkillTestRepository;
         private SkillTestService skillTestService;
+        private const int skillTestId = 1;
+        private const int ExcellentRetakeScore = 95;
+        private const int FailingRetakeScore = 50;
 
         [TestInitialize]
         public void Initialize()
@@ -23,12 +26,12 @@ namespace PussyCatsApp.Tests.Services
         public void CanRetakeTest_ValidSkillId_ReturnsTrue()
         {
             //Arrange
-            var skillTest = new SkillTest(1, 10, "Test1");
+            var skillTest = new SkillTest(skillTestId, 10, "Test1");
             DateOnly fourMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
             skillTest.AchievedDate = fourMonthsAgo;
-            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(1)).Returns(skillTest);
+            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(skillTestId)).Returns(skillTest);
             //Act
-            var canUserRetakeSkillTest = skillTestService.CanRetakeTest(1);
+            var canUserRetakeSkillTest = skillTestService.CanRetakeTest(skillTestId);
             //Assert
             Assert.IsTrue(canUserRetakeSkillTest);
         }
@@ -38,9 +41,9 @@ namespace PussyCatsApp.Tests.Services
         public void CanRetakeTest_InvalidSkillId_ThrowsException()
         {
             //Arrange
-            mockSkillTestRepository.Setup(doesNotFindSkillTest => doesNotFindSkillTest.Load(1)).Returns((SkillTest)null);
+            mockSkillTestRepository.Setup(doesNotFindSkillTest => doesNotFindSkillTest.Load(skillTestId)).Returns((SkillTest)null);
             //Act
-            skillTestService.CanRetakeTest(1);
+            skillTestService.CanRetakeTest(skillTestId);
         }
 
         
@@ -48,16 +51,16 @@ namespace PussyCatsApp.Tests.Services
         public void SubmitRetake_EligibleTest_ReturnsNewBadge()
         {
             //Arrange
-            var skillTest = new SkillTest(1, 10, "Test1");
+            var skillTest = new SkillTest(skillTestId, 10, "Test1");
             DateOnly fourMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
             skillTest.AchievedDate = fourMonthsAgo;
 
-            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(1)).Returns(skillTest);
+            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(skillTestId)).Returns(skillTest);
             //Act
-            var badgeResult = skillTestService.SubmitRetake(1, 95);
+            var badgeResult = skillTestService.SubmitRetake(skillTestId, ExcellentRetakeScore);
             //Assert
-            mockSkillTestRepository.Verify(updateSkillTestScore => updateSkillTestScore.UpdateSkillTestScore(1, 95), Times.Once);
-            mockSkillTestRepository.Verify(updateAchievedDate => updateAchievedDate.UpdateAchievedDate(1, It.IsAny<DateOnly>()), Times.Once);
+            mockSkillTestRepository.Verify(updateSkillTestScore => updateSkillTestScore.UpdateSkillTestScore(skillTestId, ExcellentRetakeScore), Times.Once);
+            mockSkillTestRepository.Verify(updateAchievedDate => updateAchievedDate.UpdateAchievedDate(skillTestId, It.IsAny<DateOnly>()), Times.Once);
 
             Assert.IsNotNull(badgeResult);
         }
@@ -67,11 +70,11 @@ namespace PussyCatsApp.Tests.Services
         public void SubmitRetake_NotEligible_ThrowsException()
         {
             //Arrange
-            var skillTest = new SkillTest(1, 10, "Test1");
+            var skillTest = new SkillTest(skillTestId, 10, "Test1");
             skillTest.AchievedDate = DateOnly.FromDateTime(DateTime.Now);
-            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(1)).Returns(skillTest);
+            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(skillTestId)).Returns(skillTest);
             //Act
-            skillTestService.SubmitRetake(1, 50);
+            skillTestService.SubmitRetake(skillTestId, FailingRetakeScore);
         }
 
     }
