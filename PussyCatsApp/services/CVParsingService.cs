@@ -138,11 +138,11 @@ namespace PussyCatsApp.Services
                     break;
                 }
 
-                var sanitized = SanitizeString(skill, MaxSkillLength);
+                var sanitizedSkillName = SanitizeString(skill, MaxSkillLength);
 
-                if (!string.IsNullOrWhiteSpace(sanitized) && addedSkills.Add(sanitized))
+                if (!string.IsNullOrWhiteSpace(sanitizedSkillName) && addedSkills.Add(sanitizedSkillName))
                 {
-                    result.Add(sanitized);
+                    result.Add(sanitizedSkillName);
                     addedSkillsCount++;
                 }
             }
@@ -162,16 +162,16 @@ namespace PussyCatsApp.Services
             const int maximumNumberOfWorkExperiences = 10;
 
             return experiences.Take(maximumNumberOfWorkExperiences)
-                .Select(workExperience => new WorkExperience
+                .Select(rawWorkExperience => new WorkExperience
                 {
-                    Company = SanitizeString(workExperience.Company, MaxCompanyNameLength),
-                    JobTitle = SanitizeString(workExperience.JobTitle, MaxJobTitleLength),
-                    StartDate = ValidateDate(workExperience.StartDate),
-                    EndDate = workExperience.CurrentlyWorking ? null : ValidateDate(workExperience.EndDate),
-                    CurrentlyWorking = workExperience.CurrentlyWorking,
-                    Description = SanitizeString(workExperience.Description, MaxWorkDescriptionLength)
+                    Company = SanitizeString(rawWorkExperience.Company, MaxCompanyNameLength),
+                    JobTitle = SanitizeString(rawWorkExperience.JobTitle, MaxJobTitleLength),
+                    StartDate = ValidateDate(rawWorkExperience.StartDate),
+                    EndDate = rawWorkExperience.CurrentlyWorking ? null : ValidateDate(rawWorkExperience.EndDate),
+                    CurrentlyWorking = rawWorkExperience.CurrentlyWorking,
+                    Description = SanitizeString(rawWorkExperience.Description, MaxWorkDescriptionLength)
                 })
-                .Where(workExperience => !string.IsNullOrEmpty(workExperience.Company) && !string.IsNullOrEmpty(workExperience.JobTitle))
+                .Where(validateWorkExperience => !string.IsNullOrEmpty(validateWorkExperience.Company) && !string.IsNullOrEmpty(validateWorkExperience.JobTitle))
                 .ToList();
         }
 
