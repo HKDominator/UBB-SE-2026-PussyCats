@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 using PussyCatsApp.Services;
 
 namespace PussyCatsApp.ViewModels

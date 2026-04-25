@@ -45,7 +45,7 @@
                         <Button x:Name="btnBrowse"
                                 Content="Browse File…"
                                 Click="OnBrowseClick" />
-                        <TextBlock x:Name="lblSelectedFile"
+                        <TextBlock x:Name="selectedFileLabel"
                                    Text="No file selected"
                                    Foreground="White"
                                    VerticalAlignment="Center"
@@ -59,7 +59,7 @@
                                Opacity="0.7" />
 
                     <!-- Error label -->
-                    <TextBlock x:Name="lblUploadError"
+                    <TextBlock x:Name="uploadErrorLabel"
                                Foreground="#FFD0D0"
                                FontSize="13"
                                TextWrapping="Wrap"
@@ -83,21 +83,21 @@
                            Foreground="Black" />
 
                 <!-- Empty state -->
-                <TextBlock x:Name="lblNoDocuments"
+                <TextBlock x:Name="noDocumentsLabel"
                            Text="No documents uploaded yet."
                            Foreground="Gray"
                            FontSize="14"
                            Visibility="Collapsed" />
 
                 <!-- Status message (e.g. file not found on disk) -->
-                <TextBlock x:Name="lblStatus"
+                <TextBlock x:Name="statusLabel"
                            Foreground="#c0392b"
                            FontSize="13"
                            TextWrapping="Wrap"
                            Visibility="Collapsed" />
 
                 <!-- Document list -->
-                <ListView x:Name="lvDocuments"
+                <ListView x:Name="listViewDocuments"
                           SelectionMode="Single"
                           IsItemClickEnabled="False">
                     <ListView.ItemTemplate>

@@ -1,16 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PussyCatsApp.Models;
 using PussyCatsApp.ViewModels;
@@ -27,24 +17,24 @@ namespace PussyCatsApp.Views
     /// </summary>
     public sealed partial class PublicProfileView : Page
     {
-        private readonly PublicProfileViewModel viewModel;
+        private readonly PublicProfileViewModel publicProfileViewModel;
         public PublicProfileView()
         {
             this.InitializeComponent();
 
-            var skillTestRepo = new SkillTestRepository(DatabaseConfiguration.GetConnectionString());
-            var userProfileRepo = new UserProfileRepository(DatabaseConfiguration.GetConnectionString());
-            var userProfileService = new UserProfileService(skillTestRepo, userProfileRepo);
-            viewModel = new PublicProfileViewModel(userProfileService);
+            var skillTestRepository = new SkillTestRepository(DatabaseConfiguration.GetConnectionString());
+            var userProfileRepository = new UserProfileRepository(DatabaseConfiguration.GetConnectionString());
+            var userProfileService = new UserProfileService(skillTestRepository, userProfileRepository);
+            publicProfileViewModel = new PublicProfileViewModel(userProfileService);
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
-            if (e.Parameter is UserProfile profile)
+            base.OnNavigatedTo(navigationEventArguments);
+            if (navigationEventArguments.Parameter is UserProfile profile)
             {
-                viewModel.LoadPublicProfileCommand(profile.UserId);
-                if (viewModel.IsAvailable)
+                publicProfileViewModel.LoadPublicProfileCommand(profile.UserId);
+                if (publicProfileViewModel.IsAvailable)
                 {
                     ProfileContentPanel.Visibility = Visibility.Visible;
                     ProfileUnavailableTextBlock.Visibility = Visibility.Collapsed;
@@ -91,11 +81,11 @@ namespace PussyCatsApp.Views
             GithubLink.NavigateUri = GetValidUri(profile.GitHub, "https://github.com");
             LinkedinLink.NavigateUri = GetValidUri(profile.LinkedIn, "https://linkedin.com");
 
-            if (!string.IsNullOrEmpty(viewModel.Profile.ProfilePicture))
+            if (!string.IsNullOrEmpty(publicProfileViewModel.Profile.ProfilePicture))
             {
                 ProfilePhoto.Source =
                     new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(
-                        new Uri(viewModel.Profile.ProfilePicture));
+                        new Uri(publicProfileViewModel.Profile.ProfilePicture));
             }
             else
             {
@@ -103,7 +93,7 @@ namespace PussyCatsApp.Views
             }
 
             SkillTestsContainer.Children.Clear();
-            foreach (var test in viewModel.Tests)
+            foreach (var test in publicProfileViewModel.Tests)
             {
                 var row = new TextBlock
                 {
@@ -115,7 +105,7 @@ namespace PussyCatsApp.Views
             }
         }
 
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        private void BackButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (this.Frame.CanGoBack)
             {

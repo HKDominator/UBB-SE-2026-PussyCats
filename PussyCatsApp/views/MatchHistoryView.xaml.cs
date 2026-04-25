@@ -1,21 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PussyCatsApp.ViewModels;
 using PussyCatsApp.Services;
-using PussyCatsApp.Repositories.PersonalityTestRepo;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using PussyCatsApp.Repositories;
 using PussyCatsApp.Configuration;
 
@@ -26,7 +15,8 @@ namespace PussyCatsApp.Views
     /// </summary>
     public sealed partial class MatchHistoryView : Page
     {
-        private MatchHistoryViewModel viewModel;
+        private MatchHistoryViewModel matchHistoryViewModel;
+        private static readonly int DefaultUserId = 1;
 
         public MatchHistoryView()
         {
@@ -34,22 +24,22 @@ namespace PussyCatsApp.Views
             this.Loaded += MatchHistoryView_Loaded;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
+            base.OnNavigatedTo(navigationEventArguments);
 
-            if (e.Parameter is MatchHistoryViewModel vm)
+            if (navigationEventArguments.Parameter is MatchHistoryViewModel otherMatchHistoryViewModel)
             {
-                viewModel = vm;
+                matchHistoryViewModel = otherMatchHistoryViewModel;
             }
         }
 
-        private void MatchHistoryView_Loaded(object sender, RoutedEventArgs e)
+        private void MatchHistoryView_Loaded(object sender, RoutedEventArgs routedEventArguments)
         {
-            if (viewModel == null)
+            if (matchHistoryViewModel == null)
             {
                 IMatchService matchService = new MatchService(new MatchRepository(DatabaseConfiguration.GetConnectionString()));
-                viewModel = new MatchHistoryViewModel(1, matchService);
+                matchHistoryViewModel = new MatchHistoryViewModel(DefaultUserId, matchService);
             }
 
             LoadMatches();
@@ -58,18 +48,18 @@ namespace PussyCatsApp.Views
 
         private void LoadMatches()
         {
-            viewModel.LoadMatches();
+            matchHistoryViewModel.LoadMatches();
 
-            string error = viewModel.GetErrorMessage();
+            string error = matchHistoryViewModel.GetErrorMessage();
             if (!string.IsNullOrEmpty(error))
             {
                 return;
             }
 
-            MatchesListView.ItemsSource = viewModel.GetMatches();
+            MatchesListView.ItemsSource = matchHistoryViewModel.GetMatches();
         }
 
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        private void BtnBack_Click(object sender, RoutedEventArgs routedEventArguments)
         {
             if (Frame.CanGoBack)
             {
@@ -79,30 +69,30 @@ namespace PussyCatsApp.Views
 
         private void LoadStatistics()
         {
-            viewModel.LoadStatistics();
+            matchHistoryViewModel.LoadStatistics();
 
-            string error = viewModel.GetErrorMessage();
+            string error = matchHistoryViewModel.GetErrorMessage();
             if (!string.IsNullOrEmpty(error))
             {
                 return;
             }
 
-            var stats = viewModel.GetStatistics();
+            var stats = matchHistoryViewModel.GetStatistics();
 
             if (stats != null)
             {
-                lblTotalMatches.Text = $"Total Matches: {stats.TotalMatches}";
-                lblMatchesLastMonth.Text = $"Last Month: {stats.MatchesLastMonth}";
-                lblMatchesLastSixMonths.Text = $"Last 6 Months: {stats.MatchesLastSixMonths}";
-                lblMatchesLastYear.Text = $"Last Year: {stats.MatchesLastYear}";
+                totalMatchesLabel.Text = $"Total Matches: {stats.TotalMatches}";
+                matchesLastMonthLabel.Text = $"Last Month: {stats.MatchesLastMonth}";
+                matchesLastSixMonthsLabel.Text = $"Last 6 Months: {stats.MatchesLastSixMonths}";
+                matchesLastYearLabel.Text = $"Last Year: {stats.MatchesLastYear}";
 
                 if (stats.MatchesPerPosition != null)
                 {
                     var positionData = stats.MatchesPerPosition
-                        .Select(kvp => new
+                        .Select(keyValuePair => new
                         {
-                            JobRole = kvp.Key,
-                            Count = kvp.Value
+                            JobRole = keyValuePair.Key,
+                            Count = keyValuePair.Value
                         }).ToList();
 
                     PositionStatsListView.ItemsSource = positionData;

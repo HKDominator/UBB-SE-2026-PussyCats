@@ -44,7 +44,7 @@ namespace PussyCatsApp.ViewModels
             this.userProfileViewModel = userProfileViewModel;
 
             CheckRetakeEligible();
-            badge = Badge.AssignTier(skillTest.Score);
+            badge = SimpleModelOperations.AssignTier(skillTest.Score);
         }
 
         public void LoadCardCommand()
@@ -64,9 +64,7 @@ namespace PussyCatsApp.ViewModels
                 return;
             }
 
-            int minimumScore = 0;
-            int maximumScore = 100;
-            int newTestScore = Helpers.GenerateRandomScore(minimumScore, maximumScore);
+            int newTestScore = Helpers.GenerateRandomScore(SkillTest.MinimumScore, SkillTest.MaximumScore);
 
             badge = skillTestService.SubmitRetake(skillTest.SkillTestId, newTestScore);
 
@@ -84,7 +82,7 @@ namespace PussyCatsApp.ViewModels
 
         public void UpdateBadge()
         {
-            badge = Badge.AssignTier(skillTest.Score);
+            badge = SimpleModelOperations.AssignTier(skillTest.Score);
         }
     }
 }

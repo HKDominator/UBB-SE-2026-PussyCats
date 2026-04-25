@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 using PussyCatsApp.Repositories;
 namespace PussyCatsApp.Services
 {
@@ -146,13 +147,13 @@ namespace PussyCatsApp.Services
             return roles.Count >= MinRoles && roles.Count <= MaxRoles;
         }
 
-        private List<Preference> BuildPreferenceRows(int userId, List<JobRole> roles, WorkMode workMode, string location)
+        private List<Preference> CreateUserPreferences(int userId, List<JobRole> roles, WorkMode workMode, string location)
         {
-            var rows = new List<Preference>();
+            var userPreferences = new List<Preference>();
 
             foreach (var role in roles)
             {
-                rows.Add(new Preference
+                userPreferences.Add(new Preference
                 {
                     UserId = userId,
                     PreferenceType = PreferenceTypeJobRole,
@@ -160,21 +161,21 @@ namespace PussyCatsApp.Services
                 });
             }
 
-            rows.Add(new Preference
+            userPreferences.Add(new Preference
             {
                 UserId = userId,
                 PreferenceType = PreferenceTypeWorkMode,
                 Value = workMode.ToString()
             });
 
-            rows.Add(new Preference
+            userPreferences.Add(new Preference
             {
                 UserId = userId,
                 PreferenceType = PreferenceTypeLocation,
                 Value = location
             });
 
-            return rows;
+            return userPreferences;
         }
 
         public List<Preference> GetByUserId(int userId)
@@ -189,13 +190,13 @@ namespace PussyCatsApp.Services
                 throw new ArgumentException("You must select between 1 and 3 job roles.");
             }
 
-            var rowsToInsert = BuildPreferenceRows(userId, roles, workMode, location);
+            var preferenceEntriesToSave = CreateUserPreferences(userId, roles, workMode, location);
 
             preferencesRepository.DeleteAllByUserId(userId);
 
-            foreach (var row in rowsToInsert)
+            foreach (var preference in preferenceEntriesToSave)
             {
-                preferencesRepository.AddPreference(row);
+                preferencesRepository.AddPreference(preference);
             }
         }
         public List<string> SearchLocations(string locationQuery)

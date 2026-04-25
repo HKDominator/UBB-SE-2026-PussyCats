@@ -1,21 +1,11 @@
 using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using PussyCatsApp.ViewModels;
 using PussyCatsApp.Services;
 using PussyCatsApp.Repositories.PersonalityTestRepo;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using PussyCatsApp.Configuration;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -28,6 +18,7 @@ namespace PussyCatsApp.Views
     public sealed partial class PersonalityTestView : Page
     {
         private PersonalityTestViewModel personalityTestViewModel;
+        private static readonly int DefaultUserId = 1;
 
         public PersonalityTestView()
         {
@@ -35,14 +26,14 @@ namespace PussyCatsApp.Views
             {
                 InitializeComponent();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"PersonalityTestView initialization error: {ex.Message}");
-                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                Debug.WriteLine($"PersonalityTestView initialization error: {exception.Message}");
+                Debug.WriteLine($"Stack trace: {exception.StackTrace}");
             }
         }
 
-        private void OnBackClick(object sender, RoutedEventArgs e)
+        private void OnBackClick(object sender, RoutedEventArgs routedEventArguments)
         {
             try
             {
@@ -56,14 +47,14 @@ namespace PussyCatsApp.Views
                 // Otherwise, try the application's main window frame
                 if (App.MainAppWindow is MainWindow mainWindow && mainWindow.NavigationFrame != null)
                 {
-                    var navFrame = mainWindow.NavigationFrame;
-                    if (navFrame.CanGoBack)
+                    var navigatedFrame = mainWindow.NavigationFrame;
+                    if (navigatedFrame.CanGoBack)
                     {
-                        navFrame.GoBack();
+                        navigatedFrame.GoBack();
                     }
                     else
                     {
-                        navFrame.Navigate(typeof(UserProfileView));
+                        navigatedFrame.Navigate(typeof(UserProfileView));
                     }
                     return;
                 }
@@ -71,30 +62,30 @@ namespace PussyCatsApp.Views
                 // Fallback: navigate in this page's frame to the profile view
                 Frame?.Navigate(typeof(UserProfileView));
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine("[PersonalityTestView] Back navigation error: " + ex);
+                Debug.WriteLine("[PersonalityTestView] Back navigation error: " + exception);
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
-            base.OnNavigatedTo(e);
+            base.OnNavigatedTo(navigationEventArguments);
 
             // Get userId from navigation parameter
-            int userId = 1; // Default value
+            int userIdentity = DefaultUserId; // Default value
 
-            if (e.Parameter is int passedUserId)
+            if (navigationEventArguments.Parameter is int passedUserIdentity)
             {
-                userId = passedUserId;
+                userIdentity = passedUserIdentity;
             }
 
-            InitializeViewModel(userId);
+            InitializeViewModel(userIdentity);
         }
-        private void InitializeViewModel(int userId)
+        private void InitializeViewModel(int userIdentity)
         {
             IPersonalityTestService personalityTestService = new PersonalityTestService(new PersonalityTestRepository(DatabaseConfiguration.GetConnectionString()));
-            this.personalityTestViewModel = new PersonalityTestViewModel(userId, personalityTestService);
+            this.personalityTestViewModel = new PersonalityTestViewModel(userIdentity, personalityTestService);
             this.DataContext = this.personalityTestViewModel;
         }
     }

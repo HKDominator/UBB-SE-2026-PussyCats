@@ -79,10 +79,10 @@
 
             <StackPanel Grid.Column="0" Spacing="8" VerticalAlignment="Center">
                 <TextBlock Text="Activity Overview" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                <TextBlock x:Name="lblTotalMatches" Text="Total Matches: 0" FontSize="15"/>
-                <TextBlock x:Name="lblMatchesLastMonth" Text="Last Month: 0" FontSize="15" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock x:Name="lblMatchesLastSixMonths" Text="Last 6 Months: 0" FontSize="15" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock x:Name="lblMatchesLastYear" Text="Last Year: 0" FontSize="15" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock x:Name="totalMatchesLabel" Text="Total Matches: 0" FontSize="15"/>
+                <TextBlock x:Name="matchesLastMonthLabel" Text="Last Month: 0" FontSize="15" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock x:Name="matchesLastSixMonthsLabel" Text="Last 6 Months: 0" FontSize="15" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock x:Name="matchesLastYearLabel" Text="Last Year: 0" FontSize="15" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="2">

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PussyCatsApp.Models.Enumerators;
 
 namespace PussyCatsApp.Models
 {

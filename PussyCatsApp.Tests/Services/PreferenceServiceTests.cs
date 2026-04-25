@@ -1,5 +1,6 @@
 ﻿using Moq;
 using PussyCatsApp.Models;
+using PussyCatsApp.Models.Enumerators;
 using PussyCatsApp.Repositories;
 using PussyCatsApp.Services;
 
