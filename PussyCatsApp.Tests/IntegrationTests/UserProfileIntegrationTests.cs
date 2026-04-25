@@ -44,6 +44,37 @@ namespace PussyCatsApp.Tests.IntegrationTests
             Assert.AreEqual(FinalAccountStatus, userWithGivenId.ActiveAccount);
         }
 
+        [TestMethod]
+        public async Task UploadAvatarCommand_ValidImage_UpdatesUserProfileWithNewAvatar()
+        {
+            // Arrange
+            int testUserId = TestDatabaseHelper.InsertUser();
+
+            await userProfileViewModel.LoadUserAsync(testUserId);
+
+            string temporaryFolder = Path.GetTempPath();
+            string temporaryImageFile = Path.Combine(temporaryFolder, $"{Guid.NewGuid()}.png");
+            byte[] fakeImageRandomBytes = new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }; // fake bytes for the file
+            File.WriteAllBytes(temporaryImageFile, fakeImageRandomBytes);
+
+            try
+            {
+                using (var fileStream = File.OpenRead(temporaryImageFile))
+                {
+                    userProfileViewModel.UploadAvatarCommand(fileStream, Path.GetFileName(temporaryImageFile));
+                }
+
+                UserProfile userProfileFromDatabase = userProfileRepository.GetProfileById(testUserId);
+                Assert.AreEqual(userProfileViewModel.UserProfile.ProfilePicture, userProfileFromDatabase.ProfilePicture,
+                    "The path in the Database should match what the ViewModel holds.");
+            }
+            finally
+            {
+                if (File.Exists(userProfileViewModel.UserProfile?.ProfilePicture))
+                    File.Delete(userProfileViewModel.UserProfile.ProfilePicture);
+            }
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
