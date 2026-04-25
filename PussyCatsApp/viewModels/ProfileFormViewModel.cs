@@ -82,9 +82,9 @@ namespace PussyCatsApp.ViewModels
 
         public static ProfileFormViewModel Create()
         {
-            var userProfileRepo = new UserProfileRepository(DatabaseConfiguration.GetConnectionString());
-            var skillTestRepo = new SkillTestRepository(DatabaseConfiguration.GetConnectionString());
-            var profileService = new UserProfileService(skillTestRepo, userProfileRepo);
+            var userProfileRepository = new UserProfileRepository(DatabaseConfiguration.GetConnectionString());
+            var skillTestRepository = new SkillTestRepository(DatabaseConfiguration.GetConnectionString());
+            var profileService = new UserProfileService(skillTestRepository, userProfileRepository);
             var cvParsingService = new CVParsingService();
             return new ProfileFormViewModel(profileService, cvParsingService);
         }
