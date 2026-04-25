@@ -182,7 +182,7 @@ namespace PussyCatsApp.Tests.ViewModels
             var userProfile = new UserProfile
             {
                 UserId = testUserId,
-                TotalXP = oldExperiencePoints
+                TotalExperiencePoints = oldExperiencePoints
             };
             viewModel.UserProfile = userProfile;
 
