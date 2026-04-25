@@ -37,9 +37,9 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void GetDocumentsByUserId_InvalidServer_ExpectsNoDocument()
         {
-            var repo = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
+            var repository = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
 
-            var result = repo.GetDocumentsByUserId(1);
+            var result = repository.GetDocumentsByUserId(1);
 
             Assert.AreEqual(0, result.Count);
         }
@@ -47,9 +47,9 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void GetDocumentById_InvalidServer_ExpectsNoDocument()
         {
-            var repo = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
+            var repository = new DocumentRepository("Server=InvalidServerName;Database=Fake;Connect Timeout=1;");
 
-            var result = repo.GetDocumentById(1);
+            var result = repository.GetDocumentById(1);
 
             Assert.IsNull(result);
         }

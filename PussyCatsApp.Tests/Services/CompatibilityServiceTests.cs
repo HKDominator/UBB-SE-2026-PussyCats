@@ -10,31 +10,31 @@ namespace PussyCatsApp.Tests.Services
     [TestClass]
     public class CompatibilityServiceTest
     {
-        private Mock<IUserSkillRepository> mockUserSkillRepo;
-        private Mock<ISkillGroupRepository> mockSkillGroupRepo;
-        private CompatibilityService service;
+        private Mock<IUserSkillRepository> mockUserSkillRepository;
+        private Mock<ISkillGroupRepository> mockSkillGroupRepository;
+        private CompatibilityService compatibilityService;
 
         [TestInitialize]
         public void Initialize()
         {
-            mockUserSkillRepo = new Mock<IUserSkillRepository>();
-            mockSkillGroupRepo = new Mock<ISkillGroupRepository>();
-            service = new CompatibilityService(mockUserSkillRepo.Object, mockSkillGroupRepo.Object);
+            mockUserSkillRepository = new Mock<IUserSkillRepository>();
+            mockSkillGroupRepository = new Mock<ISkillGroupRepository>();
+            compatibilityService = new CompatibilityService(mockUserSkillRepository.Object, mockSkillGroupRepository.Object);
         }
 
         [TestMethod]
         public void CalculateForRole_NoSkills_ReturnsZeroScore()
         {
             //Arrange
-            mockUserSkillRepo.Setup(emptySkillList => emptySkillList.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
-            mockUserSkillRepo.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(1)).Returns(string.Empty);
-            mockSkillGroupRepo.Setup(roleSkillForGroup => roleSkillForGroup.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
+            mockUserSkillRepository.Setup(emptySkillList => emptySkillList.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
+            mockUserSkillRepository.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(1)).Returns(string.Empty);
+            mockSkillGroupRepository.Setup(roleSkillForGroup => roleSkillForGroup.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
                 new List<SkillGroup>
                 {
                     new SkillGroup { GroupName = "G1", Skills = new List<string> { "React" }, Weight = 10 }
                 });
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.AreEqual(0, result.MatchScore);
         }
@@ -43,18 +43,18 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_AllSkillsVerified_ReturnsHighScore()
         {
             //Arrange
-            mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>
+            mockUserSkillRepository.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>
             {
                 new UserSkill { SkillName = "React", IsVerified = true, Score = 95 }
             });
-            mockUserSkillRepo.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns(string.Empty);
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
+            mockUserSkillRepository.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns(string.Empty);
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
                 new List<SkillGroup>
                 {
                     new SkillGroup { GroupName = "G1", Skills = new List<string> { "React" }, Weight = 10 }
                 });
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.IsTrue(result.MatchScore > 50);
         }
@@ -64,12 +64,12 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_NoGroups_ReturnsInvalidScore()
         {
             //Arrange
-            mockUserSkillRepo.Setup(emptySkillList => emptySkillList.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
-            mockUserSkillRepo.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(1)).Returns(string.Empty);
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper))
+            mockUserSkillRepository.Setup(emptySkillList => emptySkillList.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
+            mockUserSkillRepository.Setup(doesNotFindCV => doesNotFindCV.GetParsedCvByUserId(1)).Returns(string.Empty);
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper))
                 .Returns(new List<SkillGroup>());
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.AreEqual(-1, result.MatchScore);
         }
@@ -79,15 +79,15 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_WithCvSkills_ReturnsNonZeroScore()
         {
             //Arrange
-            mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
-            mockUserSkillRepo.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns("line1\nline2\nReact");
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
+            mockUserSkillRepository.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
+            mockUserSkillRepository.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns("line1\nline2\nReact");
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
                 new List<SkillGroup>
                 {
                     new SkillGroup { GroupName = "G1", Skills = new List<string> { "React" }, Weight = 10 }
                 });
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.IsTrue(result.MatchScore > 0);
         }
@@ -97,15 +97,15 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_CvLessThan3Lines_ReturnsZeroScore()
         {
             //Arrange
-            mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
-            mockUserSkillRepo.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns("line1\nline2");
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
+            mockUserSkillRepository.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
+            mockUserSkillRepository.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns("line1\nline2");
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
                 new List<SkillGroup>
                 {
                     new SkillGroup { GroupName = "G1", Skills = new List<string> { "React" }, Weight = 10 }
                 });
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.AreEqual(0, result.MatchScore);
         }
@@ -114,15 +114,15 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_CvThirdLineEmpty_ReturnsZeroScore()
         {
             //Arrange
-            mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
-            mockUserSkillRepo.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns("line1\nline2\n   ");
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
+            mockUserSkillRepository.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
+            mockUserSkillRepository.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns("line1\nline2\n   ");
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
                 new List<SkillGroup>
                 {
                     new SkillGroup { GroupName = "G1", Skills = new List<string> { "React" }, Weight = 10 }
                 });
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.AreEqual(0, result.MatchScore);
         }
@@ -132,18 +132,18 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_HighGroupScore_ReturnsEmptySuggestions()
         {
             //Arrange
-            mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>
+            mockUserSkillRepository.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>
             {
                 new UserSkill { SkillName = "React", IsVerified = true, Score = 90 }
             });
-            mockUserSkillRepo.Setup(emptyCvForUser => emptyCvForUser.GetParsedCvByUserId(1)).Returns(string.Empty);
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
+            mockUserSkillRepository.Setup(emptyCvForUser => emptyCvForUser.GetParsedCvByUserId(1)).Returns(string.Empty);
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
                 new List<SkillGroup>
                 {
                     new SkillGroup { GroupName = "G1", Skills = new List<string> { "React" }, Weight = 10 }
                 });
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.AreEqual(0, result.Suggestions.Count);
         }
@@ -152,9 +152,9 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateForRole_MoreThan3Gaps_Returns3Suggestions()
         {
             //Arrange
-            mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
-            mockUserSkillRepo.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns(string.Empty);
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
+            mockUserSkillRepository.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
+            mockUserSkillRepository.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns(string.Empty);
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(JobRole.FrontendDeveloper)).Returns(
                 new List<SkillGroup>
                 {
                     new SkillGroup { GroupName = "G1", Skills = new List<string> { "Skill1" }, Weight = 10 },
@@ -163,7 +163,7 @@ namespace PussyCatsApp.Tests.Services
                     new SkillGroup { GroupName = "G4", Skills = new List<string> { "Skill4" }, Weight = 7 }
                 });
             //Act
-            var result = service.CalculateForRole(1, JobRole.FrontendDeveloper);
+            var result = compatibilityService.CalculateForRole(1, JobRole.FrontendDeveloper);
             //Assert
             Assert.AreEqual(3, result.Suggestions.Count);
         }
@@ -172,11 +172,11 @@ namespace PussyCatsApp.Tests.Services
         public void CalculateAll_ReturnsResultForEachRole()
         {
             //Arrange
-            mockUserSkillRepo.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
-            mockUserSkillRepo.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns(string.Empty);
-            mockSkillGroupRepo.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(It.IsAny<JobRole>())).Returns(new List<SkillGroup>());
+            mockUserSkillRepository.Setup(verifiedSkills => verifiedSkills.GetVerifiedSkillsByUserId(1)).Returns(new List<UserSkill>());
+            mockUserSkillRepository.Setup(parsedCv => parsedCv.GetParsedCvByUserId(1)).Returns(string.Empty);
+            mockSkillGroupRepository.Setup(roleSkills => roleSkills.GetSkillsGroupByRole(It.IsAny<JobRole>())).Returns(new List<SkillGroup>());
             //Act
-            var results = service.CalculateAll(1);
+            var results = compatibilityService.CalculateAll(1);
             //Assert
             Assert.AreEqual(Enum.GetValues(typeof(JobRole)).Length, results.Count);
         }
