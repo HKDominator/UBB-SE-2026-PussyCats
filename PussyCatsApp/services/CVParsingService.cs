@@ -28,16 +28,11 @@ namespace PussyCatsApp.Services
         private const int MaxLinkedInLength = 200;
         private const int MaxAddressLength = 500;
         private const int MaxMotivationLength = 1000;
-        private const int MaxEmailLength = 254;
-        private const int MaxPhoneLength = 15;
         private const int MaxCompanyNameLength = 150;
         private const int MaxJobTitleLength = 100;
         private const int MaxWorkDescriptionLength = 500;
 
-        private const int MinAge = 16;
-        private const int MaxAge = 60;
         private const int InvalidAge = 0;
-        private const int MaxYearsAheadForGraduation = 10;
 
         private const string GenderMale = "Male";
         private const string GenderFemale = "Female";
@@ -263,10 +258,11 @@ namespace PussyCatsApp.Services
             {
                 return string.Empty;
             }
+            const int maximumEmailLength = 254;
 
             email = email.Trim().ToLowerInvariant();
 
-            if (email.Length > MaxEmailLength)
+            if (email.Length > maximumEmailLength)
             {
                 return string.Empty;
             }
@@ -285,7 +281,10 @@ namespace PussyCatsApp.Services
         /// </summary>
         private int ValidateAge(int age)
         {
-            if (age < MinAge || age > MaxAge)
+            const int minimumAge = 16;
+            const int maximumAge = 60;
+
+            if (age < minimumAge || age > maximumAge)
             {
                 return InvalidAge;
             }
@@ -328,11 +327,12 @@ namespace PussyCatsApp.Services
             {
                 return string.Empty;
             }
+            const int maximumPhoneLength = 15;
 
             // Remove all non-digit characters except + at the beginning
             phoneNumber = phoneNumber.Trim();
             phoneNumber = System.Text.RegularExpressions.Regex.Replace(phoneNumber, @"[^\d+]", string.Empty);
-            if (phoneNumber.Length > MaxPhoneLength)
+            if (phoneNumber.Length > maximumPhoneLength)
             {
                 return string.Empty;
             }
@@ -346,8 +346,9 @@ namespace PussyCatsApp.Services
         private int ValidateGraduationYear(int year)
         {
             int currentYear = DateTime.Now.Year;
+            const int maximumYearsAheadForGraduation = 10;
 
-            if (year < currentYear || year > currentYear + MaxYearsAheadForGraduation)
+            if (year < currentYear || year > currentYear + maximumYearsAheadForGraduation)
             {
                 return 0;
             }
@@ -365,10 +366,10 @@ namespace PussyCatsApp.Services
                 return DateTimeOffset.Now;
             }
 
-            var minDate = new DateTimeOffset(MinValidDate);
-            var maxDate = DateTimeOffset.Now.AddYears(MaxYearsAheadForDate);
+            var earliestAllowedDate = new DateTimeOffset(MinValidDate);
+            var latestAllowedDate = DateTimeOffset.Now.AddYears(MaxYearsAheadForDate);
 
-            if (date < minDate || date > maxDate)
+            if (date < earliestAllowedDate || date > latestAllowedDate)
             {
                 return DateTimeOffset.Now;
             }

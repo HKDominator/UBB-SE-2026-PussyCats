@@ -26,33 +26,39 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestAddSkillAddsSkillToList()
+        public void AddSkill_AddsSkillToList_WhenValidSkillProvided()
         {
             string skill = "C#";
             viewModel.AddSkill(skill);
-            Assert.AreEqual(1, viewModel.Skills.Count);
+
+            int expectedNumberOfSkills = 1;
+            Assert.AreEqual(expectedNumberOfSkills, viewModel.Skills.Count);
             Assert.IsTrue(viewModel.Skills.Contains(skill));
         }
 
         [TestMethod]
-        public void TestAddSkillDoesNotAddEmptySkill()
+        public void AddSkill_DoesNotAddToList_WhenSkillIsEmpty()
         {
             string skill = string.Empty;
             viewModel.AddSkill(skill);
-            Assert.AreEqual(0, viewModel.Skills.Count);
+
+            int expectedNumberOfSkills = 0;
+            Assert.AreEqual(expectedNumberOfSkills, viewModel.Skills.Count);
         }
 
         [TestMethod]
-        public void TestAddDuplicateSkillDoesNotAddToList()
+        public void AddSkill_DoesNotAddToList_WhenDuplicateSkill()
         {
             string skill = "C#";
             viewModel.AddSkill(skill);
             viewModel.AddSkill(skill);
-            Assert.AreEqual(1, viewModel.Skills.Count);
+
+            int expectedNumberOfSkills = 1;
+            Assert.AreEqual(expectedNumberOfSkills, viewModel.Skills.Count);
         }
 
         [TestMethod]
-        public void TestAddDuplicateSkillShowsInfoBar()
+        public void AddSkill_ShowsInfoBar_WhenDuplicateSkillAdded()
         {
             string skill = "C#";
             string duplicateStringInfoBarMessage = "This skill has already been added.";
@@ -65,7 +71,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestAddSkillCannotAddMoreThanMaximumNumberAllowed()
+        public void AddSkill_DoesNotAddToList_WhenMaximumNumberOfSkillsReached()
         {
             int maximumNumberOfSkillsAllowed = 30;
             string skill = "Skill";
@@ -79,7 +85,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestAddSkillShowsInfoBarWhenMaximumNumberOfSkillsAllowedIsReached()
+        public void AddSkill_ShowsInfoBar_WhenMaximumNumberOfSkillsIsExceeded()
         {
             int maximumNumberOfSkillsAllowed = 30;
             string skill = "Skill";
@@ -94,17 +100,19 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestAddSkillDoesNotAddSkillWithTooLongName()
+        public void AddSkill_DoesNotAddToList_WhenSkillNameExceedsMaximumLength()
         {
             int maximumSkillNameLength = 60;
             string longSkillName = new string('a', maximumSkillNameLength + 1);
 
             viewModel.AddSkill(longSkillName);
-            Assert.AreEqual(0, viewModel.Skills.Count);
+
+            int expectedNumberOfSkills = 0;
+            Assert.AreEqual(expectedNumberOfSkills, viewModel.Skills.Count);
         }
 
         [TestMethod]
-        public void TestAddSkillShowsInfoBarWhenSkillNameExceedsMaximumLength()
+        public void AddSkill_ShowsInfoBar_WhenSkillNameExceedsMaximumLength()
         {
             int maximumSkillNameLength = 60;
             string longSkillName = new string('a', maximumSkillNameLength + 1);
@@ -117,23 +125,26 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestRemoveSkillRemovesSkillFromList()
+        public void RemoveSkill_RemovesSkillFromList_WhenSkillExists()
         {
             string skill = "C#";
             viewModel.AddSkill(skill);
             viewModel.RemoveSkill(skill);
-            Assert.AreEqual(0, viewModel.Skills.Count);
+
+            int expectedNumberOfSkills = 0;
+            Assert.AreEqual(expectedNumberOfSkills, viewModel.Skills.Count);
         }
 
         [TestMethod]
-        public void TestAddWorkExperienceAddsExperienceToList()
+        public void AddWorkExperience_AddsExperienceToList_WhenCalled()
         {
             viewModel.AddWorkExperience();
-            Assert.AreEqual(1, viewModel.WorkExperiences.Count);
+            int expectedNumberOfWorkExperience = 1;
+            Assert.AreEqual(expectedNumberOfWorkExperience, viewModel.WorkExperiences.Count);
         }
 
         [TestMethod]
-        public void TestAddWorkExperienceFailsWhenMaximumNumberOfWorkExperiencesIsReached()
+        public void AddWorkExperience_DoesNotAddToList_WhenMaximumNumberOfWorkExperiencesIsReached()
         {
             int maximumNumberOfWorkExperiencesAllowed = 10;
             for (int experienceIndex = 0; experienceIndex < maximumNumberOfWorkExperiencesAllowed; experienceIndex++)
@@ -147,7 +158,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestAddWorkExperienceShowInfoBarWhenMaximumNumberOfWorkExperiencesIsReached()
+        public void AddWorkExperience_ShowsInfoBar_WhenMaximumNumberOfWorkExperiencesIsExceeded()
         {
             int maximumNumberOfWorkExperiencesAllowed = 10;
             for (int experienceIndex = 0; experienceIndex < maximumNumberOfWorkExperiencesAllowed; experienceIndex++)
@@ -162,24 +173,26 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestRemoveWorkExperienceRemovesExperienceFromList()
+        public void RemoveWorkExperience_RemovesExperienceFromList_WhenExperienceExists()
         {
             viewModel.AddWorkExperience();
             var experience = viewModel.WorkExperiences.First();
 
             viewModel.RemoveWorkExperience(experience);
-            Assert.AreEqual(0, viewModel.WorkExperiences.Count);
+            int expectedNumberOfWorkExperience = 0;
+            Assert.AreEqual(expectedNumberOfWorkExperience, viewModel.WorkExperiences.Count);
         }
 
         [TestMethod]
-        public void TestAddProjectAddsProjectToList()
+        public void AddProject_AddsProjectToList()
         {
             viewModel.AddProject();
-            Assert.AreEqual(1, viewModel.Projects.Count);
+            int expectedNumberOfProjects = 1;
+            Assert.AreEqual(expectedNumberOfProjects, viewModel.Projects.Count);
         }
 
         [TestMethod]
-        public void TestAddProjectFailsWhenMaximumNumberOfProjectsIsReached()
+        public void AddProject_DoesNotAddToList_WhenMaximumNumberOfProjectsIsReached()
         {
             int maximumNumberOfProjectsAllowed = 10;
             for (int projectIndex = 0; projectIndex < maximumNumberOfProjectsAllowed; projectIndex++)
@@ -191,7 +204,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestAddProjectShowInfoBarWhenMaximumNumberOfProjectsIsReached()
+        public void AddProject_ShowsInfoBar_WhenMaximumNumberOfProjectsIsExceeded()
         {
             int maximumNumberOfProjectsAllowed = 10;
             for (int projectIndex = 0; projectIndex < maximumNumberOfProjectsAllowed; projectIndex++)
@@ -204,23 +217,26 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestRemoveProjectRemovesProjectFromList()
+        public void RemoveProject_RemovesProjectFromList_WhenProjectExists()
         {
             viewModel.AddProject();
             var project = viewModel.Projects.First();
             viewModel.RemoveProject(project);
-            Assert.AreEqual(0, viewModel.Projects.Count);
+
+            int expectedNumberOfProjects = 0;
+            Assert.AreEqual(expectedNumberOfProjects, viewModel.Projects.Count);
         }
 
         [TestMethod]
-        public void AddExtraCurricularActivityAddsActivityToList()
+        public void AddExtraCurricularActivity_AddsActivityToList()
         {
             viewModel.AddExtraCurricularActivity();
-            Assert.AreEqual(1, viewModel.ExtraCurricularActivities.Count);
+            int expectedNumberOfActivities = 1;
+            Assert.AreEqual(expectedNumberOfActivities, viewModel.ExtraCurricularActivities.Count);
         }
 
         [TestMethod]
-        public void AddExtraCurricularActivityFailsWhenMaximumNumberOfActivitiesIsReached()
+        public void AddExtraCurricularActivity_DoesNotAddToList_WhenMaximumNumberOfActivitiesIsReached()
         {
             int maximumNumberOfExtraCurricularActivitiesAllowed = 10;
             for (int activityIndex = 0; activityIndex < maximumNumberOfExtraCurricularActivitiesAllowed; activityIndex++)
@@ -232,7 +248,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void AddExtraCurricularActivityShowInfoBarWhenMaximumNumberOfActivitiesIsReached()
+        public void AddExtraCurricularActivity_ShowsInfoBar_WhenMaximumNumberOfActivitiesIsExceeded()
         {
             int maximumNumberOfExtraCurricularActivitiesAllowed = 10;
             for (int activityIndex = 0; activityIndex < maximumNumberOfExtraCurricularActivitiesAllowed; activityIndex++)
@@ -245,16 +261,17 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void RemoveExtraCurricularActivityRemovesActivityFromList()
+        public void RemoveExtraCurricularActivity_RemovesActivityFromList_WhenActivityExists()
         {
             viewModel.AddExtraCurricularActivity();
             var activity = viewModel.ExtraCurricularActivities.First();
             viewModel.RemoveExtraCurricularActivity(activity);
-            Assert.AreEqual(0, viewModel.ExtraCurricularActivities.Count);
+            int expectedNumberOfActivities = 0;
+            Assert.AreEqual(expectedNumberOfActivities, viewModel.ExtraCurricularActivities.Count);
         }
 
         [TestMethod]
-        public void TestLoadProfile()
+        public void LoadProfile_LoadsUserProfileDataCorrectly()
         {
             UserProfile userProfile = new UserProfile
             {
@@ -307,7 +324,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestIsDuplicateSkillReturnsTrueForExistingSkill()
+        public void IsDuplicateSkill_ReturnsTrueForExistingSkill()
         {
             string skill = "C#";
             viewModel.AddSkill(skill);
@@ -315,33 +332,37 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestFilterSkillSuggestionsReturnsMatchingSkill()
+        public void FilterSkillSuggestions_ReturnsMatchingSkill()
         {
             string searchTextQuery = "Webpa";
             List<string> results = viewModel.FilterSkillSuggestions(searchTextQuery);
-            Assert.AreEqual(1, results.Count);
+
+            int expectedNumberOfResults = 1;
+            Assert.AreEqual(expectedNumberOfResults, results.Count);
             Assert.IsTrue(results.Contains("Webpack"));
         }
 
         [TestMethod]
-        public void TestFilterSkillSuggestionsReturnsEmptyListOnEmptyQuery()
+        public void FilterSkillSuggestions_ReturnsEmptyList_OnEmptyQuery()
         {
             string emptyTextQuery = string.Empty;
             List<string> results = viewModel.FilterSkillSuggestions(emptyTextQuery);
-            Assert.AreEqual(0, results.Count);
+            int expectedNumberOfResults = 0;
+            Assert.AreEqual(expectedNumberOfResults, results.Count);
         }
 
         [TestMethod]
-        public void TestFilterSkillsSuggestionsDoesntRecommendDuplicateSkill()
+        public void FilterSkillSuggestions_DoesntRecommendDuplicateSkill()
         {
             viewModel.AddSkill("Webpack");
             string searchTextQuery = "Webpa";
             List<string> results = viewModel.FilterSkillSuggestions(searchTextQuery);
-            Assert.AreEqual(0, results.Count);
+            int expectedNumberOfResults = 0;
+            Assert.AreEqual(expectedNumberOfResults, results.Count);
         }
 
         [TestMethod]
-        public void TestPopulateFromParsedProfileWorksWhenNoMissingData()
+        public void PopulateFromParsedProfile_WorksWhenNoMissingData()
         {
             UserProfile parsedUserProfile = new UserProfile
             {
@@ -395,7 +416,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestPopulateFromParsedProfileFailsWhenMissingAge()
+        public void PopulateFromParsedProfile_FailsWhenMissingAge()
         {
             /// Missing mandatory fields: Age
             UserProfile parsedUserProfileMissingValues = new UserProfile
@@ -448,7 +469,7 @@ namespace PussyCatsApp.Tests.ViewModels
         }
 
         [TestMethod]
-        public void TestPopulateFromParsedProfileFailsWhenMissingEmail()
+        public void PopulateFromParsedProfile_FailsWhenMissingEmail()
         {
             /// Missing mandatory fields: Email
             UserProfile parsedUserProfileMissingValues = new UserProfile

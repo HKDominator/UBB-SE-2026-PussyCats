@@ -51,9 +51,9 @@ namespace PussyCatsApp.Services
         {
             int filledFields = 0;
 
-            for (int i = 0; i < TotalFields; i++)
+            for (int fieldIndex = 0; fieldIndex < TotalFields; fieldIndex++)
             {
-                if (IsFieldFilled(i, profile))
+                if (IsFieldFilled(fieldIndex, profile))
                 {
                     filledFields++;
                 }

@@ -51,7 +51,7 @@ namespace PussyCatsApp.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public UserLevel UserLevel { get; set; } = new UserLevel();
-        public int TotalXP { get; set; } = 0;
+        public int TotalExperiencePoints { get; set; } = 0;
     }
 
     public class WorkExperience

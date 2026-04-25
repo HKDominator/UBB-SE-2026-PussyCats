@@ -71,7 +71,7 @@ namespace PussyCatsApp.Tests.Repositories
 
             var result = Repository.GetVerifiedSkillsByUserId(targetUser);
 
-            Assert.IsFalse(result.Any(s => s.SkillName == "OtherSkill"));
+            Assert.IsFalse(result.Any(NotSpecifiedSkill => NotSpecifiedSkill.SkillName == "OtherSkill"));
         }
 
 
