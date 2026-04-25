@@ -9,27 +9,31 @@ namespace PussyCatsApp.Tests.Services
     public class SkillTestServiceTests
     {
 
-        private Mock<ISkillTestRepository> mockRepo;
-        private SkillTestService service;
+        private Mock<ISkillTestRepository> mockSkillTestRepository;
+        private SkillTestService skillTestService;
+        private const int skillTestId = 1;
+        private const int ExcellentRetakeScore = 95;
+        private const int FailingRetakeScore = 50;
 
         [TestInitialize]
         public void Initialize()
         {
-            mockRepo = new Mock<ISkillTestRepository>();
-            service = new SkillTestService(mockRepo.Object);
+            mockSkillTestRepository = new Mock<ISkillTestRepository>();
+            skillTestService = new SkillTestService(mockSkillTestRepository.Object);
         }
        
         [TestMethod]
         public void CanRetakeTest_ValidSkillId_ReturnsTrue()
         {
             //Arrange
-            var skill = new SkillTest(1, 10, "Test1");
-            skill.AchievedDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
-            mockRepo.Setup(skillForGivenUser => skillForGivenUser.Load(1)).Returns(skill);
+            var skillTest = new SkillTest(skillTestId, 10, "Test1");
+            DateOnly fourMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
+            skillTest.AchievedDate = fourMonthsAgo;
+            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(skillTestId)).Returns(skillTest);
             //Act
-            var result = service.CanRetakeTest(1);
+            var canUserRetakeSkillTest = skillTestService.CanRetakeTest(skillTestId);
             //Assert
-            Assert.IsTrue(result);
+            Assert.IsTrue(canUserRetakeSkillTest);
         }
 
         [TestMethod]
@@ -37,9 +41,9 @@ namespace PussyCatsApp.Tests.Services
         public void CanRetakeTest_InvalidSkillId_ThrowsException()
         {
             //Arrange
-            mockRepo.Setup(nullSkillForGivenUser => nullSkillForGivenUser.Load(1)).Returns((SkillTest)null);
+            mockSkillTestRepository.Setup(doesNotFindSkillTest => doesNotFindSkillTest.Load(skillTestId)).Returns((SkillTest)null);
             //Act
-            service.CanRetakeTest(1);
+            skillTestService.CanRetakeTest(skillTestId);
         }
 
         
@@ -47,17 +51,18 @@ namespace PussyCatsApp.Tests.Services
         public void SubmitRetake_EligibleTest_ReturnsNewBadge()
         {
             //Arrange
-            var skill = new SkillTest(1, 10, "Test1");
-            skill.AchievedDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
+            var skillTest = new SkillTest(skillTestId, 10, "Test1");
+            DateOnly fourMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-4));
+            skillTest.AchievedDate = fourMonthsAgo;
 
-            mockRepo.Setup(skillForUser => skillForUser.Load(1)).Returns(skill);
+            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(skillTestId)).Returns(skillTest);
             //Act
-            var result = service.SubmitRetake(1, 95);
+            var badgeResult = skillTestService.SubmitRetake(skillTestId, ExcellentRetakeScore);
             //Assert
-            mockRepo.Verify(updateSkillTestScore => updateSkillTestScore.UpdateSkillTestScore(1, 95), Times.Once);
-            mockRepo.Verify(updateAchievedDate => updateAchievedDate.UpdateAchievedDate(1, It.IsAny<DateOnly>()), Times.Once);
+            mockSkillTestRepository.Verify(updateSkillTestScore => updateSkillTestScore.UpdateSkillTestScore(skillTestId, ExcellentRetakeScore), Times.Once);
+            mockSkillTestRepository.Verify(updateAchievedDate => updateAchievedDate.UpdateAchievedDate(skillTestId, It.IsAny<DateOnly>()), Times.Once);
 
-            Assert.IsNotNull(result);
+            Assert.IsNotNull(badgeResult);
         }
 
         [TestMethod]
@@ -65,11 +70,11 @@ namespace PussyCatsApp.Tests.Services
         public void SubmitRetake_NotEligible_ThrowsException()
         {
             //Arrange
-            var skill = new SkillTest(1, 10, "Test1");
-            skill.AchievedDate = DateOnly.FromDateTime(DateTime.Now);
-            mockRepo.Setup(skillForUser => skillForUser.Load(1)).Returns(skill);
+            var skillTest = new SkillTest(skillTestId, 10, "Test1");
+            skillTest.AchievedDate = DateOnly.FromDateTime(DateTime.Now);
+            mockSkillTestRepository.Setup(findsSkillTest => findsSkillTest.Load(skillTestId)).Returns(skillTest);
             //Act
-            service.SubmitRetake(1, 50);
+            skillTestService.SubmitRetake(skillTestId, FailingRetakeScore);
         }
 
     }

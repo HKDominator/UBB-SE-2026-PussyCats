@@ -102,9 +102,9 @@ namespace PussyCatsApp.Repositories
 
             try
             {
-                using var dbTransaction = connection.BeginTransaction();
-                UpsertUserRow(connection, dbTransaction, id, profileData);
-                dbTransaction.Commit();
+                using var databaseTransaction = connection.BeginTransaction();
+                UpsertUserRow(connection, databaseTransaction, id, profileData);
+                databaseTransaction.Commit();
             }
             catch (SqlException e)
             {
@@ -118,7 +118,7 @@ namespace PussyCatsApp.Repositories
 
         public void UpdateAccountStatus(int userId, string status)
         {
-            const string query = "UPDATE Users SET activeAccount = @status WHERE userID = @userId";
+            const string updateAccountStatusByUserIdQuery = "UPDATE Users SET activeAccount = @status WHERE userID = @userId";
             bool isAccountActive = false;
             if (status == "ACTIVE")
             {
@@ -130,7 +130,7 @@ namespace PussyCatsApp.Repositories
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                using var command = new SqlCommand(query, connection);
+                using var command = new SqlCommand(updateAccountStatusByUserIdQuery, connection);
                 command.Parameters.AddWithValue("@status", isAccountActive);
                 command.Parameters.AddWithValue("@userId", userId);
 
@@ -152,18 +152,18 @@ namespace PussyCatsApp.Repositories
 
         public void UpdateProfileLastModified(int userId, DateTime newTimestamp)
         {
-            const string query = "UPDATE Users SET LastUpdated = @time WHERE userID = @userId";
+            const string updateProfileLastModifiedDateByUserIdQuery = "UPDATE Users SET LastUpdated = @time WHERE userID = @userId";
 
             try
             {
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                using var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@time", newTimestamp);
-                cmd.Parameters.AddWithValue("@userId", userId);
+                using var command = new SqlCommand(updateProfileLastModifiedDateByUserIdQuery, connection);
+                command.Parameters.AddWithValue("@time", newTimestamp);
+                command.Parameters.AddWithValue("@userId", userId);
 
-                cmd.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
             catch (SqlException ex)
             {
@@ -177,14 +177,14 @@ namespace PussyCatsApp.Repositories
 
         public void UpdateProfilePicture(int userId, string profilePicturePath)
         {
-            const string query = "UPDATE Users SET profilePicture = @path WHERE userID = @userId";
+            const string updateProfilePictureByUserIdQuery = "UPDATE Users SET profilePicture = @path WHERE userID = @userId";
 
             try
             {
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                using var command = new SqlCommand(query, connection);
+                using var command = new SqlCommand(updateProfilePictureByUserIdQuery, connection);
                 object pathValue = DBNull.Value;
                 if (profilePicturePath != null)
                 {
@@ -207,8 +207,8 @@ namespace PussyCatsApp.Repositories
 
         private static UserProfile LoadUserRow(SqlConnection connection, int userId)
         {
-            using var sqlCommand = connection.CreateCommand();
-            sqlCommand.CommandText = @"
+            using var loadUserByUserIdCommand = connection.CreateCommand();
+            loadUserByUserIdCommand.CommandText = @"
                 SELECT userID, firstName, lastName, gender, age,
                        email, phone, github, linkedin, universityStartYear,
                        graduationYear, country, city, address, motivation,
@@ -218,9 +218,9 @@ namespace PussyCatsApp.Repositories
                        formDataJson
                 FROM Users
                 WHERE userID = @id";
-            sqlCommand.Parameters.AddWithValue("@id", userId);
+            loadUserByUserIdCommand.Parameters.AddWithValue("@id", userId);
 
-            using var dataReader = sqlCommand.ExecuteReader();
+            using var dataReader = loadUserByUserIdCommand.ExecuteReader();
             if (dataReader.Read() == false)
             {
                 return null;
@@ -292,19 +292,19 @@ namespace PussyCatsApp.Repositories
 
         private static void LoadFormData(SqlConnection connection, int userId, UserProfile profile)
         {
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT formDataJson FROM Users WHERE userID = @id";
-            command.Parameters.AddWithValue("@id", userId);
+            using var selectFormDataCommand = connection.CreateCommand();
+            selectFormDataCommand.CommandText = "SELECT formDataJson FROM Users WHERE userID = @id";
+            selectFormDataCommand.Parameters.AddWithValue("@id", userId);
 
-            var raw = command.ExecuteScalar() as string;
-            if (string.IsNullOrWhiteSpace(raw))
+            var rawFormData = selectFormDataCommand.ExecuteScalar() as string;
+            if (string.IsNullOrWhiteSpace(rawFormData))
                 {
                     return;
                 }
 
             try
             {
-                FormDataSnapshot formData = JsonSerializer.Deserialize<FormDataSnapshot>(raw, JsonOptions);
+                FormDataSnapshot formData = JsonSerializer.Deserialize<FormDataSnapshot>(rawFormData, JsonOptions);
                 if (formData == null)
                 {
                     return;
@@ -358,15 +358,15 @@ namespace PussyCatsApp.Repositories
         private static List<string> LoadCertificates(SqlConnection connection, int userId)
         {
             var list = new List<string>();
-            using var command = connection.CreateCommand();
-            command.CommandText = @"
+            using var loadNameDocumentCommand = connection.CreateCommand();
+            loadNameDocumentCommand.CommandText = @"
                 SELECT nameDocument
                 FROM Documents
                 WHERE userID = @id
                 ORDER BY dID";
-            command.Parameters.AddWithValue("@id", userId);
+            loadNameDocumentCommand.Parameters.AddWithValue("@id", userId);
 
-            using var reader = command.ExecuteReader();
+            using var reader = loadNameDocumentCommand.ExecuteReader();
             while (reader.Read())
             {
                 var name = GetString(reader, "nameDocument");
@@ -380,14 +380,14 @@ namespace PussyCatsApp.Repositories
 
         private static void LoadPreferences(SqlConnection connection, int userId, UserProfile profile)
         {
-            using var cmd = connection.CreateCommand();
-            cmd.CommandText = @"
+            using var selectPreferencesByUserIdCommand = connection.CreateCommand();
+            selectPreferencesByUserIdCommand.CommandText = @"
                 SELECT preferanceType, value
                 FROM Preferences
                 WHERE userID = @id";
-            cmd.Parameters.AddWithValue("@id", userId);
+            selectPreferencesByUserIdCommand.Parameters.AddWithValue("@id", userId);
 
-            using var reader = cmd.ExecuteReader();
+            using var reader = selectPreferencesByUserIdCommand.ExecuteReader();
             while (reader.Read())
             {
                 var type = GetString(reader, "preferanceType");
@@ -444,9 +444,9 @@ namespace PussyCatsApp.Repositories
 
             string formDataJsonString = JsonSerializer.Serialize(snapshot, JsonOptions);
 
-            using var sqlCommand = connection.CreateCommand();
-            sqlCommand.Transaction = transaction;
-            sqlCommand.CommandText = @"
+            using var updateOrInsertCommand = connection.CreateCommand();
+            updateOrInsertCommand.Transaction = transaction;
+            updateOrInsertCommand.CommandText = @"
                 IF EXISTS (SELECT 1 FROM Users WHERE userID = @id)
                     UPDATE Users SET
                         firstName             = @firstName,
@@ -501,99 +501,41 @@ namespace PussyCatsApp.Repositories
                     break;
             }
 
-            sqlCommand.Parameters.AddWithValue("@id", userId);
-            sqlCommand.Parameters.AddWithValue("@firstName", profile.FirstName);
-            sqlCommand.Parameters.AddWithValue("@lastName", profile.LastName);
+            updateOrInsertCommand.Parameters.AddWithValue("@id", userId);
+            updateOrInsertCommand.Parameters.AddWithValue("@firstName", profile.FirstName);
+            updateOrInsertCommand.Parameters.AddWithValue("@lastName", profile.LastName);
 
             object genderParam = DBNull.Value;
             if (genderDbValue != null)
             {
                 genderParam = genderDbValue;
             }
-            sqlCommand.Parameters.AddWithValue("@gender", genderParam);
+            updateOrInsertCommand.Parameters.AddWithValue("@gender", genderParam);
 
-            sqlCommand.Parameters.AddWithValue("@age", profile.Age);
-            sqlCommand.Parameters.AddWithValue("@email", profile.Email);
+            updateOrInsertCommand.Parameters.AddWithValue("@age", profile.Age);
+            updateOrInsertCommand.Parameters.AddWithValue("@email", profile.Email);
 
-            sqlCommand.Parameters.AddWithValue("@phone", (object)profile.PhoneNumber ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@github", (object)profile.GitHub ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@linkedin", (object)profile.LinkedIn ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@universityStartYear", profile.UniversityStartYear);
-            sqlCommand.Parameters.AddWithValue("@graduationYear", profile.ExpectedGraduationYear);
-            sqlCommand.Parameters.AddWithValue("@country", (object)profile.Country ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@city", (object)profile.City ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@address", (object)profile.Address ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@motivation", (object)profile.Motivation ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@disabilities", profile.HasDisabilities);
-            sqlCommand.Parameters.AddWithValue("@university", (object)profile.University ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@degree", (object)profile.Degree ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@personalityTestResult", (object)profile.PersonalityTestResult ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@activeAccount", profile.ActiveAccount);
-            sqlCommand.Parameters.AddWithValue("@profilePicture", (object)profile.ProfilePicture ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@parsedCV", (object)profile.ParsedCV ?? DBNull.Value);
-            sqlCommand.Parameters.AddWithValue("@formDataJson", formDataJsonString);
+            updateOrInsertCommand.Parameters.AddWithValue("@phone", (object)profile.PhoneNumber ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@github", (object)profile.GitHub ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@linkedin", (object)profile.LinkedIn ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@universityStartYear", profile.UniversityStartYear);
+            updateOrInsertCommand.Parameters.AddWithValue("@graduationYear", profile.ExpectedGraduationYear);
+            updateOrInsertCommand.Parameters.AddWithValue("@country", (object)profile.Country ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@city", (object)profile.City ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@address", (object)profile.Address ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@motivation", (object)profile.Motivation ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@disabilities", profile.HasDisabilities);
+            updateOrInsertCommand.Parameters.AddWithValue("@university", (object)profile.University ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@degree", (object)profile.Degree ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@personalityTestResult", (object)profile.PersonalityTestResult ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@activeAccount", profile.ActiveAccount);
+            updateOrInsertCommand.Parameters.AddWithValue("@profilePicture", (object)profile.ProfilePicture ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@parsedCV", (object)profile.ParsedCV ?? DBNull.Value);
+            updateOrInsertCommand.Parameters.AddWithValue("@formDataJson", formDataJsonString);
 
-            sqlCommand.ExecuteNonQuery();
+            updateOrInsertCommand.ExecuteNonQuery();
         }
 
-        // private static void SaveSkills(SqlConnection connection, SqlTransaction transaction,
-        //    int userId, List<string> skills)
-        // {
-        //    using (var del = connection.CreateCommand())
-        //    {
-        //        del.Transaction = transaction;
-        //        del.CommandText = "DELETE FROM Skills WHERE userID = @id";
-        //        del.Parameters.AddWithValue("@id", userId);
-        //        del.ExecuteNonQuery();
-        //    }
-
-        // foreach (var skill in skills ?? new List<string>())
-        //    {
-        //        using var cmd = connection.CreateCommand();
-        //        cmd.Transaction = transaction;
-        //        cmd.CommandText = "INSERT INTO Skills (userID, name) VALUES (@uid, @name)";
-        //        cmd.Parameters.AddWithValue("@uid", userId);
-        //        cmd.Parameters.AddWithValue("@name", skill);
-        //        cmd.ExecuteNonQuery();
-        //    }
-        // }
-
-        // private static void SavePreferences(SqlConnection connection, SqlTransaction transaction,
-        //    int userId, UserProfile profile)
-        // {
-        //    using (var del = connection.CreateCommand())
-        //    {
-        //        del.Transaction = transaction;
-        //        del.CommandText = "DELETE FROM Preferences WHERE userID = @id";
-        //        del.Parameters.AddWithValue("@id", userId);
-        //        del.ExecuteNonQuery();
-        //    }
-
-        // void Insert(string type, string value)
-        //    {
-        //        if (string.IsNullOrWhiteSpace(value))
-        //        {
-        //            return;
-        //        }
-        //        using var cmd = connection.CreateCommand();
-        //        cmd.Transaction = transaction;
-        //        cmd.CommandText = @"
-        //            INSERT INTO Preferences (userID, preferanceType, value)
-        //            VALUES (@uid, @type, @value)";
-        //        cmd.Parameters.AddWithValue("@uid", userId);
-        //        cmd.Parameters.AddWithValue("@type", type);
-        //        cmd.Parameters.AddWithValue("@value", value);
-        //        cmd.ExecuteNonQuery();
-        //    }
-
-        // foreach (var role in profile.PreferredJobRoles ?? new List<string>())
-        //    {
-        //        Insert("JobRole", role);
-        //    }
-
-        // Insert("WorkMode", profile.WorkModePreference);
-        // Insert("Location", profile.LocationPreference);
-        // }
         private static string GetString(SqlDataReader reader, string columnName)
         {
             int ordinalIndex = reader.GetOrdinal(columnName);

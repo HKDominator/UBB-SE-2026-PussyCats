@@ -201,22 +201,22 @@ namespace PussyCatsApp.Services
         }
         public List<string> SearchLocations(string locationQuery)
         {
-            var result = new List<string>();
+            var matchingLocations = new List<string>();
 
             if (string.IsNullOrWhiteSpace(locationQuery))
             {
-                return result;
+                return matchingLocations;
             }
 
             foreach (var location in predefinedLocations)
             {
                 if (location.Contains(locationQuery, StringComparison.OrdinalIgnoreCase))
                 {
-                    result.Add(location);
+                    matchingLocations.Add(location);
                 }
             }
 
-            return result;
+            return matchingLocations;
         }
     }
 }

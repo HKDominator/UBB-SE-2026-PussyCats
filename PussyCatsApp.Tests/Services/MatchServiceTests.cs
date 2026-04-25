@@ -9,72 +9,80 @@ namespace PussyCatsApp.Tests.Services;
 [TestClass]
 public class MatchServiceTest
 {
-    private Mock<IMatchRepository> mockRepo;
-    private MatchService service;
+    private Mock<IMatchRepository> mockMatchRepository;
+    private MatchService matchService;
     private List<Match> matches;
 
     [TestInitialize]
     public void Initialize()
     {
-        mockRepo = new Mock<IMatchRepository>();
-        service = new MatchService(mockRepo.Object);
+        mockMatchRepository = new Mock<IMatchRepository>();
+        matchService = new MatchService(mockMatchRepository.Object);
+        DateTime tenDaysAgo = DateTime.Now.AddDays(-10);
+        DateTime eightMonthsAgo = DateTime.Now.AddMonths(-8);
+        DateTime threeMonthsAgo = DateTime.Now.AddMonths(-3);
         matches = new List<Match>
         {
             new Match { JobRole = "Backend", MatchDate = DateTime.Now.AddDays(-10) },
-            new Match { JobRole = "Frontend", MatchDate = DateTime.Now.AddMonths(-3) },
-            new Match { JobRole = "Backend", MatchDate = DateTime.Now.AddMonths(-8) }
+            new Match { JobRole = "Frontend", MatchDate = threeMonthsAgo },
+            new Match { JobRole = "Backend", MatchDate = eightMonthsAgo }
         };
     }
 
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsTotalCount()
     {
-        mockRepo.Setup(userMathces => userMathces.GetMatchesByUserId(1)).Returns(matches);
-        var result = service.GetMatchStatistics(1);
+        int userId = 1;
+        mockMatchRepository.Setup(findsUserMatches => findsUserMatches.GetMatchesByUserId(userId)).Returns(matches);
+        var result = matchService.GetMatchStatistics(1);
         Assert.AreEqual(3, result.TotalMatches);
     }
 
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsCorrectLastMonthCount()
     {
-        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
-        var result = service.GetMatchStatistics(1);
+        int userId = 1;
+        mockMatchRepository.Setup(findsUserMatches => findsUserMatches.GetMatchesByUserId(userId)).Returns(matches);
+        var result = matchService.GetMatchStatistics(1);
         Assert.AreEqual(1, result.MatchesLastMonth);
     }
 
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsCorrectSixMonthCount()
     {
-        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
-        var result = service.GetMatchStatistics(1);
+        int userId = 1;
+        mockMatchRepository.Setup(findsUserMatches => findsUserMatches.GetMatchesByUserId(userId)).Returns(matches);
+        var result = matchService.GetMatchStatistics(userId);
         Assert.AreEqual(2, result.MatchesLastSixMonths);
     }
 
     [TestMethod]
     public void LastYearMatches_ShouldBeCorrect()
     {
-        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
+        int userId = 1;
+        mockMatchRepository.Setup(findsUserMatches => findsUserMatches.GetMatchesByUserId(userId)).Returns(matches);
 
-        var result = service.GetMatchStatistics(1);
+        var result = matchService.GetMatchStatistics(userId);
 
         Assert.AreEqual(3, result.MatchesLastYear);
     }
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsFrontendCount()
     {
-        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
+        int userId = 1;
+        mockMatchRepository.Setup(findsUserMatches => findsUserMatches.GetMatchesByUserId(userId)).Returns(matches);
 
-        var result = service.GetMatchStatistics(1);
+        var result = matchService.GetMatchStatistics(userId);
 
         Assert.AreEqual(1, result.MatchesPerPosition["Frontend"]);
     }
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsBackendCount()
     {
+        int userId = 1;
+        mockMatchRepository.Setup(findsUserMatches => findsUserMatches.GetMatchesByUserId(userId)).Returns(matches);
 
-        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
-
-        var result = service.GetMatchStatistics(1);
+        var result = matchService.GetMatchStatistics(userId);
 
         Assert.AreEqual(2, result.MatchesPerPosition["Backend"]);
     }

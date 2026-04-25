@@ -43,7 +43,7 @@ namespace PussyCatsApp.Services
                 default: return false;
             }
         }
-        private int CalculatePercentage(int filledFields)
+        private int CalculateCompletnessPercentage(int filledFields)
         {
             return (int)Math.Round((double)filledFields / TotalFields * 100);
         }
@@ -69,7 +69,7 @@ namespace PussyCatsApp.Services
                 return 0;
             }
             int filledFields = CountFilledFields(userProfile);
-            return CalculatePercentage(filledFields);
+            return CalculateCompletnessPercentage(filledFields);
         }
 
         public string GetNextEmptyFieldPrompt(UserProfile userProfile)
@@ -85,7 +85,7 @@ namespace PussyCatsApp.Services
             {
                 if (!IsFieldFilled(fieldIndex, userProfile))
                 {
-                    int nextPercentage = CalculatePercentage(filledFields + 1);
+                    int nextPercentage = CalculateCompletnessPercentage(filledFields + 1);
                     return $"Add your {Labels[fieldIndex]} to reach {nextPercentage}% completeness!";
                 }
             }

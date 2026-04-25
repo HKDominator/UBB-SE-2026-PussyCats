@@ -17,11 +17,11 @@ namespace PussyCatsApp.Repositories
         public List<Preference> GetPreferencesByUserId(int userId)
         {
             var preferences = new List<Preference>();
-            string query = "SELECT pID, userID, preferanceType, value FROM PREFERENCES WHERE userID = @UserId";
+            string selectPreferencesByUserIdQuery = "SELECT pID, userID, preferanceType, value FROM PREFERENCES WHERE userID = @UserId";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(selectPreferencesByUserIdQuery, connection))
                 {
                     command.Parameters.AddWithValue("@UserId", userId);
                     connection.Open();
@@ -45,11 +45,11 @@ namespace PussyCatsApp.Repositories
 
         public void AddPreference(Preference preference)
         {
-            string query = "INSERT INTO PREFERENCES (userID, preferanceType, value) VALUES (@UserId, @PreferenceType, @Value)";
+            string addPrefrenceQuery = "INSERT INTO PREFERENCES (userID, preferanceType, value) VALUES (@UserId, @PreferenceType, @Value)";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(addPrefrenceQuery, connection))
                 {
                     command.Parameters.AddWithValue("@UserId", preference.UserId);
                     command.Parameters.AddWithValue("@PreferenceType", preference.PreferenceType);
@@ -63,11 +63,11 @@ namespace PussyCatsApp.Repositories
 
         public void RemovePreference(int preferenceId)
         {
-            string query = "DELETE FROM PREFERENCES WHERE pID = @PId";
+            string removePreferenceByIdQuery = "DELETE FROM PREFERENCES WHERE pID = @PId";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(removePreferenceByIdQuery, connection))
                 {
                     command.Parameters.AddWithValue("@PId", preferenceId);
                     connection.Open();
@@ -78,11 +78,11 @@ namespace PussyCatsApp.Repositories
 
         public void DeleteAllByUserId(int userId)
         {
-            string query = "DELETE FROM PREFERENCES WHERE userID = @UserId";
+            string deleteAllPreferenceByUserIdQuery = "DELETE FROM PREFERENCES WHERE userID = @UserId";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlCommand command = new SqlCommand(deleteAllPreferenceByUserIdQuery, connection))
                 {
                     command.Parameters.AddWithValue("@UserId", userId);
                     connection.Open();

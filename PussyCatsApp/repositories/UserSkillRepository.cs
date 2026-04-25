@@ -24,8 +24,8 @@ namespace PussyCatsApp.Repositories
             {
                 connection.Open();
 
-                string query = "SELECT name, score FROM SKILLS WHERE userID = @UserId";
-                SqlCommand command = new SqlCommand(query, connection);
+                string selectVerifiedSkillsByUserIdQuery = "SELECT name, score FROM SKILLS WHERE userID = @UserId";
+                SqlCommand command = new SqlCommand(selectVerifiedSkillsByUserIdQuery, connection);
                 command.Parameters.AddWithValue("@UserId", userId);
 
                 using SqlDataReader reader = command.ExecuteReader();
@@ -51,8 +51,8 @@ namespace PussyCatsApp.Repositories
             {
                 connection.Open();
 
-                string query = "SELECT ParsedCV FROM Users WHERE userID = @UserId";
-                SqlCommand command = new SqlCommand(query, connection);
+                string selectParsedCvByUserIdQuery = "SELECT ParsedCV FROM Users WHERE userID = @UserId";
+                SqlCommand command = new SqlCommand(selectParsedCvByUserIdQuery, connection);
                 command.Parameters.AddWithValue("@UserId", userId);
 
                 object result = command.ExecuteScalar();
