@@ -31,15 +31,17 @@ namespace PussyCatsApp.Tests.Services
             preferenceService.SavePreferences(userId, roles, workMode, location);
 
             // Assert
-            mockPreferenceRepository.Verify(preferencesDeletedForUser => preferencesDeletedForUser.DeleteAllByUserId(1), Times.Once);
+            mockPreferenceRepository.Verify(preferencesDeletedForUser => preferencesDeletedForUser.DeleteAllByUserId(userId), Times.Once);
             mockPreferenceRepository.Verify(addPreferenceForAUser => addPreferenceForAUser.AddPreference(It.IsAny<Preference>()), Times.Exactly(roles.Count + 2));
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void SavePreferences_NullRoles_ThrowsException()
         {
+            //Arrange
+            var userId = 1;
             // Act
-            preferenceService.SavePreferences(1, null, WorkMode.Remote, "London, UK");
+            preferenceService.SavePreferences(userId, null, WorkMode.Remote, "London, UK");
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -53,27 +55,28 @@ namespace PussyCatsApp.Tests.Services
                 JobRole.DataAnalyst,
                 JobRole.ProjectManager
             };
+            var userId = 1;
 
             // Act
-            preferenceService.SavePreferences(1, roles, WorkMode.Remote, "London, UK");
+            preferenceService.SavePreferences(userId, roles, WorkMode.Remote, "London, UK");
         }
         [TestMethod]
         public void SearchLocations_ValidQuery_ReturnsResults()
         {
             // Act
-            var result = preferenceService.SearchLocations("London");
+            var searchResultOfLocationQuery = preferenceService.SearchLocations("London");
 
             // Assert
-            Assert.IsTrue(result.Any(userLocationsList => userLocationsList.Contains("London")));
+            Assert.IsTrue(searchResultOfLocationQuery.Any(userLocationsList => userLocationsList.Contains("London")));
         }
         [TestMethod]
         public void SearchLocations_EmptyQuery_ReturnsEmptyList()
         {
             // Act
-            var result = preferenceService.SearchLocations("");
+            var searchResultOfLocationQuery = preferenceService.SearchLocations("");
 
             // Assert
-            Assert.AreEqual(0, result.Count);
+            Assert.AreEqual(0, searchResultOfLocationQuery.Count);
         }
     }
 }
