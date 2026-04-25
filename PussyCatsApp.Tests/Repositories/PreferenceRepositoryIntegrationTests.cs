@@ -18,74 +18,94 @@ namespace PussyCatsApp.Tests.Repositories
             Repository = new PreferenceRepository(TestDatabaseHelper.ConnectionString);
         }
 
-
         [TestMethod]
         public void GetPreferencesByUserId_UserHasNoPreferences_ExpectsZeroPreferences()
         {
+            int ExpectedZeroPreferences = 0;
             int userId = TestDatabaseHelper.InsertUser();
 
-            var result = Repository.GetPreferencesByUserId(userId);
+            List<Preference> result = Repository.GetPreferencesByUserId(userId);
 
-            Assert.AreEqual(0, result.Count);
+            Assert.AreEqual(ExpectedZeroPreferences, result.Count);
         }
 
         [TestMethod]
         public void GetPreferencesByUserId_UserHasTwoPreferences_ExpectsTwoPreferences()
         {
+            int ExpectedTwoPreferences = 2;
+            string ThemePreferenceType = "Theme";
+            string ThemeValue = "Dark";
+            string NotificationPreferenceType = "Notifications";
+            string NotificationValue = "Enabled";
+
             int userId = TestDatabaseHelper.InsertUser();
-            TestDatabaseHelper.InsertPreference(userId, "Theme", "Dark");
-            TestDatabaseHelper.InsertPreference(userId, "Notifications", "Enabled");
+            TestDatabaseHelper.InsertPreference(userId, ThemePreferenceType, ThemeValue);
+            TestDatabaseHelper.InsertPreference(userId, NotificationPreferenceType, NotificationValue);
 
-            var result = Repository.GetPreferencesByUserId(userId);
+            List<Preference> result = Repository.GetPreferencesByUserId(userId);
 
-            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(ExpectedTwoPreferences, result.Count);
         }
 
         [TestMethod]
         public void AddPreference_ValidPreference_SavedToDatabase()
         {
+            string LanguagePreferenceType = "Language";
+            string LanguageValue = "English";
+            int FirstIndex = 0;
+
             int userId = TestDatabaseHelper.InsertUser();
-            var newPref = new Preference
+            Preference newPreference = new Preference
             {
                 UserId = userId,
-                PreferenceType = "Language",
-                Value = "English"
+                PreferenceType = LanguagePreferenceType,
+                Value = LanguageValue
             };
 
-            Repository.AddPreference(newPref);
+            Repository.AddPreference(newPreference);
 
-            var result = Repository.GetPreferencesByUserId(userId);
-            Assert.AreEqual("Language", result[0].PreferenceType);
-   
+            List<Preference> result = Repository.GetPreferencesByUserId(userId);
+            Assert.AreEqual(LanguagePreferenceType, result[FirstIndex].PreferenceType);
         }
-
 
         [TestMethod]
         public void RemovePreference_PreferenceExists_ExpectsOnlyThatPreferenceRemoved()
         {
+            string PreferenceTypeA = "A";
+            string PreferenceValue1 = "1";
+            string PreferenceTypeB = "B";
+            string PreferenceValue2 = "2";
+            int FirstIndex = 0;
+
             int userId = TestDatabaseHelper.InsertUser();
-            int prefId1 = TestDatabaseHelper.InsertPreference(userId, "A", "1");
-            int prefId2 = TestDatabaseHelper.InsertPreference(userId, "B", "2");
+            int preferenceId1 = TestDatabaseHelper.InsertPreference(userId, PreferenceTypeA, PreferenceValue1);
+            int preferenceId2 = TestDatabaseHelper.InsertPreference(userId, PreferenceTypeB, PreferenceValue2);
 
-            Repository.RemovePreference(prefId1);
+            Repository.RemovePreference(preferenceId1);
 
-            var result = Repository.GetPreferencesByUserId(userId);
-            Assert.AreEqual("B", result[0].PreferenceType, "The wrong preference was deleted.");
+            List<Preference> result = Repository.GetPreferencesByUserId(userId);
+            Assert.AreEqual(PreferenceTypeB, result[FirstIndex].PreferenceType, "The wrong preference was deleted.");
         }
-
 
         [TestMethod]
         public void DeleteAllByUserId_UserHasMultiplePreferences_ExpectsAllPreferencesClearedForThatUser()
         {
-           
-            int userId1 = TestDatabaseHelper.InsertUser(email: "user1@test.com");
+            string UserEmail = "user1@test.com";
+            string ColorPreferenceType = "Color";
+            string ColorValue = "Red";
+            string FontPreferenceType = "Font";
+            string FontValue = "Arial";
+            int ExpectedCountAfterDelete = 0;
 
-            TestDatabaseHelper.InsertPreference(userId1, "Color", "Red");
-            TestDatabaseHelper.InsertPreference(userId1, "Font", "Arial");
+            int userId1 = TestDatabaseHelper.InsertUser(email: UserEmail);
+
+            TestDatabaseHelper.InsertPreference(userId1, ColorPreferenceType, ColorValue);
+            TestDatabaseHelper.InsertPreference(userId1, FontPreferenceType, FontValue);
 
             Repository.DeleteAllByUserId(userId1);
 
-            Assert.AreEqual(0, Repository.GetPreferencesByUserId(userId1).Count, "User 1 should have 0 prefs.");
+            int resultCount = Repository.GetPreferencesByUserId(userId1).Count;
+            Assert.AreEqual(ExpectedCountAfterDelete, resultCount, "User 1 should have 0 preferences.");
         }
     }
 }

@@ -30,19 +30,19 @@ namespace PussyCatsApp.Services
         public string SaveFile(Stream fileStream, string originalFileName)
         {
             string uniqueFileName = $"{Guid.NewGuid()}_{originalFileName}";
-            string fullPath = Path.IsPathRooted(basePath)
+            string savedFileFullPath = Path.IsPathRooted(basePath)
                 ? Path.Combine(basePath, uniqueFileName)
                 : Path.Combine(AppContext.BaseDirectory, basePath, uniqueFileName);
 
-            using var output = File.Create(fullPath);
+            using var fileOutputStream = File.Create(savedFileFullPath);
 
             if (fileStream.CanSeek)
             {
                 fileStream.Position = 0;
             }
-            fileStream.CopyTo(output);
+            fileStream.CopyTo(fileOutputStream);
 
-            return fullPath;
+            return savedFileFullPath;
         }
 
         public void DeleteFile(string relativePath)
@@ -51,14 +51,14 @@ namespace PussyCatsApp.Services
             {
                 return;
             }
-            string fullPath = Path.Combine(AppContext.BaseDirectory, basePath, Path.GetFileName(relativePath));
-            if (!Path.IsPathRooted(fullPath))
+            string resolvedFileFullPath = Path.Combine(AppContext.BaseDirectory, basePath, Path.GetFileName(relativePath));
+            if (!Path.IsPathRooted(resolvedFileFullPath))
             {
-                fullPath = Path.Combine(AppContext.BaseDirectory, relativePath);
+                resolvedFileFullPath = Path.Combine(AppContext.BaseDirectory, relativePath);
             }
-            if (File.Exists(fullPath))
+            if (File.Exists(resolvedFileFullPath))
             {
-                File.Delete(fullPath);
+                File.Delete(resolvedFileFullPath);
             }
         }
 

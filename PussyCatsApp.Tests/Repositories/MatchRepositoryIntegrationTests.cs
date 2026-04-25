@@ -23,22 +23,24 @@ namespace PussyCatsApp.Tests.Repositories
         [TestMethod]
         public void GetMatchesByUserId_UserHasNoMatches_ExpectsZeroMatches()
         {
+            int expectedNumberOfMatches = 0;
             int userId = TestDatabaseHelper.InsertUser();
 
             var matches = Repository.GetMatchesByUserId(userId);
 
-            Assert.AreEqual(0, matches.Count);
+            Assert.AreEqual(expectedNumberOfMatches, matches.Count);
         }
 
         [TestMethod]
         public void GetMatchesByUserId_UserHasOneMatch_ExpectsOneMatch()
         {
+            int expectedNumberOfMatches = 1;
             int userId = TestDatabaseHelper.InsertUser();
             int matchId = TestDatabaseHelper.InsertMatch(userId, "LSEG", "DevOps Engineer", new DateTime(2026, 1, 1));
 
             var matches = Repository.GetMatchesByUserId(userId);
 
-            Assert.AreEqual(1, matches.Count);
+            Assert.AreEqual(expectedNumberOfMatches, matches.Count);
         }
 
         [TestMethod]
@@ -48,25 +50,31 @@ namespace PussyCatsApp.Tests.Repositories
             int matchId1 = TestDatabaseHelper.InsertMatch(userId, "LSEG", "DevOps Engineer", new DateTime(2026, 2, 1));
             int matchId2 = TestDatabaseHelper.InsertMatch(userId, "Bosch", "Software Engineer", new DateTime(2026, 1, 1));
 
-            var matches = Repository.GetMatchesByUserId(userId);
+            var matchesFound = Repository.GetMatchesByUserId(userId);
 
-            Assert.AreEqual(matchId2, matches[1].Id);
+            Assert.AreEqual(matchId2, matchesFound[1].Id);
         }
 
         [TestMethod]
         public void GetMatchesByUserId_UserDoesNotExist_ExpectsZeroMatches()
         {
+            int expectedNumberOfMatches = 0;
+
             var matches = Repository.GetMatchesByUserId(10867);
-            Assert.AreEqual(0, matches.Count);
+
+            Assert.AreEqual(expectedNumberOfMatches, matches.Count);
         }
 
         [TestMethod]
-        public void GetMatchesByUserId_DatabaseNotAvalaible_ExpectsError()
+        public void GetMatchesByUserId_DatabaseNotAvalaible_ExpectsZeroResults()
         {
+            int expectedNumberOfMatches = 0;
             string invalidConnectionString = "Server=ASUS\\SQLEXPRESS;Database=PussyCatsTestsDBNotExistient;Trusted_Connection=True;TrustServerCertificate=True;";
             var repositoryWithInvalidConnection = new MatchRepository(invalidConnectionString);
 
-            Assert.AreEqual(0, repositoryWithInvalidConnection.GetMatchesByUserId(1).Count);
+            var result = repositoryWithInvalidConnection.GetMatchesByUserId(1).Count;
+
+            Assert.AreEqual(expectedNumberOfMatches, result);
         }
 
         [TestMethod]

@@ -32,11 +32,11 @@ namespace PussyCatsApp.Tests.Services
         [DataRow(69.9f, 30)]
         [DataRow(50f, 30)]
         [DataRow(49f, 10)]
-        public void AssignTier_GivenScore_ReturnsCorrectExperiencePoints(float score, int expectedXp)
+        public void AssignTier_GivenScore_ReturnsCorrectExperiencePoints(float score, int expectedExperiencePoints)
         {
             var returnedBadge = SimpleModelOperations.AssignTier(score);
 
-            Assert.AreEqual(expectedXp, returnedBadge.ExperiencePointsValue);
+            Assert.AreEqual(expectedExperiencePoints, returnedBadge.ExperiencePointsValue);
 
         }
     }

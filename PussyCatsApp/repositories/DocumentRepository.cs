@@ -25,7 +25,7 @@ namespace PussyCatsApp.Repositories
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                const string query = @"
+                const string selectDocumentByUserIdQuery = @"
                 SELECT dID         AS Id,
                        userID      AS UserId,
                        nameDocument AS DocumentName,
@@ -34,7 +34,7 @@ namespace PussyCatsApp.Repositories
                 FROM   DOCUMENTS
                 WHERE  userID = @UserId";
 
-                using var command = new SqlCommand(query, connection);
+                using var command = new SqlCommand(selectDocumentByUserIdQuery, connection);
                 command.Parameters.AddWithValue("@UserId", userId);
 
                 using var reader = command.ExecuteReader();
@@ -63,7 +63,7 @@ namespace PussyCatsApp.Repositories
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                const string query = @"
+                const string selectDocumentByIdQuery = @"
                 SELECT dID         AS Id,
                        userID      AS UserId,
                        nameDocument AS DocumentName,
@@ -72,7 +72,7 @@ namespace PussyCatsApp.Repositories
                 FROM   DOCUMENTS
                 WHERE  dID = @Id";
 
-                using var command = new SqlCommand(query, connection);
+                using var command = new SqlCommand(selectDocumentByIdQuery, connection);
                 command.Parameters.AddWithValue("@Id", documentId);
 
                 using var reader = command.ExecuteReader();
@@ -100,11 +100,11 @@ namespace PussyCatsApp.Repositories
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                const string query = @"
+                const string addDocumentQuery = @"
                 INSERT INTO DOCUMENTS (userID, nameDocument, FilePath, UploadDate)
                 VALUES (@UserId, @DocumentName, @FilePath, @UploadDate)";
 
-                using var command = new SqlCommand(query, connection);
+                using var command = new SqlCommand(addDocumentQuery, connection);
                 command.Parameters.AddWithValue("@UserId", document.UserId);
                 command.Parameters.AddWithValue("@DocumentName", document.DocumentName);
                 if (document.FilePath == null)
@@ -135,9 +135,9 @@ namespace PussyCatsApp.Repositories
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
 
-                const string query = "DELETE FROM DOCUMENTS WHERE dID = @Id";
+                const string deleteDocumentQuery = "DELETE FROM DOCUMENTS WHERE dID = @Id";
 
-                using var command = new SqlCommand(query, connection);
+                using var command = new SqlCommand(deleteDocumentQuery, connection);
                 command.Parameters.AddWithValue("@Id", documentId);
                 command.ExecuteNonQuery();
             }
@@ -155,38 +155,38 @@ namespace PussyCatsApp.Repositories
         {
             try
             {
-                Document doc = new Document();
-                doc.Id = Convert.ToInt32(reader["Id"]);
-                doc.UserId = Convert.ToInt32(reader["UserId"]);
+                Document document = new Document();
+                document.Id = Convert.ToInt32(reader["Id"]);
+                document.UserId = Convert.ToInt32(reader["UserId"]);
 
                 if (reader["DocumentName"] == DBNull.Value)
                 {
-                    doc.DocumentName = string.Empty;
+                    document.DocumentName = string.Empty;
                 }
                 else
                 {
-                    doc.DocumentName = reader["DocumentName"].ToString();
+                    document.DocumentName = reader["DocumentName"].ToString();
                 }
 
                 if (reader["FilePath"] == DBNull.Value)
                 {
-                    doc.FilePath = null;
+                    document.FilePath = null;
                 }
                 else
                 {
-                    doc.FilePath = reader["FilePath"].ToString();
+                    document.FilePath = reader["FilePath"].ToString();
                 }
 
                 if (reader["UploadDate"] == DBNull.Value)
                 {
-                    doc.UploadDate = DateTime.MinValue;
+                    document.UploadDate = DateTime.MinValue;
                 }
                 else
                 {
-                    doc.UploadDate = Convert.ToDateTime(reader["UploadDate"]);
+                    document.UploadDate = Convert.ToDateTime(reader["UploadDate"]);
                 }
 
-                return doc;
+                return document;
             }
             catch (InvalidCastException castEx)
             {

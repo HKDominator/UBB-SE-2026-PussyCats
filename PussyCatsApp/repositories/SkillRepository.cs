@@ -62,11 +62,15 @@ namespace PussyCatsApp.Repositories
 
         public void AddSkill(Skill newSkill)
         {
-            if (newSkill.SkillId == 0)
+            const int NewSkillIdPlaceholder = 0;
+            const int InitialIdValue = 1;
+            const int IdIncrement = 1;
+
+            if (newSkill.SkillId == NewSkillIdPlaceholder)
             {
                 if (skills.Count == 0)
                 {
-                    newSkill.SkillId = 1;
+                    newSkill.SkillId = InitialIdValue;
                 }
                 else
                 {
@@ -78,7 +82,7 @@ namespace PussyCatsApp.Repositories
                             highestIdFound = currentSkill.SkillId;
                         }
                     }
-                    newSkill.SkillId = highestIdFound + 1;
+                    newSkill.SkillId = highestIdFound + IdIncrement;
                 }
             }
             skills.Add(newSkill);
