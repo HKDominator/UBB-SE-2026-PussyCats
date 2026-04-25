@@ -93,30 +93,30 @@ namespace PussyCatsApp.Services
 
             return personalityAssessmentQuestions;
         }
-        public Dictionary<TraitType, double> CalculateTraitScores(Dictionary<Question, AnswerValue> answers)
+        public Dictionary<TraitType, double> CalculateTraitScores(Dictionary<Question, AnswerValue> personalityTestAnswers)
         {
-            var traitScores = new Dictionary<TraitType, double>();
-            var traitQuestionCounts = new Dictionary<TraitType, int>();
-            foreach (var answer in answers)
+            var totalScorePerTrait = new Dictionary<TraitType, double>();
+            var questionCountPerTrait = new Dictionary<TraitType, int>();
+            foreach (var personalityTestAnswer in personalityTestAnswers)
             {
-                var trait = answer.Key.Trait;
+                var questionTrait = personalityTestAnswer.Key.Trait;
 
-                if (!traitScores.ContainsKey(trait))
+                if (!totalScorePerTrait.ContainsKey(questionTrait))
                 {
-                    traitScores[trait] = 0;
-                    traitQuestionCounts[trait] = 0;
+                    totalScorePerTrait[questionTrait] = 0;
+                    questionCountPerTrait[questionTrait] = 0;
                 }
 
-                traitScores[trait] += (int)answer.Value;
-                traitQuestionCounts[trait]++;
+                totalScorePerTrait[questionTrait] += (int)personalityTestAnswer.Value;
+                questionCountPerTrait[questionTrait]++;
             }
 
-            foreach (var trait in traitScores.Keys)
+            foreach (var trait in totalScorePerTrait.Keys)
             {
-                traitScores[trait] /= traitQuestionCounts[trait];
+                totalScorePerTrait[trait] /= questionCountPerTrait[trait];
             }
 
-            return traitScores;
+            return totalScorePerTrait;
         }
         private double CalculateFrontend(Dictionary<TraitType, double> traitScores)
         {

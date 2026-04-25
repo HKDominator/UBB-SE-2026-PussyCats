@@ -29,7 +29,7 @@ public class MatchServiceTest
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsTotalCount()
     {
-        mockRepo.Setup(r => r.GetMatchesByUserId(1)).Returns(matches);
+        mockRepo.Setup(userMathces => userMathces.GetMatchesByUserId(1)).Returns(matches);
         var result = service.GetMatchStatistics(1);
         Assert.AreEqual(3, result.TotalMatches);
     }
@@ -37,7 +37,7 @@ public class MatchServiceTest
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsCorrectLastMonthCount()
     {
-        mockRepo.Setup(r => r.GetMatchesByUserId(1)).Returns(matches);
+        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
         var result = service.GetMatchStatistics(1);
         Assert.AreEqual(1, result.MatchesLastMonth);
     }
@@ -45,7 +45,7 @@ public class MatchServiceTest
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsCorrectSixMonthCount()
     {
-        mockRepo.Setup(r => r.GetMatchesByUserId(1)).Returns(matches);
+        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
         var result = service.GetMatchStatistics(1);
         Assert.AreEqual(2, result.MatchesLastSixMonths);
     }
@@ -53,7 +53,7 @@ public class MatchServiceTest
     [TestMethod]
     public void LastYearMatches_ShouldBeCorrect()
     {
-        mockRepo.Setup(r => r.GetMatchesByUserId(1)).Returns(matches);
+        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
 
         var result = service.GetMatchStatistics(1);
 
@@ -62,7 +62,7 @@ public class MatchServiceTest
     [TestMethod]
     public void GetStatistics_UserWithMatches_ReturnsFrontendCount()
     {
-        mockRepo.Setup(r => r.GetMatchesByUserId(1)).Returns(matches);
+        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
 
         var result = service.GetMatchStatistics(1);
 
@@ -72,7 +72,7 @@ public class MatchServiceTest
     public void GetStatistics_UserWithMatches_ReturnsBackendCount()
     {
 
-        mockRepo.Setup(r => r.GetMatchesByUserId(1)).Returns(matches);
+        mockRepo.Setup(userMatches => userMatches.GetMatchesByUserId(1)).Returns(matches);
 
         var result = service.GetMatchStatistics(1);
 
