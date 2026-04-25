@@ -212,9 +212,9 @@ namespace PussyCatsApp.Services
         public Dictionary<JobRole, double> GetTopRoles(Dictionary<JobRole, double> roleScores, int numberOfTopRolesToReturn)
         {
             return roleScores
-                .OrderByDescending(roleScorePair => roleScorePair.Value)
+                .OrderByDescending(roleWithScore => roleWithScore.Value)
                 .Take(numberOfTopRolesToReturn)
-                .ToDictionary(roleScorePair => roleScorePair.Key, roleScorePair => roleScorePair.Value);
+                .ToDictionary(roleWithScore => roleWithScore.Key, roleScorePair => roleScorePair.Value);
         }
 
         public void SaveResult(int userId, string personalityTestResult)
