@@ -10,8 +10,8 @@ namespace PussyCatsApp.Services
         private const string PreferenceTypeJobRole = "JobRole";
         private const string PreferenceTypeWorkMode = "WorkMode";
         private const string PreferenceTypeLocation = "Location";
-        private const int MinRoles = 1;
-        private const int MaxRoles = 3;
+        private const int MinimumPreferredRoles = 1;
+        private const int MaximumPreferredRoles = 3;
 
         private readonly IPreferenceRepository preferencesRepository;
         private List<string> predefinedLocations = new List<string>();
@@ -138,13 +138,13 @@ namespace PussyCatsApp.Services
             };
         }
 
-        private bool ValidateRoleLimit(List<JobRole> roles)
+        private bool IsJobRoleSelectionWithinAllowedRange(List<JobRole> roles)
         {
             if (roles == null)
             {
                 return false;
             }
-            return roles.Count >= MinRoles && roles.Count <= MaxRoles;
+            return roles.Count >= MinimumPreferredRoles && roles.Count <= MaximumPreferredRoles;
         }
 
         private List<Preference> CreateUserPreferences(int userId, List<JobRole> roles, WorkMode workMode, string location)
@@ -185,7 +185,7 @@ namespace PussyCatsApp.Services
 
         public void SavePreferences(int userId, List<JobRole> roles, WorkMode workMode, string location)
         {
-            if (!ValidateRoleLimit(roles))
+            if (!IsJobRoleSelectionWithinAllowedRange(roles))
             {
                 throw new ArgumentException("You must select between 1 and 3 job roles.");
             }
