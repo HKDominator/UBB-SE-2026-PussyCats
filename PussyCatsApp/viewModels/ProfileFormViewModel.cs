@@ -470,9 +470,9 @@ namespace PussyCatsApp.ViewModels
             }
         }
 
-        public List<string> FilterUniversities(string query)
+        public List<string> FilterUniversities(string universityQuery)
         {
-            return ProfileFormHelpers.FilterUniversitiesHelper(query);
+            return ProfileFormHelpers.FilterUniversitiesHelper(universityQuery);
         }
 
         public List<string> FilterSkillSuggestions(string searchTextQuery)

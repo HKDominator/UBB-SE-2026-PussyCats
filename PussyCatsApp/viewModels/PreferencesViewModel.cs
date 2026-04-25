@@ -91,9 +91,9 @@ namespace PussyCatsApp.ViewModels
             preferredLocation = location;
         }
 
-        public void SearchLocation(string query)
+        public void SearchLocation(string searchLocationQuery)
         {
-            locationSuggestions = preferencesService.SearchLocations(query);
+            locationSuggestions = preferencesService.SearchLocations(searchLocationQuery);
         }
 
         public void SavePreferences()

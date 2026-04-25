@@ -26,24 +26,24 @@ namespace PussyCatsApp.Tests.ViewModels.UtilitiesTests
         [TestMethod]
         public void FilterUniversitiesHelper_MatchesExist_ReturnsMatchingUniversity()
         {
-            string query = "Babes University";
-            List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(query);
+            string universityQuery = "Babes University";
+            List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(universityQuery);
             Assert.IsTrue(results.Contains("Babes-Bolyai University"));
         }
 
         [TestMethod]
         public void FilterUniversitiesHelper_EmptyQuery_ReturnsEmptyList()
         {
-            string query = string.Empty;
-            List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(query);
+            string universityQuery = string.Empty;
+            List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(universityQuery);
             Assert.AreEqual(0, results.Count);
         }
 
         [TestMethod]
         public void FilterUniversitiesHelper_NoMatches_ReturnsEmptyList()
         {
-            string query = "Nonexistent University";
-            List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(query);
+            string universityQuery = "Nonexistent University";
+            List<string> results = ProfileFormHelpers.FilterUniversitiesHelper(universityQuery);
             Assert.AreEqual(0, results.Count);
         }
     }
